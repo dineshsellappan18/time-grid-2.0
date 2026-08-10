@@ -10,3 +10,9 @@
 *.sublime-workspace
 .wakatime-project
 .DS_Store
+.forge-commit-ready
+.forge/project-id
+.forge/hook-version
+.cursor/hooks.json
+.cursor/hooks/
+.cursor/rules/forge-workflow.mdc
