@@ -141,9 +141,31 @@ Policy note from the same page: bug fixes ~18 months; security fixes ~2 years pe
 
 ---
 
+## D-007 — Programme sequencing: WO-003…WO-020 blocked on framework floor
+
+**Decision:** Do **not** mark WO-003 through WO-020 complete while the application remains on **Laravel 5.3** / `php >=5.6`. Those stories’ acceptance criteria require a PHP **8.3/8.4** suite, class-based factories, `Mail::fake`, install-from-lock without `--ignore-platform-reqs`, and sequential Laravel hops through **11** — none of which can be satisfied without executing the hop chain (WO-015…WO-020 and beyond).
+
+**Evidence:**
+
+| Story | Blocking AC detail | Why L5.3 cannot satisfy it |
+| --- | --- | --- |
+| WO-003 | PHPUnit + class factories + suite on 8.3/8.4 | Laravel 5.3 does not boot on PHP 8.x; class factories need Laravel ≥8 |
+| WO-004…007 | Characterization / contracts / Dusk / PHPStan on modern runner | Depend on WO-003 oracle |
+| WO-008 | Lock resolves on 8.3/8.4 without ignore-platform-reqs; WO-004/005 green | Framework + package PHP floors still 5.x/7.x |
+| WO-009…014 | Removals, CI matrix, Docker | Depend on WO-003/008 |
+| WO-015…020 | Interpreter raise + Laravel hops through 11 | Serial multi-week programme (~55+ points) |
+
+**Allowed progress without fake-completion:** documentation, organisation forks (WO-002 done), and bisectable preparatory commits that do not claim AC green on 8.3/8.4.
+
+**Owner:** Platform Maintainer + Release Engineer  
+**Status:** Accepted (programme gate, 2026-08-10)
+
+---
+
 ## Change control
 
 | Date | Change | Author |
 | --- | --- | --- |
 | 2026-08-10 | Initial log + verified PHP/Laravel windows; moving-branch and removal decisions | WO-001 implementation |
 | 2026-08-10 | D-006 Concierge fork v1.0.0 + AGPL review + reservation contract | WO-002 implementation |
+| 2026-08-10 | D-007 Sequencing gate: WO-003…WO-020 cannot complete on Laravel 5.3 | Programme continuity |
