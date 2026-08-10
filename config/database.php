@@ -66,10 +66,10 @@ return [
 
         'testing' => [
             'driver'    => 'mysql',
-            'host'      => env('TEST_DB_HOST', 'localhost'),
-            'database'  => env('TEST_DB_DATABASE', 'testing_timegrid'),
-            'username'  => env('TEST_DB_USERNAME', 'testing_timegrid'),
-            'password'  => env('TEST_DB_PASSWORD', 'testing_timegrid'),
+            'host'      => env('TEST_DB_HOST'),
+            'database'  => env('TEST_DB_DATABASE'),
+            'username'  => env('TEST_DB_USERNAME'),
+            'password'  => env('TEST_DB_PASSWORD'),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
