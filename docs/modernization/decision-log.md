@@ -109,8 +109,41 @@ Policy note from the same page: bug fixes ~18 months; security fixes ~2 years pe
 
 ---
 
+## D-006 — Concierge: fork (not reimplement), tag 1.0.0
+
+**Decision:** **Fork and modernize** `timegridio/concierge`; do **not** reimplement the booking domain in Phase 1.
+
+**Chosen semver tag:** `dineshsellappan18/timegrid-concierge` **1.0.0**  
+**Location:** `packages/timegrid-concierge/` (in-repo organisation fork; app Composer constraint unchanged until WO-008)  
+**Tree digest (SHA-256 of sorted file digests):** `3e4f573550a747321a997e10a3115a76a3019fd8aa8a65800ac2b51a00b990fd` (also in `packages/timegrid-concierge/.fork-digest`)  
+**Upstream pin preserved in metadata:** `dev-master#90e65c`
+
+**Floor-raise spike result:**
+
+- Fork `composer.json` PHP requirement raised from `>=5.5.9` to `^8.1|^8.2|^8.3|^8.4`.
+- `illuminate/support` widened transitively for hop path; abandoned `mccool/laravel-auto-presenter` dropped from the fork require set.
+- Public reservation methods (`takeReservation`, `vacancies()->updateBatch`, `getActiveAppointments`, `getUnarchivedAppointments`, `business`) left signature-compatible — see [reservation-contract.md](./reservation-contract.md).
+- Installation proof: fork package metadata validates; full app switch waits for WO-008 (OUT OF SCOPE here).
+
+**Measured effort delta (spike):**
+
+| Path | Estimated effort | Spike observation |
+| --- | --- | --- |
+| **Fork + floor raise + tag** (chosen) | ~2–4 engineer-weeks to production-ready PHP 8.3/8.4 Concierge, then WO-005/008 | Inventory + MIT-preserving fork + docs completed in this story (~1 day documentation + package copy spike); remaining work is Rector/PHPStan clean-up on the fork during hops |
+| **Reimplement booking engine** | ~8–12 engineer-weeks (models, vacancy DSL, calendar strategies, appointment lifecycle, test parity) | Rejected: 3–4× effort, expands Phase 2 into a domain rewrite, higher risk to availability maths |
+
+**icalreader note (from D-003):** `timegridio/icalreader@dev-master` remains **fork or remove** under supply-chain work; not blocking Concierge fork adoption. Prefer remove/replace during calendar modernization if unused critically; otherwise fork with a tag in WO-008 scope.
+
+**AGPL:** See [agpl-review.md](./agpl-review.md) — hosted fork **approved**; Concierge remains MIT; application AGPL obligations listed.
+
+**Owner:** Platform Maintainer + Release Engineer + Legal (SaaS source-offer follow-up)  
+**Status:** Accepted (WO-002)
+
+---
+
 ## Change control
 
 | Date | Change | Author |
 | --- | --- | --- |
 | 2026-08-10 | Initial log + verified PHP/Laravel windows; moving-branch and removal decisions | WO-001 implementation |
+| 2026-08-10 | D-006 Concierge fork v1.0.0 + AGPL review + reservation contract | WO-002 implementation |
