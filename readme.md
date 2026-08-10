@@ -1,105 +1,57 @@
-<a href="#">
-    <img src="http://i.imgur.com/pUUoU6H.png" alt="timegrid.io" title="timegrid.io" align="right" />
-</a>
+# Timegrid — Product Overview
 
-timegrid (Archived)
-============
+Timegrid is an online appointment and scheduling platform built for service businesses that need a cleaner way to manage bookings, clients, staff, and availability — without phone tag or messy spreadsheets.
 
-[![Build Status](https://travis-ci.org/timegridio/timegrid.svg?branch=master)](https://travis-ci.org/timegridio/timegrid)
-[![Code Climate](https://codeclimate.com/github/timegridio/timegrid/badges/gpa.svg)](https://codeclimate.com/github/timegridio/timegrid)
-[![Test Coverage](https://codeclimate.com/github/timegridio/timegrid/badges/coverage.svg)](https://codeclimate.com/github/timegridio/timegrid/coverage)
-[![Gitter](https://badges.gitter.im/timegrid-development/community.svg)](https://gitter.im/timegrid-development/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![License](https://img.shields.io/:license-AGPL--3.0-blue.svg?style=flat-square)](http://www.gnu.org/licenses/agpl-3.0.txt)
-[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+## What it solves
 
-> **Timegrid** helps contractors and customers to find the perfect meeting time through *online appointments*.
+Most service businesses lose time coordinating appointments manually. Timegrid gives your business a self-service booking experience for customers and a complete back-office for your team to manage day-to-day operations.
 
-<div style="text-align:center">
-  <img src="http://i.imgur.com/YOQBoVx.png" alt="Timegrid Backoffice Dashboard Screenshot">
-</div>
+## Who it’s for
 
-## Features
+Ideal for clinics, consultants, salons, coaches, and any appointment-based business that wants customers to book online while the team keeps full control of calendar, services, and client records.
 
-  * Built with [**Laravel 5.3**](http://laravel.com/docs/5.3) framework for [**PHP**](http://php.net/)
-  * Classic and oAuth2 Sign-in/Sign-up with [Socialite](https://github.com/laravel/socialite)
-  * Business management
-    * Clients Addressbook
-    * Services
-    * Staff
-    * Availability
-    * Appointments
-  * Calendar sharing through [iCalendar link](https://en.wikipedia.org/wiki/ICalendar)
-  * Scheduling view with [fullcalendar](https://github.com/fullcalendar)
-  * Self-service reservation with datepicker
-  * Basic email notifications
-  * i18n Support
-  * Multiple Timezones Support
-  * Live chat with [TidioChat](https://www.tidiochat.com/)
-  * Admin GUI with [AdminLTE](https://github.com/almasaeed2010/AdminLTE) [Twitter Bootstrap 3](https://github.com/twbs/bootstrap) based theme.
+## What you can do today
 
-[Future features here](https://github.com/timegridio/timegrid/issues?q=is%3Aissue+is%3Aopen+label%3Afeature-request)
+- **Business Dashboard** — One place to oversee appointments, status, and daily operations
+- **Addressbook** — Store and manage all customer/contact records
+- **Agenda & Calendar** — View and manage appointments in a clear schedule view
+- **Staff Management** — Assign people who deliver the services
+- **Services Setup** — Define what your business offers and how it is booked
+- **Availability** — Control when bookings can be taken
+- **Customer Self-Booking** — Let clients choose a time that works for them
+- **Notifications** — Keep customers and owners updated on appointment activity
+- **Multi-language Support** — Ready for broader audience reach
 
-## Documentation
+## Value for your business
 
-Read [the wiki](https://github.com/timegridio/timegrid/wiki)
+1. **Optimize** — Customers book when it suits them, reducing back-and-forth
+2. **Grow** — Keep contacts organized and convert them into recurring customers
+3. **Professionalize** — Deliver a polished digital booking experience
+4. **Save time** — Free your team from repetitive scheduling work
 
-## Installing
+## How it works in practice
 
-Read the [INSTALLING](INSTALLING.md) section.
+1. Create your business profile
+2. Add services, staff, and availability
+3. Share booking access with customers
+4. Manage appointments from the dashboard
 
-Get started in 10 min with a [Docker image](https://github.com/timegridio/dockerfiles) for development environment.
+## Stack at a glance
 
-## Localization
+| Layer           | Technology                                |
+| --------------- | ----------------------------------------- |
+| Framework       | Laravel 5.3                               |
+| Language        | PHP (≥ 5.6)                               |
+| Booking domain  | `timegridio/concierge`                    |
+| UI              | Blade + AdminLTE + Bootstrap 3            |
+| Auth            | Classic login + OAuth (Socialite)         |
+| Notifications   | Events/Listeners → TransMail / Beautymail |
+| Calendar export | iCalendar (`eluceo/ical`)                 |
+| Scheduling      | Artisan commands + jobs                   |
 
-Current supported user interface languages are:
+### Role views
 
-  * American English (`en_US`)
-  * Spanish (`es_ES` and `es_AR`)
-  * Italian (`it_IT`)
-  * French (`fr_FR`)
-  * Russian (`ru_RU`)
-  * Armenian (`am_HY`)
-
-Feel free to contribute with your preferred translation!
-
-## Appointment Library
-
-Timegrid uses [Concierge package](https://github.com/timegridio/concierge) for dealing with appointments.
-
-![Timegrid Mindmap](http://i.imgur.com/gXBFMor.png)
-
-## Author
-
-Timegrid is developed and maintained by [Ariel Vallese](http://alariva.com).
-
-## Contributing
-
-Contributions are welcome. **Please read the following notes.**
-
-## Special Thanks & Credits
-
-  * [PeGa!](https://www.linkedin.com/in/pega041) for infra support
-  * [Mohamed G.Hafez](https://github.com/mg-freelancer) for contributions
-  * [John Ezekiel](https://github.com/zeke8402) for friendly hints and creating a really nice [booking-app](https://github.com/zeke8402/booking-app)
-  * [Victor](https://github.com/pappavic) for testing and documentation contributions
-  * [Mohammad Hossein Mojtahedi](https://github.com/MHM5000) for doc review
-  * [Jose V Herrera](https://github.com/josevh) for contributions
-  * [Bruno Gangemi](https://github.com/brugasoft) for useful feedback
-  * [Calvin Roger S. Canas](https://github.com/calvincanas) for contributions
-  * [Khouadja Achraf](https://github.com/achrafkh) for contributions
-  * [Nick N. Huynh](https://github.com/finalblast) for contributions
-  * [Kashyap Sharma](https://github.com/Kashyap12) for contributions
-  * [Niharika Khanna](https://github.com/niharikak101) for contributions
-  * [Webearit.com](https://www.webearit.com/) for contribution on Italian translation
-  * [Draganrakovic](https://github.com/draganrakovic) for contributions
-  * [Nerxo](https://github.com/Nerxo) for contributions
-  * [Sahil Sharma](https://github.com/sahilsharma011) for contributions and smart suggestions
-  * [Mohammed Hicham](https://github.com/himan72) for contribution on French translation
-  * Ani Shahbazyan for contribution on Russian and Armenian translations
-  * Using modified icon originally made by [SimpleIcon](http://www.flaticon.com/authors/simpleicon) from www.flaticon.com
-
-## License
-
-Timegrid is open-sourced software licensed under the [AGPL](http://www.gnu.org/licenses/agpl-3.0-standalone.html)
-
-May all beings be happy.
+| Role | Flow |  
+| **Customer** | Wizard → business home → timeslot/dateslot picker → store appointment → optional soft-appointment email validation |
+| **Manager** | Dashboard, addressbook, staff, services, vacancy publish, agenda, FullCalendar, notifications |
+| **System** | Event → listener email fan-out; iCal export token; scheduled vacancy autopublish and reports |
