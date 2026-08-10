@@ -1,0 +1,12 @@
+/vendor_local
+/vendor
+/packages/
+/node_modules
+/tests/logs
+/build
+/bower_components
+.env
+.env.testing
+*.sublime-workspace
+.wakatime-project
+.DS_Store

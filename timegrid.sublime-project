@@ -1,0 +1,33 @@
+{
+	"build_systems":
+	[
+		{
+			"name": "PHPUnit",
+			"shell_cmd": "phpunit"
+		}
+	],
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				"*.png",
+				"artisan",
+				"*.gif",
+				"*.jpg"
+			],
+			"folder_exclude_patterns":
+			[
+				"node_modules",
+				"storage",
+				"public/fonts"
+			],
+			"name": "Application",
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"tab_size": 4
+	}
+}

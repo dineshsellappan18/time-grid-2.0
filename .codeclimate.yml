@@ -1,0 +1,44 @@
+---
+engines:
+  csslint:
+    enabled: true
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+    exclude_fingerprints:
+    - c42b72af850c2590419dfa0bb4d15004
+    - 908d5d57bc9fd85b5e2dfecc28a7c4a9
+  phpcodesniffer:
+    enabled: true
+  phpmd:
+    enabled: true
+    # ... CONFIG CONTENT ...
+    exclude_fingerprints:
+    # Avoid unused parameters such as '$app' @bootstrap/ConfigureLogging
+    - 917f979f924dd2ad950a6ee160b2d2dc
+    # Avoid unused local variables such as '$table' @database/migrations
+    - d701d64656718f7fb1c2905c0bdaea28
+    checks:
+      Naming/ShortMethodName:
+        enabled: false
+ratings:
+  paths:
+  - "**.css"
+  - "**.js"
+  - "**.jsx"
+  - "**.php"
+  - "**.module"
+  - "**.inc"
+exclude_paths:
+- config/**/*
+- tests/**/*
+- vendor/**/*
+- public/**/*
+- database/migrations/*
+- database/seeds/*
+languages:
+   Ruby: false
+   JavaScript: true
+   Python: false
+   PHP: true
