@@ -82,18 +82,18 @@
 <script src="{{ asset('js/datetime.js') }}"></script>
 <script src="{{ asset('js/iCheck/icheck.min.js') }}"></script>
 <script>
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
 
     var statements = [];
 
-    $('#reset').click(function(){
+    document.getElementById('reset').click(function(){
         statements = [];
-        $('#vacancies').val('');
+        document.getElementById('vacancies').val('');
     });
 
-    $('#add').click(function(){
+    document.getElementById('add').click(function(){
 
-        var staff = $('#staff').find(":selected").val();
+        var staff = document.getElementById('staff').find(":selected").val();
         if(staff == '')
         {
             // If we dont have Staff members, lets default to simple capacity
@@ -109,8 +109,8 @@ $(document).ready(function(){
             return false;
         }
 
-        var start_at = $('#start_at').val();
-        var finish_at = $('#finish_at').val();
+        var start_at = document.getElementById('start_at').val();
+        var finish_at = document.getElementById('finish_at').val();
 
         if(start_at.length == 0 || finish_at == 0){
             return false;
@@ -120,12 +120,12 @@ $(document).ready(function(){
 
         var serviceLine = services.join(',');
 
-        var daysLine = $('#dates').val();
+        var daysLine = document.getElementById('dates').val();
 
         // Lets build-up the Vacancies statement code for the user
         statements.push(serviceLine + "\n " + daysLine + "\n  " + timeLine + "\n");
 
-        $('#vacancies').val(statements.join("\n"));
+        document.getElementById('vacancies').val(statements.join("\n"));
 
         resetControls();
 
@@ -137,23 +137,23 @@ $(document).ready(function(){
 
     function resetControls()
     {
-        $('#services').select2('deselectAll');
+        document.getElementById('services').select2('deselectAll');
     }
 
-    $('#start_at').timepicker();
-    $('#finish_at').timepicker();
+    document.getElementById('start_at').timepicker();
+    document.getElementById('finish_at').timepicker();
 
-    $('.select2').select2({
+    document.querySelectorAll('.select2').select2({
         theme: "bootstrap"
     });
 
-    $('input').iCheck({
+    document.querySelectorAll('input').iCheck({
       checkboxClass: 'icheckbox_square-blue',
       radioClass: 'iradio_square-blue',
       increaseArea: '20%' // optional
     });
 
-    $('#dates').datepicker({
+    document.getElementById('dates').datepicker({
         language: timegrid.lang,
         clearButton: false,
         todayButton: false,

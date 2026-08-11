@@ -78,17 +78,17 @@
 @push('footer_scripts')
 <script src="{{ asset('js/iCheck/icheck.min.js') }}"></script>
 <script type="text/javascript">
-    $(document).ready(function(){
+    document.addEventListener('DOMContentLoaded', function() {
 
-        $('#notRegisteredLink').hide();
+        document.getElementById('notRegisteredLink').hide();
         var timer;
         clearTimeout(timer);
         timer = setTimeout(function (event) {
             console.log('Search keypress');
-            $('#notRegisteredLink').removeClass('hidden').show('slow');
+            document.getElementById('notRegisteredLink').removeClass('hidden').show('slow');
         }, 10000);
 
-        $('input').iCheck({
+        document.querySelectorAll('input').iCheck({
             checkboxClass: 'icheckbox_square-blue',
             radioClass: 'iradio_square-blue',
             increaseArea: '20%' // optional

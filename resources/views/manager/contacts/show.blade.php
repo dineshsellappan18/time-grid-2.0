@@ -185,19 +185,19 @@
 
 @push('footer_scripts')
 <script>
-$(document).ready(function() {
-    var panels = $('.user-infos');
-    var panelsButton = $('.dropdown-user');
+document.addEventListener('DOMContentLoaded', function() {
+    var panels = document.querySelectorAll('.user-infos');
+    var panelsButton = document.querySelectorAll('.dropdown-user');
     panels.hide();
 
     //Click dropdown
     panelsButton.click(function() {
         //get data-for attribute
-        var dataFor = $(this).data('for');
+        var dataFor = this.dataset.for;
         var idFor = $(dataFor);
 
         //current button
-        var currentButton = $(this);
+        var currentButton = this;
         idFor.slideToggle(400, function() {
             //Completed slidetoggle
             if(idFor.is(':visible'))
@@ -211,24 +211,20 @@ $(document).ready(function() {
         })
     });
 
-    $('[data-bs-toggle="tooltip"]').tooltip();
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) { new bootstrap.Tooltip(el); });
 });
 
 (function() {
  
     var laravel = {
-        initialize: function() {
-            this.methodLinks = $('a[data-method]');
- 
-            this.registerEvents();
-        },
+        initialize: function() {,
  
         registerEvents: function() {
             this.methodLinks.on('click', this.handleMethod);
         },
  
         handleMethod: function(e) {
-            var link = $(this);
+            var link = this;
             var httpMethod = link.data('method').toUpperCase();
             var form;
  
@@ -282,8 +278,8 @@ $(document).ready(function() {
  
     laravel.initialize();
 
-    $("img").error(function(){
-        $(this).hide();
+    document.querySelectorAll('img').error(function(){
+        this.style.display = 'none';
     });
 
 })();

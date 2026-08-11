@@ -33,15 +33,15 @@
 @push('footer_scripts')
 <script src="{{ asset('js/forms.js') }}"></script>
 <script type="text/javascript">
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
 
-    $('#save').submit(function(event) {
+    document.getElementById('save').submit(function(event) {
 
-        var formData = $(this).serializeArray();
+        var formData = this.serializeArray();
 
-        $.ajax({
+        tgAjax({
             type      : 'POST',
-            url       : $(this).attr('action'),
+            url       : this.attr('action'),
             data      : formData,
             dataType  : 'json',
             encode    : true
@@ -67,7 +67,7 @@ $(document).ready(function(){
         window.clearTimeout(timer);
         timer = window.setTimeout(function(){
 
-            $('#save').submit();
+            document.getElementById('save').submit();
 
         }, 3000);
     });

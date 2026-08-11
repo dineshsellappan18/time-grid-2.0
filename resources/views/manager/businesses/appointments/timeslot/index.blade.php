@@ -29,14 +29,14 @@
                     @foreach ($appointments as $appointment)
                     <tr id="{{ $appointment->code }}">
                         <td><code>{{ $appointment->code }}</code></td>
-                        <td><span class="label label-{!! $appointment->statusToCssClass() !!}">{{ $appointment->status() }}</td>
+                        <td><span class="badge bg-{{ $appointment->statusToCssClass() }}">{{ $appointment->status() }}</span></td>
                         <td>{{ $appointment->date('d/M') }}</td>
                         <td title="{{ $appointment->timezone() }} {{ $appointment->start_at->diffForHumans() }}">{{ $appointment->time }}</td>
                         <td title="{{ $appointment->timezone() }}">{{ $appointment->finishTime }}</td>
                         <td>{{ trans_duration($appointment->duration()) }}</td>
                         <td>{{ $appointment->service ? $appointment->service->name : '' }}
                         @if($appointment->comments)
-                            <i class="fa fa-pencil" data-tippy-content="{{ $appointment->comments }}"></i>
+                            <i class="fa fa-pencil" title="{{ $appointment->comments }}"></i>
                         @endif
                         </td>
                         <td>{{ str_link( route('manager.addressbook.show', [$business, $appointment->contact->id]), $appointment->contact->fullname) }}</td>
@@ -56,59 +56,32 @@
 {!! Form::close() !!}
 @endsection
 
-{{-- ToDo: Reusable code with app/resources/views/user/appointments/dateslot/show.blade.php --}}
 @push('footer_scripts')
-<script src="https://unpkg.com/@popperjs/core@2"></script>
-<script src="https://unpkg.com/tippy.js@6"></script>
+@vite(['resources/js/ajax.js'])
 <script>
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('postAppointmentStatus');
+    var actionUrl = form.getAttribute('action');
+    var token = document.querySelector('input[name=_token]').value;
 
-    tippy('[data-tippy-content]');
+    document.querySelectorAll('.action').forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
 
-function prepareEvents(){
+            var business = this.dataset.business;
+            var appointment = this.dataset.appointment;
+            var action = this.dataset.action;
+            var code = this.dataset.code;
 
-        console.log('prepareEvents()');
-
-        var form = $('#postAppointmentStatus');
-        var button = $('.action');
-        var buttons = $('.actiongroup');
-        var token = $('input[name=_token]');
-
-        button.click(function (event){
-
-        event.preventDefault();
-
-        var business = $(this).data('business');
-        var appointment = $(this).data('appointment');
-        var action = $(this).data('action');
-        var code = $(this).data('code');
-
-        $(this).parent().hide();
-
-            $.ajax({
-                url: form.attr('action'),
-                method: 'post',
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': token.val()
-                },
-                data: { business: business, appointment: appointment, action: action, widget: 'row' }
-            }).done(function (data) {
-                    console.log('AJAX Done');
-                    $('#'+code).replaceWith(data.html);
-            }).fail(function (data) {
-                    console.log('AJAX Fail');
-            }).always(function (data) {
-                    $(this).parent().show();
-                    // prepareEvents();
-                    console.log('AJAX Finish');
-                    console.log(data);
-            });
+            tgAppointmentAction(this, actionUrl, {
+                _token: token,
+                business: business,
+                appointment: appointment,
+                action: action,
+                widget: 'row'
+            }, '#' + code);
         });
-    }
-
-prepareEvents();
-
+    });
 });
 </script>
 @endpush

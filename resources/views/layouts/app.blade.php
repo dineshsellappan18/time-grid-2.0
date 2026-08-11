@@ -151,11 +151,9 @@
 @stack('footer_scripts')
 
 <script type="text/javascript">
-$(document).ready(function() {
-    $('.btn').tooltipster({ animation: "grow", theme: 'tooltipster-light' });
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+        new bootstrap.Tooltip(el);
     });
 });
 </script>

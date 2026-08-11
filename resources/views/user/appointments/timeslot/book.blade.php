@@ -34,9 +34,9 @@
 @push('footer_scripts')
 <script src="{{ asset('js/forms.js') }}"></script>
 <script>
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
 
-    $("#steps").steps({
+    document.getElementById('steps').steps({
         headerTag: "h3",
         bodyTag: "section",
         transitionEffect: "slideLeft",
@@ -65,20 +65,20 @@ $(document).ready(function(){
         startIndex: 0,
     });
 
-    var steps = $("#steps");
+    var steps = document.getElementById('steps');
 
-    $('#service').change(function(){
-        console.log('Selected service ' + $(this).val() );
+    document.getElementById('service').change(function(){
+        console.log('Selected service ' + this.val() );
         steps.steps("next");
     });
 
-    $('#date').change(function(){
-        console.log('Selected date ' + $(this).val() );
+    document.getElementById('date').change(function(){
+        console.log('Selected date ' + this.val() );
         steps.steps("next");
     });
 
-    $('#times').change(function(){
-        console.log('Selected time ' + $(this).val() );
+    document.getElementById('times').change(function(){
+        console.log('Selected time ' + this.val() );
         steps.steps("next");
     });
 

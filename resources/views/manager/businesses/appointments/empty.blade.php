@@ -62,7 +62,7 @@
 @push('footer_scripts')
 <script src="{{ asset('js/clipboard/clipboard.min.js') }}"></script>
 <script type="text/javascript">
-$(document).ready(function(){    
+document.addEventListener('DOMContentLoaded', function() {    
     new Clipboard('.btn');
 });
 </script>

@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint:no-jquery": "node tools/lint-no-jquery.mjs"
   },
   "devDependencies": {
     "laravel-vite-plugin": "^1.0.0",
@@ -12,24 +13,11 @@
     "vite": "^5.4.0"
   },
   "dependencies": {
-    "admin-lte": "^2.4.18",
-    "animate.css": "^3.7.2",
+    "@fullcalendar/core": "^6.1.11",
+    "@fullcalendar/daygrid": "^6.1.11",
+    "@fullcalendar/timegrid": "^6.1.11",
     "bootstrap": "^5.3.3",
-    "bootstrap-colorpicker": "^2.5.3",
-    "bootstrap-list-filter": "^0.3.2",
-    "bootstrap-switch": "^3.3.4",
-    "bootstrap-timepicker": "^0.5.2",
-    "bootstrap-tour": "^0.12.0",
-    "bootstrap-validator": "^0.11.9",
     "clipboard": "^2.0.11",
-    "fullcalendar": "^3.10.5",
-    "jquery": "^2.2.4",
-    "jquery-steps": "^1.1.0",
-    "moment": "^2.30.1",
-    "moment-timezone": "^0.5.45",
-    "select2": "^4.0.13",
-    "select2-bootstrap-theme": "^0.1.0-beta.10",
-    "speakingurl": "^14.0.1",
-    "tooltipster": "^4.2.8"
+    "speakingurl": "^14.0.1"
   }
 }

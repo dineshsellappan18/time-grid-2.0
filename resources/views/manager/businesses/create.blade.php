@@ -30,7 +30,7 @@
 
 @push('footer_scripts')
 <script type="text/javascript">
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
 
     var count = 0;
     $('button[type=submit]').click(function(){
@@ -39,7 +39,7 @@ $(document).ready(function(){
             var script = document.createElement( 'script' );
             script.type = 'text/javascript';
             script.src = '{{ TidioChat::src() }}';
-            $("body").append( script );
+            document.querySelectorAll('body').append( script );
             alert('{!! trans('auth.register.need_help') !!}');
         }
     });

@@ -82,9 +82,9 @@
 <script src="{{ asset('js/intlTelInput/intlTelInput.min.js') }}"></script>
 
 <script>
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
 
-    $("#birthdate").datetimepicker( {
+    document.getElementById('birthdate').datetimepicker( {
         viewMode: 'years',
         locale: '{{Session::get('language')}}',
         format: '{!! trans('app.dateformat.datetimepicker') !!}' }
@@ -92,22 +92,22 @@ $(document).ready(function(){
 
     $('option[value="M"]').data("icon", "ion-male");
     $('option[value="F"]').data("icon", "ion-female");
-    $('selectpicker').addClass('dropupAuto');
-    $('selectpicker').selectpicker();
+    document.querySelectorAll('selectpicker').addClass('dropupAuto');
+    document.querySelectorAll('selectpicker').selectpicker();
 
-    $("#mobile-input").intlTelInput({
+    document.getElementById('mobile-input').intlTelInput({
         preferredCountries:["ar", "es", "us"],
         defaultCountry: "auto",
         geoIpLookup: function(callback) {
-            $.get('http://ipinfo.io', function() {}, "jsonp").always(function(resp) {
+            fetch('https://ipinfo.io/json').then(function(r) { return r.json(); }).then(function(resp) {
                 var countryCode = (resp && resp.country) ? resp.country : "";
                 callback(countryCode);
             });
         }
     });
 
-    $("form").submit(function() {
-        $("input[name=mobile]").val($("#mobile-input").intlTelInput("getNumber"));
+    document.querySelectorAll('form').submit(function() {
+        
     });
 
 });

@@ -115,16 +115,16 @@
 <script>
     $(document).ready(function () {
 
-        $('.lang').on('click', function(){
+        document.querySelectorAll('.lang').on('click', function(){
 
-            sessionStorage.language = $(this).data('lang');
+            sessionStorage.language = this.dataset.lang;
         });
 
         if (typeof(Storage) !== "undefined") {
             if (sessionStorage.language) {
-                $('#myModal').modal('hide');
+                document.getElementById('myModal').modal('hide');
             } else {
-                $('#myModal').modal('show');
+                document.getElementById('myModal').modal('show');
             }
         } else {
             alert('storage does not work on this browser');

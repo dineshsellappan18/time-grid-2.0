@@ -50,23 +50,19 @@
 
 @push('footer_scripts')
 <script>
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
 
-    $('[data-bs-toggle="tooltip"]').tooltip();
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) { new bootstrap.Tooltip(el); });
 
     var laravel = {
-        initialize: function() {
-            this.methodLinks = $('a[data-method]');
- 
-            this.registerEvents();
-        },
+        initialize: function() {,
  
         registerEvents: function() {
             this.methodLinks.on('click', this.handleMethod);
         },
  
         handleMethod: function(e) {
-            var link = $(this);
+            var link = this;
             var httpMethod = link.data('method').toUpperCase();
             var form;
  

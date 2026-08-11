@@ -53,7 +53,7 @@
 (function() {
 
 @if ($business->vacancies()->future()->count() == 0)
-    $('#btnVacancies').tooltipster({
+    document.getElementById('btnVacancies').tooltipster({
           animation: 'fade',
           delay: 200,
           theme: 'tooltipster-timegrid',
@@ -69,7 +69,7 @@ var tourDashboard = new Tour({
   template: "@include('tour._template')",
   onEnd: function(tourDashboard){
 
-    $('#btnVacancies').tooltipster({
+    document.getElementById('btnVacancies').tooltipster({
           animation: 'fade',
           delay: 200,
           theme: 'tooltipster-timegrid',

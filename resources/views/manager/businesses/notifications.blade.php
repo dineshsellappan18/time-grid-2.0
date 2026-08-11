@@ -20,7 +20,7 @@
 <script src="{{ asset('js/newsbox.js') }}"></script>
 
 <script type="text/javascript">
-$(".demo").bootstrapNews({
+document.querySelectorAll('.demo').bootstrapNews({
     newsPerPage: 20,
     navigation: true,
     autoplay: true,

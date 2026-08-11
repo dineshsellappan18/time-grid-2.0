@@ -98,21 +98,21 @@
 @push('footer_scripts')
 <script src="{{ asset('js/forms.js') }}"></script>
 <script type="text/javascript">
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
 
     var count = 0;
-    $('#submit').click(function(){
+    document.getElementById('submit').click(function(){
         count++;
         if(count == 5) {
             var script = document.createElement( 'script' );
             script.type = 'text/javascript';
             script.src = '{{ TidioChat::src() }}';
-            $("body").append( script );
+            document.querySelectorAll('body').append( script );
             alert('{!! trans('auth.register.need_help') !!}');
         }
     });
 
-    $('#registration').validator({
+    document.getElementById('registration').validator({
         feedback: {
           success: 'glyphicon-ok',
           error: 'glyphicon-remove'

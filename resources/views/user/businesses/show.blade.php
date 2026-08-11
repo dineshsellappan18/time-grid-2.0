@@ -105,44 +105,44 @@
 
 @push('footer_scripts')
 <script>
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
 
 function prepareEvents(){
 
         console.log('prepareEvents()');
 
-        var form = $('#postAppointmentStatus');
-        var button = $('.action');
-        var buttons = $('.actiongroup');
-        var token = $('input[name=_token]');
+        var form = document.getElementById("postAppointmentStatus");
+        var buttons = document.querySelectorAll('.action');
+        var buttons = document.querySelectorAll('.actiongroup');
+        var token = document.querySelector('input[name=_token]').value;
 
-        button.click(function (event){
+        buttons.forEach(function(btn) { btn.addEventListener('click', function(event) {
 
         event.preventDefault();
 
-        var business = $(this).data('business');
-        var appointment = $(this).data('appointment');
-        var action = $(this).data('action');
-        var code = $(this).data('code');
+        var business = this.dataset.business;
+        var appointment = this.dataset.appointment;
+        var action = this.dataset.action;
+        var code = this.dataset.code;
         var panel = $('#'+code);
 
-        $(this).parent().hide();
+        this.parentElement.style.display = 'none';
 
-            $.ajax({
-                url: form.attr('action'),
+            tgAjax({
+                url: form.getAttribute("action"),
                 method: 'post',
                 dataType: 'json',
                 headers: {
-                    'X-CSRF-TOKEN': token.val()
+                    'X-CSRF-TOKEN': token
                 },
                 data: { business: business, appointment: appointment, action: action, widget: 'panel' }
             }).done(function (data) {
                     console.log('AJAX Done');
-                    $('#'+code).replaceWith(data.html);
+                    document.getElementById(code).outerHTML = data.html;
             }).fail(function (data) {
                     console.log('AJAX Fail');
             }).always(function (data) {
-                    $(this).parent().show();
+                    this.parentElement.style.display = '';
                     // prepareEvents();
                     console.log('AJAX Finish');
                     console.log(data);

@@ -131,12 +131,12 @@
 <script src="{{ asset('js/intlTelInput/intlTelInput.min.js') }}"></script>
 
 <script type="text/javascript">
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
 
     $('input#firstname').focusout(function(){
-        $(this).genderApi({key: '{{ env('GENDERAPI_KEY') }}'}).on('gender-found', function(e, result) {
+        this.genderApi({key: '{{ env('GENDERAPI_KEY') }}'}).on('gender-found', function(e, result) {
             if (result.accuracy >= 55) {
-                if (result.gender == 'female') {  $('#gender').selectpicker('val', 'F'); };
+                if (result.gender == 'female') {  document.getElementById('gender').selectpicker('val', 'F'); };
                 console.log('Gender:' + result.gender +
                             ' Accuracy:' + result.accuracy +
                             ' Duration:' + result.duration);
@@ -144,7 +144,7 @@ $(document).ready(function(){
         });
     });
 
-//    $("#birthdate").datetimepicker( {
+//    document.getElementById('birthdate').datetimepicker( {
 //        viewMode: 'years',
 //        locale: '{{ Session::get('language') }}',
 //        format: '{!! trans('app.dateformat.datetimepicker') !!}' }
@@ -152,25 +152,25 @@ $(document).ready(function(){
 
 //    Select2 Icons disabled for now
 
-//    $('.select2').select2({
+//    document.querySelectorAll('.select2').select2({
 //        theme: 'bootstrap'
 //    });
 //    $('option[value="M"]').data("icon", "ion-male");
 //    $('option[value="F"]').data("icon", "ion-female");
 
-    $("#mobile-input").intlTelInput({
+    document.getElementById('mobile-input').intlTelInput({
         preferredCountries:["ar", "es", "us"],
         defaultCountry: "auto",
         geoIpLookup: function(callback) {
-            $.get('http://ipinfo.io', function() {}, "jsonp").always(function(resp) {
+            fetch('https://ipinfo.io/json').then(function(r) { return r.json(); }).then(function(resp) {
                 var countryCode = (resp && resp.country) ? resp.country : "";
                 callback(countryCode);
             });
         }
     });
 
-    $("form").submit(function() {
-        $("input[name=mobile]").val($("#mobile-input").intlTelInput("getNumber"));
+    document.querySelectorAll('form').submit(function() {
+        
     });
 });
 </script>

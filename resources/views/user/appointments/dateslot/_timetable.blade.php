@@ -76,28 +76,28 @@
 
 @push('footer_scripts')
 <script type="text/javascript">
-$(document).ready(function() {
-    $('#extra').removeClass('hidden').hide();
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('extra').removeClass('hidden').hide();
     $('#timetable .btn.service').click(function(e){
-        var service = $(this).data('service');
+        var service = this.dataset.service;
         console.log('Press ' + service);
-        $('.service-prerequisites').hide();
+        document.querySelectorAll('.service-prerequisites').hide();
         $('#service-prerequisites-'+service).removeClass('hidden').show();
-        $('.service-description').hide();
+        document.querySelectorAll('.service-description').hide();
         $('#service-description-'+service).removeClass('hidden').show();
-        $('.service').removeClass('btn-success');
-        $('#date').val( $(this).data('date') );
-        $('#service').val( $(this).data('service') );
-        $(this).toggleClass('btn-success');
-        $('tr:not(.date_'+$(this).data('date')+')').hide();
-        $('#extra').show();
+        document.querySelectorAll('.service').removeClass('btn-success');
+        document.getElementById('date').val( this.dataset.date );
+        document.getElementById('service').val( this.dataset.service );
+        this.toggleClass('btn-success');
+        $('tr:not(.date_'+this.dataset.date+')').hide();
+        document.getElementById('extra').show();
     });
     $('#timetable .btn.btn-date').click(function(e){
-        $('.daterow').show();
-        $('#extra').hide();
+        document.querySelectorAll('.daterow').show();
+        document.getElementById('extra').hide();
     });
-    $('#date').click(function(e){
-        $('#panel').show();
+    document.getElementById('date').click(function(e){
+        document.getElementById('panel').show();
         return false;
     });
 });

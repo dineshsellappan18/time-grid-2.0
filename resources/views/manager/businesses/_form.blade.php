@@ -127,25 +127,25 @@
 <script src="{{ asset('js/lib/utils.js') }}"></script>
 <script src="{{ asset('js/intlTelInput/intlTelInput.min.js') }}"></script>
 <script type="text/javascript">
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
 
-    $('#slug').slugify('#name'); // Slug as you type
+    document.getElementById('slug').slugify('#name'); // Slug as you type
 
-    $('.select2').select2({ theme: 'boostrap' });
+    document.querySelectorAll('.select2').select2({ theme: 'boostrap' });
 
-    $("#phone-input").intlTelInput({
+    document.getElementById('phone-input').intlTelInput({
         preferredCountries:["us", "gb", "es", "fr", "it", "ar", "br"],
         defaultCountry: "auto",
         geoIpLookup: function(callback) {
-            $.get('http://ipinfo.io', function() {}, "jsonp").always(function(resp) {
+            fetch('https://ipinfo.io/json').then(function(r) { return r.json(); }).then(function(resp) {
                 var countryCode = (resp && resp.country) ? resp.country : "";
                 callback(countryCode);
             });
         }
     });
 
-    $("form").submit(function() {
-        $("input[name=phone]").val($("#phone-input").intlTelInput("getNumber"));
+    document.querySelectorAll('form').submit(function() {
+        
     });
 
 });

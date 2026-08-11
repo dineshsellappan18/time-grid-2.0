@@ -197,7 +197,7 @@
 @push('footer_scripts')
 <script src="{{ asset('js/bootstrap-tour.min.js') }}"></script>
 <script>
-    $(document).ready(function(){
+    document.addEventListener('DOMContentLoaded', function() {
 
 // Instance the tour
 var tour = new Tour({

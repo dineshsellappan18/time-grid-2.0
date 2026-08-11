@@ -91,13 +91,13 @@
 @push('footer_scripts')
 <script src="{{ asset('js/forms.js') }}"></script>
 <script type="text/javascript">
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
 
-    $('.select2').select2({ theme: 'boostrap' });
-    // $('.selectpicker').addClass('dropupAuto');
-    // $('.selectpicker').select2({ size: 4 });
+    document.querySelectorAll('.select2').select2({ theme: 'boostrap' });
+    // document.querySelectorAll('.selectpicker').addClass('dropupAuto');
+    // document.querySelectorAll('.selectpicker').select2({ size: 4 });
 
-    $('.color-picker').colorpicker({
+    document.querySelectorAll('.color-picker').colorpicker({
       colorSelectors: {
         '#BF4D28': '#BF4D28',
         '#E6AC27': '#E6AC27',

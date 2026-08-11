@@ -21,54 +21,31 @@
 @endsection
 
 @push('footer_scripts')
+@vite(['resources/js/ajax.js'])
 <script>
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('postAppointmentStatus');
+    var actionUrl = form.getAttribute('action');
+    var token = document.querySelector('input[name=_token]').value;
 
-function prepareEvents(){
+    document.querySelectorAll('.action').forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
 
-        console.log('prepareEvents()');
+            var business = this.dataset.business;
+            var appointment = this.dataset.appointment;
+            var action = this.dataset.action;
+            var code = this.dataset.code;
 
-        var form = $('#postAppointmentStatus');
-        var button = $('.action');
-        var buttons = $('.actiongroup');
-        var token = $('input[name=_token]');
-
-        button.click(function (event){
-
-        event.preventDefault();
-
-        var business = $(this).data('business');
-        var appointment = $(this).data('appointment');
-        var action = $(this).data('action');
-        var code = $(this).data('code');
-        var panel = $('#'+code);
-
-        $(this).parent().hide();
-
-            $.ajax({
-                url: form.attr('action'),
-                method: 'post',
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': token.val()
-                },
-                data: { business: business, appointment: appointment, action: action, widget: 'panel' }
-            }).done(function (data) {
-                    console.log('AJAX Done');
-                    $('#'+code).replaceWith(data.html);
-            }).fail(function (data) {
-                    console.log('AJAX Fail');
-            }).always(function (data) {
-                    $(this).parent().show();
-                    // prepareEvents();
-                    console.log('AJAX Finish');
-                    console.log(data);
-            });
+            tgAppointmentAction(this, actionUrl, {
+                _token: token,
+                business: business,
+                appointment: appointment,
+                action: action,
+                widget: 'panel'
+            }, '#' + code);
         });
-    }
-
-prepareEvents();
-
+    });
 });
 </script>
 @endpush

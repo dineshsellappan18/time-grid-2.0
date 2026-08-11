@@ -1,9 +1,9 @@
 @push('footer_scripts')
 <script>
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
 
     $('.filterable .btn-filter').click(function(){
-        var $panel = $(this).parents('.filterable'),
+        var $panel = this.parents('.filterable'),
         $filters = $panel.find('.filters input'),
         $tbody = $panel.find('.table tbody');
         if ($filters.prop('disabled') == true) {
@@ -21,7 +21,7 @@ $(document).ready(function(){
         var code = e.keyCode || e.which;
         if (code == '9') return;
 
-        var $input = $(this),
+        var $input = this,
         inputContent = $input.val().toLowerCase(),
         $panel = $input.parents('.filterable'),
         column = $panel.find('.filters th').index($input.parents('th')),
@@ -29,7 +29,7 @@ $(document).ready(function(){
         $rows = $table.find('tbody tr');
 
         var $filteredRows = $rows.filter(function(){
-            var value = $(this).find('td').eq(column).text().toLowerCase();
+            var value = this.find('td').eq(column).text().toLowerCase();
             return value.indexOf(inputContent) === -1;
         });
 

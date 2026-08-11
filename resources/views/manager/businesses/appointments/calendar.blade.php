@@ -2,7 +2,6 @@
 
 @section('css')
 @parent
-<link rel="stylesheet" href="{{ asset('css/datetime.css') }}">
 @endsection
 
 @section('content')
@@ -12,36 +11,28 @@
 @endsection
 
 @push('footer_scripts')
-<script src="{{ asset('js/datetime.js') }}"></script>
+@vite(['resources/js/calendar.js'])
 <script>
-$(document).ready(function(){
-
-    $('#calendar').fullCalendar({
-        defaultDate: moment(),
+document.addEventListener('DOMContentLoaded', function() {
+    tgInitCalendar('#calendar', {
+        defaultDate: new Date(),
         locale: timegrid.lang,
-        header: {
+        defaultView: 'timeGridWeek',
+        headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'month,agendaWeek,agendaDay'
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        defaultView: 'agendaWeek',
-        allDayDefault: false,
-        allDaySlot: false,
+        minTime: timegrid.minTime,
+        maxTime: timegrid.maxTime,
+        slotDuration: timegrid.slotDuration,
         businessHours: {
-            start: timegrid.minTime,
-            end: timegrid.maxTime,
-            dow: [ 1, 2, 3, 4, 5, 6 ]
-        },
-        views: {
-            agendaWeek: {
-                minTime: timegrid.minTime,
-                maxTime: timegrid.maxTime,
-                slotDuration: timegrid.slotDuration
-            }
+            startTime: timegrid.minTime,
+            endTime: timegrid.maxTime,
+            daysOfWeek: [1, 2, 3, 4, 5, 6]
         },
         events: timegrid.events
     });
-
 });
 </script>
 @endpush

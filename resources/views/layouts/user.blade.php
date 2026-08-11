@@ -93,8 +93,10 @@
 @vite(['resources/js/app.js'])
 
 <script type="text/javascript">
-$(document).ready(function() {
-    $('.btn').tooltipster({ animation: "grow", theme: 'tooltipster-light' });
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+        new bootstrap.Tooltip(el);
+    });
 });
 </script>
 

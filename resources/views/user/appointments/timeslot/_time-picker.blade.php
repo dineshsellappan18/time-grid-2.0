@@ -27,10 +27,10 @@
 
 @push('footer_scripts')
 <script>
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
 
-    $('#pick-this-time').click(function(e){
-        var timePicker = $('#times');
+    document.getElementById('pick-this-time').click(function(e){
+        var timePicker = document.getElementById('times');
         timePicker.change();
         e.preventDefault();
     });

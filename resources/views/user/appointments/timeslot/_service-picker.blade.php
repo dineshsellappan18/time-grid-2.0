@@ -78,14 +78,14 @@
 
     function pick(date) {
 
-            var business = $('#business').val();
-            var service = $('#service').val();
+            var business = document.getElementById('business').val();
+            var service = document.getElementById('service').val();
             var date = new Date(date);
 
-            var timesSelect = $('#times');
-            var durationInput = $('#duration');
-            var timezoneInput = $('#timezone');
-            var timezoneIndicator = $('#timezoneIndicator');
+            var timesSelect = document.getElementById('times');
+            var durationInput = document.getElementById('duration');
+            var timezoneInput = document.getElementById('timezone');
+            var timezoneIndicator = document.getElementById('timezoneIndicator');
 
             var day = date.getDate();
             var month = date.getMonth() + 1;
@@ -93,10 +93,10 @@
 
             var date = year + '-' + month + '-' + day;
 
-            $('#date').val( date );
-            $('#date').change();
+            document.getElementById('date').val( date );
+            document.getElementById('date').change();
 
-            $.ajax({
+            tgAjax({
                 url:'/api/vacancies/' + business + '/' + service + '/' + date,
                 type:'GET',
                 dataType: 'json',
@@ -120,12 +120,12 @@
 
     function updateDatepicker()
     {
-        var business = $('#business').val();
-        var service = $('#service').val();
+        var business = document.getElementById('business').val();
+        var service = document.getElementById('service').val();
 
-        $('#datepicker').prop('disabled', true);
+        document.getElementById('datepicker').prop('disabled', true);
 
-        $.ajax({
+        tgAjax({
             url:'/api/vacancies/' + business + '/' + service,
             type:'GET',
             dataType: 'json',
@@ -135,7 +135,7 @@
 
                     var eventDates = disabledDates.map(convertToDate);
 
-                    var $picker = $('#datepicker');
+                    var $picker = document.getElementById('datepicker');
 
                     $picker.datepicker({
                         language: timegrid.language,
@@ -160,8 +160,8 @@
                         }
                     })
 
-                // $('#datepicker').show();
-                $('#datepicker').prop('disabled', false);
+                // document.getElementById('datepicker').show();
+                document.getElementById('datepicker').prop('disabled', false);
             },
             fail: function ( data ) {
                 console.log('Failed to load dates.');
@@ -169,12 +169,12 @@
         });
     }
 
-    $(document).ready(function(){
+    document.addEventListener('DOMContentLoaded', function() {
 
-        $(".service-btn").click(function(){
-            var serviceId = $(this).data('service-id');
-            $('#service').val(serviceId);
-            $('#service').change();
+        document.querySelectorAll('.service-btn').click(function(){
+            var serviceId = this.data('service-id');
+            document.getElementById('service').val(serviceId);
+            document.getElementById('service').change();
 
             updateDatepicker();
         });
