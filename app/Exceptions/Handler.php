@@ -24,6 +24,16 @@ class Handler extends ExceptionHandler
     ];
 
     /**
+     * A list of the inputs that are never flashed for validation exceptions.
+     *
+     * @var array
+     */
+    protected $dontFlash = [
+        'password',
+        'password_confirmation',
+    ];
+
+    /**
      * Report or log an exception via the application logger only.
      * Third-party reporters (Rollbar) are intentionally not invoked (WO-009).
      *
