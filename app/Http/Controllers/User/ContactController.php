@@ -135,7 +135,13 @@ class ContactController extends Controller
 
         // BEGIN
 
-        $memberSince = $business->contacts()->find($contact->id)->pivot->created_at;
+        $linked = $business->contacts()->find($contact->id);
+
+        if ($linked === null) {
+            abort(404);
+        }
+
+        $memberSince = $linked->pivot->created_at;
 
         $appointments = $contact->appointments()->orderBy('start_at')->ofBusiness($business->id)->active()->get();
 

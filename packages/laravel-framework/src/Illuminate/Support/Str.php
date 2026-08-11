@@ -238,6 +238,41 @@ class Str
     }
 
     /**
+     * Generate a UUID (version 4).
+     *
+     * Path-fork shim for Laravel helpers that call Str::uuid() without ramsey/uuid.
+     *
+     * @return object Object stringable as a UUID v4
+     */
+    public static function uuid()
+    {
+        $data = random_bytes(16);
+        $data[6] = chr((ord($data[6]) & 0x0f) | 0x40);
+        $data[8] = chr((ord($data[8]) & 0x3f) | 0x80);
+
+        $uuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+
+        return new class($uuid) {
+            private $uuid;
+
+            public function __construct($uuid)
+            {
+                $this->uuid = $uuid;
+            }
+
+            public function __toString()
+            {
+                return $this->uuid;
+            }
+
+            public function toString()
+            {
+                return $this->uuid;
+            }
+        };
+    }
+
+    /**
      * Generate a "random" alpha-numeric string.
      *
      * Should not be considered sufficient for cryptography, etc.

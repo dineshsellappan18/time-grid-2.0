@@ -2,6 +2,32 @@
 
 use Carbon\Carbon;
 
+if (!function_exists('now')) {
+    /**
+     * Create a new Carbon instance for the current time.
+     *
+     * @param  \DateTimeZone|string|null  $tz
+     * @return \Carbon\Carbon
+     */
+    function now($tz = null)
+    {
+        return Carbon::now($tz);
+    }
+}
+
+if (!function_exists('today')) {
+    /**
+     * Create a new Carbon instance for today.
+     *
+     * @param  \DateTimeZone|string|null  $tz
+     * @return \Carbon\Carbon
+     */
+    function today($tz = null)
+    {
+        return Carbon::today($tz);
+    }
+}
+
 if (!function_exists('setGlobalLocale')) {
     /**
      * Set locale among all localizable contexts.
