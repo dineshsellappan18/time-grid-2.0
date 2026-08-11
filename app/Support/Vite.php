@@ -59,7 +59,13 @@ class Vite
             }
 
             if (! empty($chunk['file'])) {
-                $html .= '<script type="module" src="'.e(asset('build/'.$chunk['file'])).'"></script>';
+                $file = $chunk['file'];
+                // CSS-only entries (e.g. resources/sass/app.scss) put the stylesheet in `file`.
+                if (str_ends_with($file, '.css')) {
+                    $html .= '<link rel="stylesheet" href="'.e(asset('build/'.$file)).'">';
+                } else {
+                    $html .= '<script type="module" src="'.e(asset('build/'.$file)).'"></script>';
+                }
             }
         }
 
