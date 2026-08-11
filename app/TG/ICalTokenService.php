@@ -97,6 +97,17 @@ class ICalTokenService
         return true;
     }
 
+    public function isRevoked(Business $business, string $token): bool
+    {
+        $candidateHash = $this->hashToken($token);
+
+        return DB::table(self::TABLE)
+            ->where('business_id', $business->id)
+            ->where('token_hash', $candidateHash)
+            ->whereNotNull('revoked_at')
+            ->exists();
+    }
+
     private function generateToken(): string
     {
         return Str::random(32);

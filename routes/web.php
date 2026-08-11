@@ -170,8 +170,9 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth']], function () {
 Route::group(['prefix' => '{business}'], function ($business) {
 
     Route::get('ical/{token}', [
-        'as'   => 'business.ical.download',
-        'uses' => 'User\ICalController@download',
+        'as'         => 'business.ical.download',
+        'uses'       => 'User\ICalController@download',
+        'middleware' => ['ical.token'],
     ]);
 
     ///////////////////////////

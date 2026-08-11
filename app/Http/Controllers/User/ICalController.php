@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\User;
 
-use App\TG\Business\Token as BusinessToken;
 use App\Http\Controllers\Controller;
 use Eluceo\iCal\Component\Calendar;
 use Eluceo\iCal\Component\Event;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Timegridio\Concierge\Models\Business;
-use Validator;
 
 class ICalController extends Controller
 {
-    public function download(Business $business, $token)
+    public function download(Request $request, Business $business, $token)
     {
         Log::info('ical.download', [
             'actor'     => null,
@@ -21,16 +20,6 @@ class ICalController extends Controller
             'operation' => 'ical_download',
             'context'   => ['business_id' => $business->id],
         ]);
-
-        $validToken = with(new BusinessToken($business))->generate();
-
-        $validator = Validator::make(compact('token'), [
-            'token' => "bail|required|alpha_num|max:32|in:{$validToken}",
-        ]);
-
-        if ($validator->fails()) {
-            abort(403);
-        }
 
         $vCalendar = new Calendar($business->slug);
 

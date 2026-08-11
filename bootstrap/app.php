@@ -42,6 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest'      => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
             'role'       => \App\Http\Middleware\RoleMiddleware::class,
+            'ical.token' => \App\Http\Middleware\ICalTokenGuard::class,
         ]);
     })
     ->withExceptions(function ($exceptions) {

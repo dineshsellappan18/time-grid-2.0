@@ -45,6 +45,11 @@ return [
             'driver'   => 'token',
             'provider' => 'users',
         ],
+
+        'ical.token' => [
+            'driver'   => 'ical_token',
+            'provider' => null,
+        ],
     ],
 
     /*
