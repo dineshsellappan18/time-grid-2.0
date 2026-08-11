@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/js/calendar.js',
                 'resources/js/search.js',
                 'resources/js/highlight.js',
+                'resources/js/auth-validation.js',
             ],
             refresh: true,
         }),

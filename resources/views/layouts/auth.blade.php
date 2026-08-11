@@ -6,6 +6,7 @@
     <title>{{ trans('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="Timegrid — online appointment scheduling">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -17,9 +18,11 @@
 <body class="tg-auth">
     {!! Analytics::render() !!}
 
+    <a href="#auth-content" class="visually-hidden-focusable">Skip to content</a>
+
     <div class="tg-auth-shell">
         <header class="tg-auth-brandbar">
-            <a href="{{ url('/') }}" class="tg-auth-brand">time<b>grid</b></a>
+            <a href="{{ url('/') }}" class="tg-auth-brand" aria-label="Timegrid home">time<b>grid</b></a>
             <div class="tg-auth-brandbar__lang">
                 <ul class="nav mb-0">
                     @include('_navi18n')
@@ -27,9 +30,8 @@
             </div>
         </header>
 
-        <main class="tg-auth-main">
+        <main class="tg-auth-main" id="auth-content">
             @include('flash::message')
-            @include('_errors')
             @yield('content')
         </main>
 

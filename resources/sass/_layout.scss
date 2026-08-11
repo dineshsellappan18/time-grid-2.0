@@ -533,11 +533,134 @@ body.tg-auth {
   .form-control {
     border-color: $tg-border-color;
     border-radius: $tg-border-radius;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
     &:focus {
       border-color: $tg-info;
       box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.2);
     }
+
+    &.is-valid {
+      border-color: $tg-success;
+      &:focus { box-shadow: 0 0 0 0.2rem rgba(24, 188, 156, 0.18); }
+    }
+
+    &.is-invalid {
+      border-color: $tg-danger;
+      &:focus { box-shadow: 0 0 0 0.2rem rgba(231, 76, 60, 0.18); }
+    }
+  }
+
+  .invalid-feedback {
+    font-size: $tg-font-size-sm;
+    margin-top: 0.3rem;
+  }
+}
+
+// Input wrapper with icon and password toggle
+.tg-input-wrapper {
+  position: relative;
+
+  .form-control {
+    padding-left: 2.6rem;
+    padding-right: 1rem;
+  }
+
+  &:has(.tg-password-toggle) .form-control {
+    padding-right: 2.8rem;
+  }
+}
+
+.tg-input-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $tg-secondary;
+  font-size: 0.95rem;
+  pointer-events: none;
+  transition: color 0.15s ease;
+
+  .form-control:focus ~ & { color: $tg-info; }
+  .form-control.is-valid ~ & { color: $tg-success; }
+  .form-control.is-invalid ~ & { color: $tg-danger; }
+}
+
+.tg-password-toggle {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0.35rem 0.5rem;
+  color: $tg-secondary;
+  cursor: pointer;
+  border-radius: $tg-border-radius-sm;
+  transition: color 0.15s ease;
+  line-height: 1;
+
+  &:hover { color: $tg-primary; }
+  &:focus { outline: 2px solid rgba(52, 152, 219, 0.35); outline-offset: 1px; }
+}
+
+// Auth alert banners
+.tg-auth-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  border-radius: $tg-border-radius;
+  margin-bottom: 1.15rem;
+  font-size: $tg-font-size-sm;
+  line-height: 1.45;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+
+  > i {
+    flex: 0 0 auto;
+    font-size: 1.1rem;
+    margin-top: 0.1rem;
+  }
+
+  ul { padding-left: 1.1rem; margin-bottom: 0; }
+
+  &--danger {
+    background: rgba($tg-danger, 0.08);
+    border: 1px solid rgba($tg-danger, 0.22);
+    color: darken($tg-danger, 12%);
+  }
+
+  &--success {
+    background: rgba($tg-success, 0.08);
+    border: 1px solid rgba($tg-success, 0.22);
+    color: darken($tg-success, 12%);
+  }
+
+  &--warning {
+    background: rgba($tg-warning, 0.08);
+    border: 1px solid rgba($tg-warning, 0.22);
+    color: darken($tg-warning, 18%);
+  }
+}
+
+// Submit button loading state
+.tg-auth-submit {
+  position: relative;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+
+  .tg-auth-submit__spinner {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+  }
+
+  &.is-loading {
+    opacity: 0.85;
+    pointer-events: none;
+
+    .tg-auth-submit__label { display: none; }
+    .tg-auth-submit__spinner { display: inline-flex; }
   }
 }
 
@@ -568,6 +691,7 @@ body.tg-auth {
   span { text-align: center; max-width: 14rem; line-height: 1.35; }
 }
 
+// Social / OAuth buttons
 .tg-auth-social {
   display: grid;
   gap: 0.55rem;
@@ -581,6 +705,37 @@ body.tg-auth {
   gap: 0.55rem;
   border-radius: $tg-border-radius;
   font-weight: 500;
+  padding: 0.55rem 1rem;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+
+  &:active { transform: scale(0.98); }
+
+  &--facebook {
+    background: #1877f2;
+    border-color: #1877f2;
+    color: $tg-white;
+
+    &:hover { background: darken(#1877f2, 6%); border-color: darken(#1877f2, 6%); color: $tg-white; }
+    &:focus { box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.3); color: $tg-white; }
+  }
+
+  &--google {
+    background: $tg-white;
+    border: 1px solid $tg-border-color;
+    color: $tg-body-color;
+
+    &:hover { background: $tg-light; border-color: darken($tg-border-color, 5%); color: $tg-body-color; }
+    &:focus { box-shadow: 0 0 0 0.2rem rgba(66, 133, 244, 0.25); color: $tg-body-color; }
+  }
+
+  &--github {
+    background: #24292f;
+    border-color: #24292f;
+    color: $tg-white;
+
+    &:hover { background: lighten(#24292f, 8%); border-color: lighten(#24292f, 8%); color: $tg-white; }
+    &:focus { box-shadow: 0 0 0 0.2rem rgba(36, 41, 47, 0.3); color: $tg-white; }
+  }
 }
 
 .tg-auth-switch {
