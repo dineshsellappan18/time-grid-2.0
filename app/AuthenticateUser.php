@@ -4,44 +4,19 @@ namespace App;
 
 use App\TG\Repositories\UserRepository;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Contracts\Factory as Socialite;
 
 class AuthenticateUser
 {
-    /**
-     * @var UserRepository
-     */
-    private $users;
-
-    /**
-     * @var Socialite
-     */
-    private $socialite;
-
-    /**
-     * @var Guard
-     */
-    private $auth;
-
-    /**
-     * @param UserRepository $users
-     * @param Socialite      $socialite
-     * @param Guard          $auth
-     */
-    public function __construct(UserRepository $users, Socialite $socialite, Guard $auth)
-    {
-        $this->users = $users;
-        $this->socialite = $socialite;
-        $this->auth = $auth;
+    public function __construct(
+        private readonly UserRepository $users,
+        private readonly Socialite $socialite,
+        private readonly Guard $auth,
+    ) {
     }
 
-    /**
-     * @param bool                     $hasCode
-     * @param AuthenticateUserListener $listener
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function execute($provider, $hasCode, AuthenticateUserListener $listener)
+    public function execute(string $provider, bool $hasCode, AuthenticateUserListener $listener)
     {
         if (!$hasCode) {
             return $this->getAuthorizationFirst($provider);
@@ -49,29 +24,28 @@ class AuthenticateUser
 
         $providerUser = $this->getUser($provider);
 
-        logger()->info('PROVIDER USER:'.serialize($providerUser));
+        Log::info('OAuth callback received', [
+            'provider' => $provider,
+            'has_id'   => !empty($providerUser->getId()),
+        ]);
 
         $user = $this->users->findOrCreate($providerUser);
+
         if ($user === null) {
             return $this->getAuthorizationFirst($provider);
         }
+
         $this->auth->login($user, true);
 
         return $listener->userHasLoggedIn($user);
     }
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    private function getAuthorizationFirst($provider)
+    private function getAuthorizationFirst(string $provider)
     {
         return $this->socialite->driver($provider)->redirect();
     }
 
-    /**
-     * @return \Laravel\Socialite\Contracts\User
-     */
-    private function getUser($provider)
+    private function getUser(string $provider)
     {
         return $this->socialite->driver($provider)->user();
     }

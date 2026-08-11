@@ -40,14 +40,16 @@ Ideal for clinics, consultants, salons, coaches, and any appointment-based busin
 
 | Layer           | Technology                                |
 | --------------- | ----------------------------------------- |
-| Framework       | Laravel 5.3                               |
-| Language        | PHP (≥ 5.6)                               |
+| Framework       | Laravel 13                                |
+| Language        | PHP 8.3 / 8.4                             |
 | Booking domain  | `timegridio/concierge`                    |
 | UI              | Blade + AdminLTE + Bootstrap 3            |
-| Auth            | Classic login + OAuth (Socialite)         |
+| Auth            | Classic login + OAuth (Socialite 5.x)     |
 | Notifications   | Events/Listeners → TransMail / Beautymail |
 | Calendar export | iCalendar (`eluceo/ical`)                 |
 | Scheduling      | Artisan commands + jobs                   |
+| Date handling   | Carbon 3                                  |
+| Storage         | Flysystem 3 (local driver)                |
 
 ### Role views
 

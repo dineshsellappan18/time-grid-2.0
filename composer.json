@@ -84,8 +84,8 @@
         "guzzlehttp/guzzle": "^7.5",
         "intervention/image": "^2.2",
         "laracasts/flash": "~2.0",
-        "laravel/framework": "12.14.1",
-        "laravel/socialite": "~2.0",
+        "laravel/framework": "13.2.2",
+        "laravel/socialite": "^5.0",
         "laravelcollective/html": "~5.2",
         "pid/speakingurl": "^0.11.0",
         "propaganistas/laravel-phone": "~2.0",
@@ -162,7 +162,8 @@
         "test:characterization": "vendor/bin/phpunit --testsuite Characterization",
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=1G",
         "lint:constraints": "bash bin/lint-constraints.sh",
-        "lint:architecture": "bash bin/lint-architecture.sh"
+        "lint:architecture": "bash bin/lint-architecture.sh",
+        "check:eol": "@php tools/eol-check.php"
     },
     "config": {
         "preferred-install": "dist",
