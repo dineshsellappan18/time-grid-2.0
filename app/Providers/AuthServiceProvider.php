@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define('ical.download', [\App\Policies\IcalFeedPolicy::class, 'download']);
+        Gate::define('ical.download', \App\Policies\IcalFeedPolicy::class.'@download');
 
         Gate::after(function ($user, $ability, $result) {
             if ($result === null) {
