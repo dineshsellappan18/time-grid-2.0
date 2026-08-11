@@ -1762,3 +1762,348 @@ body.tg-public {
     text-align: center;
   }
 }
+
+// ── DataTable / List View ─────────────────────────────────────────
+
+.tg-table-wrapper {
+  background: #fff;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-radius;
+  box-shadow: $tg-shadow;
+  overflow: hidden;
+}
+
+// Toolbar (search + actions)
+.tg-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid $tg-border-color;
+  background: rgba($tg-primary, 0.02);
+  flex-wrap: wrap;
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+}
+
+.tg-table-search {
+  position: relative;
+  flex: 1;
+  max-width: 380px;
+  min-width: 180px;
+
+  &__icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $tg-secondary;
+    font-size: 0.85rem;
+    pointer-events: none;
+  }
+
+  &__input {
+    padding-left: 2.25rem;
+    font-size: 0.875rem;
+    border-radius: $tg-radius;
+    border-color: $tg-border-color;
+
+    &:focus {
+      border-color: $tg-primary;
+      box-shadow: 0 0 0 0.2rem rgba($tg-primary, 0.12);
+    }
+  }
+}
+
+// Bulk Actions Bar
+.tg-bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1.25rem;
+  background: $tg-primary;
+  color: #fff;
+  font-size: 0.85rem;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+
+  &.is-visible {
+    max-height: 60px;
+    opacity: 1;
+    padding: 0.55rem 1.25rem;
+  }
+
+  &__count { font-weight: 600; }
+
+  &__btns {
+    display: flex;
+    gap: 0.35rem;
+
+    .btn-outline-danger {
+      color: #fff;
+      border-color: rgba(255,255,255,0.4);
+      &:hover {
+        background: rgba(255,255,255,0.1);
+        border-color: rgba(255,255,255,0.6);
+      }
+    }
+  }
+}
+
+// Table
+.tg-table {
+  margin: 0;
+  font-size: 0.875rem;
+
+  thead th {
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $tg-secondary;
+    padding: 0.65rem 1rem;
+    border-bottom: 2px solid $tg-border-color;
+    white-space: nowrap;
+    user-select: none;
+    vertical-align: middle;
+  }
+
+  tbody td {
+    padding: 0.7rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba($tg-border-color, 0.5);
+    color: $tg-body-color;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background-color: rgba($tg-primary, 0.02);
+  }
+}
+
+.tg-table__th--sortable {
+  cursor: pointer;
+  position: relative;
+  padding-right: 1.75rem !important;
+
+  &::after {
+    content: '\f0dc';
+    font-family: 'FontAwesome';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba($tg-secondary, 0.35);
+    font-size: 0.7rem;
+  }
+
+  &:hover::after { color: $tg-secondary; }
+}
+
+.tg-table__th--asc::after {
+  content: '\f0de' !important;
+  color: $tg-primary !important;
+}
+
+.tg-table__th--desc::after {
+  content: '\f0dd' !important;
+  color: $tg-primary !important;
+}
+
+.tg-table__th--check,
+.tg-table__td--check {
+  width: 44px;
+  text-align: center;
+  padding-left: 1rem !important;
+  padding-right: 0 !important;
+}
+
+.tg-table__th--actions,
+.tg-table__td--actions {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+  padding-right: 1.25rem !important;
+}
+
+.tg-table__action-group {
+  display: flex;
+  gap: 0.3rem;
+  justify-content: flex-end;
+}
+
+.tg-table__link {
+  color: $tg-primary;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+.tg-table__link--subtle {
+  color: $tg-body-color;
+  text-decoration: none;
+
+  &:hover { color: $tg-primary; text-decoration: underline; }
+}
+
+// Pagination
+.tg-table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1.25rem;
+  border-top: 1px solid $tg-border-color;
+  background: rgba($tg-primary, 0.015);
+
+  &__info {
+    font-size: $tg-font-size-sm;
+    color: $tg-secondary;
+  }
+
+  .pagination {
+    gap: 0.15rem;
+
+    .page-link {
+      font-size: 0.8rem;
+      border-radius: $tg-radius;
+      border-color: $tg-border-color;
+      color: $tg-body-color;
+      padding: 0.25rem 0.6rem;
+
+      &:hover {
+        background: rgba($tg-primary, 0.08);
+        color: $tg-primary;
+        border-color: rgba($tg-primary, 0.2);
+      }
+    }
+
+    .page-item.active .page-link {
+      background: $tg-primary;
+      border-color: $tg-primary;
+      color: #fff;
+    }
+
+    .page-item.disabled .page-link {
+      opacity: 0.4;
+    }
+  }
+}
+
+// Loading Skeleton
+.tg-table-skeleton {
+  padding: 0.5rem 1.25rem;
+
+  &__row {
+    display: flex;
+    gap: 1rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid rgba($tg-border-color, 0.3);
+
+    &:last-child { border-bottom: none; }
+  }
+
+  &__cell {
+    height: 1rem;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: tg-skeleton-shimmer 1.5s ease-in-out infinite;
+    flex: 1;
+
+    &--sm { flex: 0 0 44px; }
+    &--md { flex: 0 0 120px; }
+    &--lg { flex: 2; }
+  }
+}
+
+@keyframes tg-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// CTA section after table
+.tg-table-cta {
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+// Responsive: mobile card layout
+@media (max-width: 767.98px) {
+  .tg-table-wrapper--cards {
+    .tg-table {
+      thead { display: none; }
+
+      tbody tr {
+        display: block;
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid $tg-border-color;
+        position: relative;
+
+        &:last-child { border-bottom: none; }
+      }
+
+      tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.25rem 0;
+        border: none;
+        font-size: 0.85rem;
+
+        &::before {
+          content: attr(data-title);
+          font-weight: 700;
+          font-size: 0.7rem;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: $tg-secondary;
+          flex: 0 0 auto;
+          margin-right: 0.75rem;
+        }
+      }
+
+      .tg-table__td--check {
+        position: absolute;
+        right: 0.5rem;
+        top: 0.85rem;
+
+        &::before { display: none; }
+      }
+
+      .tg-table__td--actions {
+        justify-content: flex-end;
+        padding-top: 0.35rem;
+        margin-top: 0.25rem;
+        border-top: 1px solid rgba($tg-border-color, 0.3);
+
+        &::before { display: none; }
+      }
+    }
+  }
+
+  .tg-table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .tg-table-search { max-width: none; }
+
+  .tg-table-pagination {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}
