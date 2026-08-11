@@ -9,57 +9,27 @@ use App\TG\Business\Dashboard;
 use App\TG\BusinessService;
 use Carbon\Carbon;
 use Fenos\Notifynder\Facades\Notifynder;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Category;
 
 class BusinessController extends Controller
 {
-    /**
-     * Location data.
-     *
-     * @var array
-     */
-    protected $location = null;
+    protected ?array $location = null;
 
-    /**
-     * Business service.
-     *
-     * @var App\TG\BusinessService
-     */
-    private $businessService;
-
-    /**
-     * Current localized time.
-     *
-     * @var Carbon\Carbon
-     */
-    private $time;
-
-    /**
-     * Create Controller.
-     *
-     * @param App\TG\BusinessService $businessService
-     */
-    public function __construct(BusinessService $businessService, Carbon $time)
-    {
-        $this->businessService = $businessService;
-
-        $this->time = $time;
-
+    public function __construct(
+        private readonly BusinessService $businessService,
+        private readonly Carbon $time,
+    ) {
         parent::__construct();
     }
 
-    /**
-     * List all businesses.
-     *
-     * @return Response Rendered view for Businesses listing
-     */
-    public function index()
+    public function index(): View|RedirectResponse
     {
         logger()->info(__METHOD__);
-
-        // BEGIN
 
         $businesses = auth()->user()->businesses;
 
@@ -76,17 +46,10 @@ class BusinessController extends Controller
         return view('manager.businesses.index', compact('businesses', 'user'));
     }
 
-    /**
-     * create Business.
-     *
-     * @return Response Rendered view of Business creation form
-     */
-    public function create($plan = 'free')
+    public function create(string $plan = 'free'): View
     {
         logger()->info(__METHOD__);
         logger()->info("plan:$plan");
-
-        // BEGIN
 
         $timezone = $this->guessTimezone(null);
 
@@ -108,18 +71,9 @@ class BusinessController extends Controller
         ));
     }
 
-    /**
-     * store Business.
-     *
-     * @param BusinessFormRequest $request Business form Request
-     *
-     * @return Response Redirect
-     */
-    public function store(BusinessFormRequest $request)
+    public function store(BusinessFormRequest $request): RedirectResponse
     {
         logger()->info(__METHOD__);
-
-        // BEGIN
 
         try {
             $business = $this->businessService->register(auth()->user(), $request->all(), $request->get('category'));
@@ -131,7 +85,6 @@ class BusinessController extends Controller
             return redirect()->back()->withInput(request()->all());
         }
 
-        // Generate local notification
         $businessName = $business->name;
         Notifynder::category('user.registeredBusiness')
             ->from('App\Models\User', auth()->id())
@@ -140,28 +93,17 @@ class BusinessController extends Controller
             ->extra(compact('businessName'))
             ->send();
 
-        // Redirect success
         flash()->success(trans('manager.businesses.msg.store.success'));
 
         return redirect()->route('manager.business.service.create', $business);
     }
 
-    /**
-     * show Business.
-     *
-     * @param Business            $business Business to show
-     * @param BusinessFormRequest $request  Business form Request
-     *
-     * @return Response Rendered view for Business show
-     */
-    public function show(Business $business)
+    public function show(Business $business): View
     {
         logger()->info(__METHOD__);
         logger()->info(sprintf('businessId:%s', $business->id));
 
         $this->authorize('manage', $business);
-
-        // BEGIN
 
         session()->set('selected.business', $business);
 
@@ -180,21 +122,12 @@ class BusinessController extends Controller
         return view('manager.businesses.show', compact('business', 'notifications', 'boxes', 'time'));
     }
 
-    /**
-     * edit Business.
-     *
-     * @param Business $business Business to edit
-     *
-     * @return Response Rendered view of Business edit form
-     */
-    public function edit(Business $business)
+    public function edit(Business $business): View
     {
         logger()->info(__METHOD__);
         logger()->info(sprintf('businessId:%s', $business->id));
 
         $this->authorize('update', $business);
-
-        // BEGIN
 
         $timezone = $this->guessTimezone($business->timezone);
 
@@ -207,22 +140,13 @@ class BusinessController extends Controller
         return view('manager.businesses.edit', compact('business', 'category', 'categories', 'timezone'));
     }
 
-    /**
-     * update Business.
-     *
-     * @param Business            $business Business to update
-     * @param BusinessFormRequest $request  Business form Request
-     *
-     * @return Response Redirect
-     */
-    public function update(Business $business, BusinessFormRequest $request)
+    public function update(Business $business, BusinessFormRequest $request): RedirectResponse
     {
         logger()->info(__METHOD__);
         logger()->info(sprintf('businessId:%s', $business->id));
 
         $this->authorize('update', $business);
 
-        // BEGIN
         $category = $request->get('category');
 
         $data = $request->only([
@@ -243,21 +167,13 @@ class BusinessController extends Controller
         return redirect()->route('manager.business.show', compact('business'));
     }
 
-    /**
-     * destroy Business.
-     *
-     * @param Business $business Business to destroy
-     *
-     * @return Response Redirect to Businesses index
-     */
-    public function destroy(Business $business)
+    public function destroy(Business $business): RedirectResponse
     {
         logger()->info(__METHOD__);
 
         $this->authorize('destroy', $business);
 
         logger()->info(sprintf('Deactivating: businessId:%s', $business->id));
-        // BEGIN
 
         $this->businessService->deactivate($business);
 
@@ -266,34 +182,14 @@ class BusinessController extends Controller
         return redirect()->route('manager.business.index');
     }
 
-    /////////////
-    // HELPERS //
-    /////////////
-
-    /**
-     * get business category list.
-     *
-     * TODO: SHOULD BE USED WITH VIEW COMPOSER
-     *
-     * @return array list of categories for combo
-     */
-    protected function listCategories()
+    protected function listCategories(): Collection
     {
         return Category::pluck('slug', 'id')->transform(
-            function ($item) {
-                return trans("app.business.category.{$item}");
-            }
+            fn ($item) => trans("app.business.category.{$item}")
         );
     }
 
-    /**
-     * guess user (client) timezone.
-     *
-     * @param string $timezone Default or fallback timezone
-     *
-     * @return string Guessed or fallbacked timezone
-     */
-    protected function guessTimezone($timezone = null)
+    protected function guessTimezone(?string $timezone = null): ?string
     {
         if (!empty($timezone)) {
             return $timezone;
@@ -308,14 +204,14 @@ class BusinessController extends Controller
         return in_array($this->location['timezone'], $identifiers) ? $this->location['timezone'] : $timezone;
     }
 
-    protected function getCountry()
+    protected function getCountry(): ?string
     {
         $this->getLocation();
 
         return array_get($this->location, 'isoCode', null);
     }
 
-    protected function getLocation()
+    protected function getLocation(): array
     {
         if ($this->location === null) {
             logger()->info('Getting location');

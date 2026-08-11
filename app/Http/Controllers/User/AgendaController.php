@@ -7,6 +7,8 @@ use App\Events\NewSoftAppointmentWasBooked;
 use App\Http\Controllers\Controller;
 use Carbon;
 use Event;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use JavaScript;
 use Notifynder;
@@ -18,31 +20,13 @@ use Timegridio\Concierge\Models\Contact;
 
 class AgendaController extends Controller
 {
-    /**
-     * Concierge service implementation.
-     *
-     * @var Timegridio\Concierge\Concierge
-     */
-    private $concierge;
-
-    /**
-     * Create Controller.
-     *
-     * @param Timegridio\Concierge\Concierge
-     */
-    public function __construct(Concierge $concierge)
-    {
-        $this->concierge = $concierge;
-
+    public function __construct(
+        private readonly Concierge $concierge,
+    ) {
         parent::__construct();
     }
 
-    /**
-     * List all pending appointments.
-     *
-     * @return Response Rendered list view for User Appointments
-     */
-    public function getIndex()
+    public function getIndex(): View
     {
         logger()->info(__METHOD__);
 
@@ -51,14 +35,7 @@ class AgendaController extends Controller
         return view('user.appointments.index', compact('appointments'));
     }
 
-    /**
-     * get Availability for Business.
-     *
-     * @param Business $business Business to query
-     *
-     * @return Response Rendered view of Appointment booking form
-     */
-    public function getAvailability(Business $business, Request $request)
+    public function getAvailability(Business $business, Request $request): View|RedirectResponse
     {
         logger()->info(__METHOD__);
 
@@ -116,20 +93,9 @@ class AgendaController extends Controller
         );
     }
 
-    /**
-     * post Store.
-     *
-     * @param Request $request Input data of booking form
-     *
-     * @return Response Redirect to Appointments listing
-     */
-    public function postStore(Request $request)
+    public function postStore(Request $request): View|RedirectResponse
     {
         logger()->info(__METHOD__);
-
-        //////////////////
-        // FOR REFACTOR //
-        //////////////////
 
         $business = Business::findOrFail($request->input('businessId'));
         $email = $request->input('email');
@@ -154,9 +120,6 @@ class AgendaController extends Controller
 
             auth()->once(compact('email'));
         }
-
-        // Authorize contact is subscribed to Business
-        // ...
 
         $serviceId = $request->input('service_id');
         $service = $business->services()->find($serviceId);
@@ -215,7 +178,7 @@ class AgendaController extends Controller
         return redirect()->route('user.agenda', '#'.$appointment->code);
     }
 
-    protected function getContact(Business $business, $email)
+    protected function getContact(Business $business, ?string $email): ?Contact
     {
         if ($business->pref('allow_guest_registration')) {
             $contact = $business->addressbook()->register(compact('email'));
@@ -226,7 +189,7 @@ class AgendaController extends Controller
         return $contact;
     }
 
-    public function getValidate(Request $request, Business $business)
+    public function getValidate(Request $request, Business $business): View|RedirectResponse
     {
         $code = $request->input('code');
         $email = $request->input('email');
@@ -236,9 +199,6 @@ class AgendaController extends Controller
 
             return view('guest.appointment.invalid');
         }
-
-        // Get the Appointment starting with provided Hash and having Contact
-        // with the provided email.
 
         $appointment = $business->bookings()
                                 ->with('contact')
@@ -266,7 +226,7 @@ class AgendaController extends Controller
         return view('guest.appointment.show', compact('appointment'));
     }
 
-    protected function findSubscrbedContact($issuer, $isOwner, Business $business, $contactId)
+    protected function findSubscrbedContact($issuer, bool $isOwner, Business $business, ?int $contactId): ?Contact
     {
         if ($contactId && $isOwner) {
             return $business->contacts()->find($contactId);
@@ -275,27 +235,16 @@ class AgendaController extends Controller
         return $issuer->getContactSubscribedTo($business->id);
     }
 
-    /////////////
-    // HELPERS //
-    /////////////
-
-    protected function getActiveLanguage($locale)
+    protected function getActiveLanguage(?string $locale): string
     {
         return session()->get('language', substr($locale, 0, 2));
     }
 
-    /**
-     * Sanitize Date String.
-     *
-     * @param string $dateString
-     *
-     * @return Carbon\Carbon
-     */
-    protected function sanitizeDate($dateString)
+    protected function sanitizeDate(string $dateString): Carbon
     {
         try {
             $date = Carbon::parse($dateString);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             logger()->warning('Unexpected date string: '.$dateString);
             $date = Carbon::now();
         }
