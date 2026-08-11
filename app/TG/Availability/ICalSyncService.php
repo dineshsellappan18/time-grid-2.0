@@ -4,6 +4,7 @@ namespace App\TG\Availability;
 
 use App\TG\ICalChecker;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Timegridio\Concierge\Models\Humanresource;
 
@@ -56,11 +57,34 @@ class ICalSyncService
         return Storage::append($this->getFilePath('ical-exclusion.compiled'), $contents);
     }
 
-    public function getLocalContents(): string
+    public function getLocalContents(): ?string
     {
         $humanresourceSlug = $this->humanresource->slug;
+        $filepath = $this->getFilePath("calendar-{$humanresourceSlug}.ics");
 
-        return Storage::get($this->getFilePath("calendar-{$humanresourceSlug}.ics"));
+        if (!Storage::exists($filepath)) {
+            Log::warning('ICalSyncService: local calendar file missing', [
+                'humanresource_id' => $this->humanresource->id,
+                'slug'             => $humanresourceSlug,
+                'filepath'         => $filepath,
+            ]);
+
+            return null;
+        }
+
+        $contents = Storage::get($filepath);
+
+        if ($contents === null || $contents === '') {
+            Log::warning('ICalSyncService: local calendar file empty or unreadable', [
+                'humanresource_id' => $this->humanresource->id,
+                'slug'             => $humanresourceSlug,
+                'filepath'         => $filepath,
+            ]);
+
+            return null;
+        }
+
+        return $contents;
     }
 
     public function getRemoteContents(): string

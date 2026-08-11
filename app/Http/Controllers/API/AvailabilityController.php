@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\TG\Availability\AvailabilityService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Timegridio\Concierge\Concierge;
 use Timegridio\Concierge\Models\Business;
@@ -104,11 +105,21 @@ class AvailabilityController extends Controller
     protected function excludeDates(int $businessId): void
     {
         $filepath = "business/{$businessId}/ical/ical-exclusion.compiled";
+
         if (!Storage::exists($filepath)) {
             return;
         }
 
         $excluded = Storage::get($filepath);
+
+        if ($excluded === null || $excluded === '') {
+            Log::warning('AvailabilityController: exclusion file exists but is empty or unreadable', [
+                'business_id' => $businessId,
+                'filepath'    => $filepath,
+            ]);
+
+            return;
+        }
 
         logger()->debug('ICal Exclude Dates:'.serialize($excluded));
 

@@ -3,6 +3,7 @@
 namespace App\TG\Availability;
 
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Service;
@@ -43,7 +44,7 @@ class AvailabilityService
 
         $vacancies = $this->removeExcludedDates($vacancies);
 
-        $dates = array_pluck($vacancies->toArray(), 'date');
+        $dates = Arr::pluck($vacancies->toArray(), 'date');
 
         return array_diff($dates, $this->excludeDates);
     }

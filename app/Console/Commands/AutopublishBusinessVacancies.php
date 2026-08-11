@@ -4,9 +4,10 @@ namespace App\Console\Commands;
 
 use App\TG\TransMail;
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputArgument;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Console\Input\InputArgument;
 use Timegridio\Concierge\Concierge;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Vacancy\VacancyParser;
@@ -61,7 +62,15 @@ class AutopublishBusinessVacancies extends Command
         $this->info(__METHOD__);
         $this->info("Publishing vacancies for businessId:{$business->id}");
 
-        $publishedVacancies = $this->vacancyParser->parseStatements($this->recallStatements($business->id));
+        $statements = $this->recallStatements($business->id);
+
+        if ($statements === null) {
+            $this->warn("No vacancy statements file found for businessId:{$business->id}");
+
+            return false;
+        }
+
+        $publishedVacancies = $this->vacancyParser->parseStatements($statements);
 
         if (!$this->autopublishVacancies($business)) {
             $this->info('Skipped autopublishing vacancies');
@@ -83,13 +92,29 @@ class AutopublishBusinessVacancies extends Command
 
     protected function recallStatements(int $businessId): ?string
     {
-        if (!Storage::exists($this->getStatementsFile($businessId))) {
+        $filepath = $this->getStatementsFile($businessId);
+
+        if (!Storage::exists($filepath)) {
+            Log::warning('AutopublishBusinessVacancies: vacancy statements file missing', [
+                'business_id' => $businessId,
+                'filepath'    => $filepath,
+            ]);
+
             return null;
         }
 
-        return Storage::get(
-            $this->getStatementsFile($businessId)
-        );
+        $contents = Storage::get($filepath);
+
+        if ($contents === null || $contents === '') {
+            Log::warning('AutopublishBusinessVacancies: vacancy statements file empty or unreadable', [
+                'business_id' => $businessId,
+                'filepath'    => $filepath,
+            ]);
+
+            return null;
+        }
+
+        return $contents;
     }
 
     protected function getStatementsFile(int $businessId): string

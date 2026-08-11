@@ -3,46 +3,31 @@
 namespace App\Jobs;
 
 use App\TG\Availability\ICalSyncService;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Timegridio\Concierge\Models\Business;
+use Illuminate\Support\Facades\Log;
 use Timegridio\Concierge\Models\Humanresource;
 
-class FetchICalFile extends Job implements ShouldQueue
+class FetchICalFile implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $humanresource;
-
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct(Humanresource $humanresource)
-    {
-        $this->humanresource = $humanresource;
+    public function __construct(
+        protected Humanresource $humanresource,
+    ) {
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
+    public function handle(): void
     {
-        logger()->info(__METHOD__);
+        Log::info('FetchICalFile: syncing calendar', [
+            'humanresource_id' => $this->humanresource->id,
+            'slug'             => $this->humanresource->slug,
+        ]);
 
-        // $this->resetCompiled($this->business->id);
-
-        $this->sync($this->humanresource);
-    }
-
-    protected function sync($humanresource)
-    {
-        $icalsync = new ICalSyncService($humanresource);
-
-        $icalsync->sync();
+        $icalsync = new ICalSyncService();
+        $icalsync->humanresource($this->humanresource)->sync();
     }
 }

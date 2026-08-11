@@ -2,76 +2,86 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
     /**
-     * A list of the exception types that should not be reported.
+     * A list of the exception types that are not reported.
      *
-     * @var array
+     * @var array<int, class-string<Throwable>>
      */
     protected $dontReport = [
-        \Illuminate\Auth\AuthenticationException::class,
-        \Illuminate\Auth\Access\AuthorizationException::class,
-        \Symfony\Component\HttpKernel\Exception\HttpException::class,
-        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
-        \Illuminate\Session\TokenMismatchException::class,
-        \Illuminate\Validation\ValidationException::class,
+        //
     ];
 
     /**
-     * A list of the inputs that are never flashed for validation exceptions.
+     * A list of the inputs that are never flashed to the session on validation exceptions.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $dontFlash = [
+        'current_password',
         'password',
         'password_confirmation',
     ];
 
     /**
-     * Report or log an exception via the application logger only.
-     * Third-party reporters (Rollbar) are intentionally not invoked (WO-009).
+     * Register the exception handling callbacks for the application.
      */
-    public function report(Throwable $exception): void
+    public function register(): void
     {
-        if ($this->shouldReport($exception)) {
-            Log::error($exception->getMessage(), [
-                'exception'      => get_class($exception),
-                'file'           => $exception->getFile(),
-                'line'           => $exception->getLine(),
-                'correlation_id' => (string) request()->header('X-Request-Id', uniqid('req_', true)),
+        $this->reportable(function (Throwable $e) {
+            Log::error($e->getMessage(), [
+                'exception'      => get_class($e),
+                'file'           => $e->getFile(),
+                'line'           => $e->getLine(),
+                'correlation_id' => (string) request()?->header('X-Request-Id', uniqid('req_', true)),
                 'user_id'        => \Auth::id(),
-                'url'            => request()->fullUrl(),
-                'method'         => request()->method(),
+                'url'            => request()?->fullUrl(),
+                'method'         => request()?->method(),
             ]);
-        }
-    }
 
-    /**
-     * Render an exception into an HTTP response.
-     */
-    public function render($request, Throwable $exception)
-    {
-        if (app()->environment('production') || app()->environment('demo')) {
-            if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
+            return false;
+        });
+
+        $this->renderable(function (AuthorizationException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage() ?: 'This action is unauthorized.',
+                ], 403);
+            }
+
+            return null;
+        });
+
+        $this->renderable(function (\Illuminate\Session\TokenMismatchException $e, $request) {
+            if (app()->environment('production', 'demo')) {
                 return redirect($request->fullUrl())->withErrors(trans('app.msg.invalid_token'));
             }
 
-            if ($exception instanceof \Illuminate\Http\Exception\HttpResponseException) {
+            return null;
+        });
+
+        $this->renderable(function (Throwable $e, $request) {
+            if (!app()->environment('production', 'demo')) {
+                return null;
+            }
+
+            if ($e instanceof \Illuminate\Http\Exceptions\HttpResponseException) {
                 return redirect(route('user.directory.list'))->withErrors(trans('app.msg.invalid_url'));
             }
 
             if (!app()->isDownForMaintenance() && $request->user()) {
                 return redirect(route('whoops'))->withErrors(trans('app.msg.general_exception'));
             }
-        }
 
-        return parent::render($request, $exception);
+            return null;
+        });
     }
 
     /**
@@ -80,7 +90,7 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return response()->json(['error' => 'Unauthenticated.'], 401);
+            return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
         return redirect()->guest('login');

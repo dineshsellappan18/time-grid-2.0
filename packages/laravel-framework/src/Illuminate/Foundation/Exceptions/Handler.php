@@ -2,95 +2,96 @@
 
 namespace Illuminate\Foundation\Exceptions;
 
-use Exception;
+use Closure;
 use Psr\Log\LoggerInterface;
+use Throwable;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Exception\HttpResponseException;
-use Symfony\Component\Debug\Exception\FlattenException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
 use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandlerContract;
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 
 class Handler implements ExceptionHandlerContract
 {
-    /**
-     * The container implementation.
-     *
-     * @var \Illuminate\Contracts\Container\Container
-     */
     protected $container;
 
-    /**
-     * A list of the exception types that should not be reported.
-     *
-     * @var array
-     */
     protected $dontReport = [];
 
-    /**
-     * Create a new exception handler instance.
-     *
-     * @param  \Illuminate\Contracts\Container\Container  $container
-     * @return void
-     */
+    protected $dontFlash = [
+        'current_password',
+        'password',
+        'password_confirmation',
+    ];
+
+    protected array $reportCallbacks = [];
+
+    protected array $renderCallbacks = [];
+
     public function __construct(Container $container)
     {
         $this->container = $container;
+        $this->register();
     }
 
-    /**
-     * Report or log an exception.
-     *
-     * @param  \Exception  $e
-     * @return void
-     *
-     * @throws \Exception
-     */
-    public function report(Exception $e)
+    public function register(): void
+    {
+        //
+    }
+
+    public function reportable(callable $reportUsing): self
+    {
+        $this->reportCallbacks[] = $reportUsing;
+
+        return $this;
+    }
+
+    public function renderable(callable $renderUsing): self
+    {
+        $this->renderCallbacks[] = $renderUsing;
+
+        return $this;
+    }
+
+    public function report(Throwable $e): void
     {
         if ($this->shouldntReport($e)) {
             return;
         }
 
-        try {
-            $logger = $this->container->make(LoggerInterface::class);
-        } catch (Exception $ex) {
-            throw $e; // throw the original exception
+        foreach ($this->reportCallbacks as $callback) {
+            $result = $callback($e);
+            if ($result === false) {
+                return;
+            }
         }
 
-        $logger->error($e);
+        try {
+            $logger = $this->container->make(LoggerInterface::class);
+        } catch (Throwable $ex) {
+            throw $e;
+        }
+
+        $logger->error($e->getMessage(), ['exception' => $e]);
     }
 
-    /**
-     * Determine if the exception should be reported.
-     *
-     * @param  \Exception  $e
-     * @return bool
-     */
-    public function shouldReport(Exception $e)
+    public function shouldReport(Throwable $e): bool
     {
-        return ! $this->shouldntReport($e);
+        return !$this->shouldntReport($e);
     }
 
-    /**
-     * Determine if the exception is in the "do not report" list.
-     *
-     * @param  \Exception  $e
-     * @return bool
-     */
-    protected function shouldntReport(Exception $e)
+    protected function shouldntReport(Throwable $e): bool
     {
-        $dontReport = array_merge($this->dontReport, [HttpResponseException::class]);
+        $dontReport = array_merge($this->dontReport, $this->internalDontReport ?? []);
 
         foreach ($dontReport as $type) {
             if ($e instanceof $type) {
@@ -101,32 +102,26 @@ class Handler implements ExceptionHandlerContract
         return false;
     }
 
-    /**
-     * Prepare exception for rendering.
-     *
-     * @param  \Exception  $e
-     * @return \Exception
-     */
-    protected function prepareException(Exception $e)
+    protected function prepareException(Throwable $e): Throwable
     {
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
         } elseif ($e instanceof AuthorizationException) {
-            $e = new HttpException(403, $e->getMessage());
+            $e = new HttpException(403, $e->getMessage(), $e);
         }
 
         return $e;
     }
 
-    /**
-     * Render an exception into a response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $e
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function render($request, Exception $e)
+    public function render($request, Throwable $e)
     {
+        foreach ($this->renderCallbacks as $callback) {
+            $response = $callback($e, $request);
+            if ($response !== null) {
+                return $response;
+            }
+        }
+
         $e = $this->prepareException($e);
 
         if ($e instanceof HttpResponseException) {
@@ -140,14 +135,16 @@ class Handler implements ExceptionHandlerContract
         return $this->prepareResponse($request, $e);
     }
 
-    /**
-     * Prepare response containing exception render.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception $e
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function prepareResponse($request, Exception $e)
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            return new JsonResponse(['message' => 'Unauthenticated.'], 401);
+        }
+
+        return redirect()->guest('login');
+    }
+
+    protected function prepareResponse($request, Throwable $e)
     {
         if ($this->isHttpException($e)) {
             return $this->toIlluminateResponse($this->renderHttpException($e), $e);
@@ -156,14 +153,7 @@ class Handler implements ExceptionHandlerContract
         }
     }
 
-    /**
-     * Map exception into an illuminate response.
-     *
-     * @param  \Symfony\Component\HttpFoundation\Response  $response
-     * @param  \Exception  $e
-     * @return \Illuminate\Http\Response
-     */
-    protected function toIlluminateResponse($response, Exception $e)
+    protected function toIlluminateResponse($response, Throwable $e)
     {
         if ($response instanceof SymfonyRedirectResponse) {
             $response = new RedirectResponse($response->getTargetUrl(), $response->getStatusCode(), $response->headers->all());
@@ -174,24 +164,11 @@ class Handler implements ExceptionHandlerContract
         return $response->withException($e);
     }
 
-    /**
-     * Render an exception to the console.
-     *
-     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
-     * @param  \Exception  $e
-     * @return void
-     */
-    public function renderForConsole($output, Exception $e)
+    public function renderForConsole($output, Throwable $e): void
     {
-        (new ConsoleApplication)->renderException($e, $output);
+        (new ConsoleApplication)->renderThrowable($e, $output);
     }
 
-    /**
-     * Render the given HttpException.
-     *
-     * @param  \Symfony\Component\HttpKernel\Exception\HttpException  $e
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     protected function renderHttpException(HttpException $e)
     {
         $status = $e->getStatusCode();
@@ -203,13 +180,6 @@ class Handler implements ExceptionHandlerContract
         }
     }
 
-    /**
-     * Create a response object from the given validation exception.
-     *
-     * @param  \Illuminate\Validation\ValidationException  $e
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     protected function convertValidationExceptionToResponse(ValidationException $e, $request)
     {
         if ($e->response) {
@@ -219,34 +189,41 @@ class Handler implements ExceptionHandlerContract
         $errors = $e->validator->errors()->getMessages();
 
         if ($request->expectsJson()) {
-            return response()->json($errors, 422);
+            return new JsonResponse($errors, $e->status);
         }
 
-        return redirect()->back()->withInput($request->input())->withErrors($errors);
+        return redirect()->back()->withInput(
+            $request->except($this->dontFlash)
+        )->withErrors($errors);
     }
 
-    /**
-     * Create a Symfony response for the given exception.
-     *
-     * @param  \Exception  $e
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function convertExceptionToResponse(Exception $e)
+    protected function convertExceptionToResponse(Throwable $e)
     {
-        $e = FlattenException::create($e);
+        $statusCode = $this->isHttpException($e) ? $e->getStatusCode() : 500;
+        $headers = $this->isHttpException($e) ? $e->getHeaders() : [];
 
-        $handler = new SymfonyExceptionHandler(config('app.debug'));
+        if (config('app.debug')) {
+            return new SymfonyResponse(
+                $this->renderExceptionContent($e),
+                $statusCode,
+                $headers
+            );
+        }
 
-        return SymfonyResponse::create($handler->getHtml($e), $e->getStatusCode(), $e->getHeaders());
+        return new SymfonyResponse('Server Error', $statusCode, $headers);
     }
 
-    /**
-     * Determine if the given exception is an HTTP exception.
-     *
-     * @param  \Exception  $e
-     * @return bool
-     */
-    protected function isHttpException(Exception $e)
+    protected function renderExceptionContent(Throwable $e): string
+    {
+        return sprintf(
+            '<h1>%s</h1><p>%s</p><pre>%s</pre>',
+            get_class($e),
+            $e->getMessage(),
+            $e->getTraceAsString()
+        );
+    }
+
+    protected function isHttpException(Throwable $e): bool
     {
         return $e instanceof HttpException;
     }
