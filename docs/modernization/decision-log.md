@@ -55,6 +55,14 @@
 - **Rationale**: Prevents silent regression of framework/PHP version during future work
 - **Trade-off**: Must update the script when the next major upgrade cycle begins
 
+### D-006: iCal Guard Shadow-then-Enforce Strategy
+- **Decision**: Guard runs in shadow mode for 14+ days; cutover to enforced requires zero divergences over 7 consecutive days and feed availability >= 99%
+- **Rationale**: The calendar feed is the most sensitive trust boundary — breaking live Google/Apple subscriptions is unacceptable; evidence-based cutover eliminates guesswork
+- **Trade-off**: Extends the timeline by 14+ days before the legacy inline compare can be removed; requires operational monitoring capacity
+- **Rollback**: `ICAL_GUARD_MODE=shadow` restores legacy behaviour without code deploy (2-min MTTR target)
+- **Evidence**: `docs/modernization/ical-guard-cutover-evidence.md`
+- **Monitoring**: `php artisan ical:divergence-report --days=14`
+
 ## Risk Register Closure
 
 | Risk ID | Description | Status | Resolution |
@@ -63,3 +71,4 @@
 | R-002 | PHP runtime EOL | CLOSED | PHP 8.4 security support through 2027-11 |
 | R-003 | Carbon timezone/booking regression | CLOSED | All mutation sites audited and fixed in WO-021 |
 | R-004 | Flysystem 3 silent empty results | CLOSED | Explicit null/empty checks with structured logging in WO-019 |
+| R-005 | iCal subscription breakage on guard cutover | OPEN | Shadow mode active (WO-027); cutover gated on evidence pack (WO-028); rollback < 2 min |
