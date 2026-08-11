@@ -2,8 +2,9 @@
 
 namespace App\TG\Availability;
 
+use App\Exceptions\SsrfPolicyException;
 use App\TG\ICalChecker;
-use Illuminate\Support\Collection;
+use App\TG\Security\UrlGuard;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Timegridio\Concierge\Models\Humanresource;
@@ -11,6 +12,11 @@ use Timegridio\Concierge\Models\Humanresource;
 class ICalSyncService
 {
     protected ?Humanresource $humanresource = null;
+
+    public function __construct(
+        private readonly UrlGuard $urlGuard = new UrlGuard(),
+    ) {
+    }
 
     public function humanresource(Humanresource $humanresource): static
     {
@@ -89,7 +95,14 @@ class ICalSyncService
 
     public function getRemoteContents(): string
     {
-        return file_get_contents($this->humanresource->calendar_link);
+        $url = $this->humanresource->calendar_link;
+
+        Log::info('ICalSyncService: fetching remote calendar', [
+            'humanresource_id' => $this->humanresource->id,
+            'url_host'         => parse_url($url, PHP_URL_HOST),
+        ]);
+
+        return $this->urlGuard->fetch($url);
     }
 
     protected function getFilePath(string $filename): string

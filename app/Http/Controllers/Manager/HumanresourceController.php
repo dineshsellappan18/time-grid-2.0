@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\HumanresourceRequest;
+use Illuminate\Support\Facades\Log;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Humanresource;
 
@@ -11,8 +12,10 @@ class HumanresourceController extends Controller
 {
     public function index(Business $business)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s', $business->id));
+        Log::info('HumanresourceController@index', [
+            'actor' => auth()->id(),
+            'business_id' => $business->id,
+        ]);
 
         $this->authorize('manageHumanresources', $business);
 
@@ -23,8 +26,10 @@ class HumanresourceController extends Controller
 
     public function create(Business $business)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s', $business->id));
+        Log::info('HumanresourceController@create', [
+            'actor' => auth()->id(),
+            'business_id' => $business->id,
+        ]);
 
         if ($business->humanresources()->count() > plan('limits.specialists', $business->plan)) {
             flash()->warning(trans('app.saas.plan_limit_reached'));
@@ -34,22 +39,20 @@ class HumanresourceController extends Controller
 
         $this->authorize('manageHumanresources', $business);
 
-        // BEGIN //
-
-        $humanresource = new Humanresource(); // For Form Model Binding
+        $humanresource = new Humanresource();
         return view('manager.businesses.humanresources.create', compact('business', 'humanresource'));
     }
 
-    public function store(Business $business, Request $request)
+    public function store(Business $business, HumanresourceRequest $request)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s', $business->id));
+        Log::info('HumanresourceController@store', [
+            'actor' => auth()->id(),
+            'business_id' => $business->id,
+        ]);
 
         $this->authorize('manageHumanresources', $business);
 
-        // BEGIN //
-
-        $humanresource = new Humanresource($request->all());
+        $humanresource = new Humanresource($request->validated());
 
         $humanresource->business()->associate($business->id);
 
@@ -62,38 +65,41 @@ class HumanresourceController extends Controller
 
     public function show(Business $business, Humanresource $humanresource)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s humanresourceId:%s', $business->id, $humanresource->id));
+        Log::info('HumanresourceController@show', [
+            'actor' => auth()->id(),
+            'business_id' => $business->id,
+            'humanresource_id' => $humanresource->id,
+        ]);
 
         $this->authorize('manageHumanresources', $business);
-
-        // BEGIN //
 
         return view('manager.businesses.humanresources.show', compact('business', 'humanresource'));
     }
 
     public function edit(Business $business, Humanresource $humanresource)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s humanresourceId:%s', $business->id, $humanresource->id));
+        Log::info('HumanresourceController@edit', [
+            'actor' => auth()->id(),
+            'business_id' => $business->id,
+            'humanresource_id' => $humanresource->id,
+        ]);
 
         $this->authorize('manageHumanresources', $business);
-
-        // BEGIN //
 
         return view('manager.businesses.humanresources.edit', compact('business', 'humanresource'));
     }
 
-    public function update(Business $business, Humanresource $humanresource, Request $request)
+    public function update(Business $business, Humanresource $humanresource, HumanresourceRequest $request)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s humanresourceId:%s', $business->id, $humanresource->id));
+        Log::info('HumanresourceController@update', [
+            'actor' => auth()->id(),
+            'business_id' => $business->id,
+            'humanresource_id' => $humanresource->id,
+        ]);
 
         $this->authorize('manageHumanresources', $business);
 
-        // BEGIN //
-
-        $humanresource->fill($request->all());
+        $humanresource->fill($request->validated());
         $humanresource->save();
 
         flash()->success(trans('manager.humanresources.msg.update.success'));
@@ -103,14 +109,15 @@ class HumanresourceController extends Controller
 
     public function destroy(Business $business, Humanresource $humanresource)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s humanresourceId:%s', $business->id, $humanresource->id));
+        Log::info('HumanresourceController@destroy', [
+            'actor' => auth()->id(),
+            'business_id' => $business->id,
+            'humanresource_id' => $humanresource->id,
+        ]);
 
         $this->authorize('manageHumanresources', $business);
 
-        // BEGIN //
-
-        $humanresource = $humanresource->delete();
+        $humanresource->delete();
 
         flash()->success(trans('manager.humanresources.msg.destroy.success'));
 

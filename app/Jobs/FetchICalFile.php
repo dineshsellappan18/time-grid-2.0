@@ -2,10 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\SsrfPolicyException;
+use App\TG\AuditLogger;
 use App\TG\Availability\ICalSyncService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -25,15 +26,45 @@ class FetchICalFile implements ShouldQueue
     ) {
     }
 
-    public function handle(): void
+    public function handle(AuditLogger $audit): void
     {
         Log::info('FetchICalFile: syncing calendar', [
             'humanresource_id' => $this->humanresource->id,
             'slug'             => $this->humanresource->slug,
         ]);
 
-        $icalsync = new ICalSyncService();
-        $icalsync->humanresource($this->humanresource)->sync();
+        try {
+            $icalsync = new ICalSyncService();
+            $icalsync->humanresource($this->humanresource)->sync();
+
+            $audit->append(
+                action: 'ical.fetch',
+                resourceType: 'humanresource',
+                resourceId: (string) $this->humanresource->id,
+                outcome: 'allowed',
+                changes: ['url_host' => parse_url($this->humanresource->calendar_link, PHP_URL_HOST)],
+            );
+        } catch (SsrfPolicyException $e) {
+            Log::channel('security')->warning('FetchICalFile: SSRF policy rejection', [
+                'humanresource_id' => $this->humanresource->id,
+                'reason'           => $e->getReason(),
+            ]);
+
+            $audit->append(
+                action: 'ical.fetch',
+                resourceType: 'humanresource',
+                resourceId: (string) $this->humanresource->id,
+                outcome: 'denied',
+                changes: ['reason' => $e->getReason()],
+            );
+
+            if (!$e->isRetryable()) {
+                $this->fail($e);
+                return;
+            }
+
+            throw $e;
+        }
     }
 
     public function failed(\Throwable $exception): void
@@ -41,6 +72,9 @@ class FetchICalFile implements ShouldQueue
         Log::error('FetchICalFile: job failed permanently', [
             'humanresource_id' => $this->humanresource->id ?? null,
             'exception'        => $exception->getMessage(),
+            'reason'           => $exception instanceof SsrfPolicyException
+                ? $exception->getReason()
+                : 'unknown',
         ]);
     }
 }
