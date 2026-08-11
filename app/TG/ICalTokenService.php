@@ -1,0 +1,111 @@
+<?php
+
+namespace App\TG;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Timegridio\Concierge\Models\Business;
+
+class ICalTokenService
+{
+    private const TABLE = 'ical_tokens';
+
+    public function issue(Business $business): string
+    {
+        $plaintext = $this->generateToken();
+        $hash = $this->hashToken($plaintext);
+
+        DB::table(self::TABLE)->insert([
+            'business_id' => $business->id,
+            'token_hash'  => $hash,
+            'rotated_at'  => now(),
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
+
+        return $plaintext;
+    }
+
+    public function validate(Business $business, string $token): bool
+    {
+        if ($token === '' || strlen($token) > 128) {
+            return false;
+        }
+
+        $candidateHash = $this->hashToken($token);
+
+        $stored = DB::table(self::TABLE)
+            ->where('business_id', $business->id)
+            ->whereNull('revoked_at')
+            ->orderByDesc('created_at')
+            ->first();
+
+        if ($stored === null) {
+            return false;
+        }
+
+        $valid = hash_equals($stored->token_hash, $candidateHash);
+
+        if ($valid) {
+            DB::table(self::TABLE)
+                ->where('id', $stored->id)
+                ->update(['last_used_at' => now()]);
+        }
+
+        return $valid;
+    }
+
+    public function rotate(Business $business): string
+    {
+        DB::table(self::TABLE)
+            ->where('business_id', $business->id)
+            ->whereNull('revoked_at')
+            ->update(['revoked_at' => now()]);
+
+        return $this->issue($business);
+    }
+
+    public function getActiveToken(Business $business): ?object
+    {
+        return DB::table(self::TABLE)
+            ->where('business_id', $business->id)
+            ->whereNull('revoked_at')
+            ->orderByDesc('created_at')
+            ->first();
+    }
+
+    public function backfillLegacy(Business $business, string $legacyToken): bool
+    {
+        $hash = $this->hashToken($legacyToken);
+
+        $exists = DB::table(self::TABLE)
+            ->where('token_hash', $hash)
+            ->exists();
+
+        if ($exists) {
+            return false;
+        }
+
+        DB::table(self::TABLE)->insert([
+            'business_id' => $business->id,
+            'token_hash'  => $hash,
+            'rotated_at'  => null,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
+
+        return true;
+    }
+
+    private function generateToken(): string
+    {
+        return Str::random(32);
+    }
+
+    private function hashToken(string $token): string
+    {
+        $pepper = config('app.key', 'timegrid-ical-pepper');
+
+        return hash('sha256', $pepper . $token);
+    }
+}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\TG\Business\Token as BusinessToken;
+use App\TG\ICalTokenService;
 use Illuminate\Support\Facades\Log;
 use JavaScript;
 use Timegridio\Concierge\Concierge;
@@ -12,10 +13,12 @@ use Timegridio\Concierge\Models\Business;
 class BusinessAgendaController extends Controller
 {
     private Concierge $concierge;
+    private ICalTokenService $tokenService;
 
-    public function __construct(Concierge $concierge)
+    public function __construct(Concierge $concierge, ICalTokenService $tokenService)
     {
         $this->concierge = $concierge;
+        $this->tokenService = $tokenService;
 
         parent::__construct();
     }
@@ -88,10 +91,16 @@ class BusinessAgendaController extends Controller
         return session()->get('language', substr($locale, 0, 2));
     }
 
-    protected function generateICalURL(Business $business)
+    protected function generateICalURL(Business $business): string
     {
-        $businessToken = new BusinessToken($business);
+        $activeToken = $this->tokenService->getActiveToken($business);
 
-        return route('business.ical.download', [$business, $businessToken->generate()]);
+        if ($activeToken !== null) {
+            $legacyToken = (new BusinessToken($business))->generate();
+            return route('business.ical.download', [$business, $legacyToken]);
+        }
+
+        $legacyToken = (new BusinessToken($business))->generate();
+        return route('business.ical.download', [$business, $legacyToken]);
     }
 }
