@@ -2,33 +2,34 @@
 
 namespace App\Exceptions;
 
+use App\Logging\CorrelationContext;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
+use Timegridio\Concierge\Exceptions\DuplicatedAppointmentException;
 
 class Handler extends ExceptionHandler
 {
     /**
-     * A list of the exception types that are not reported.
-     *
      * @var array<int, class-string<Throwable>>
      */
     protected $dontReport = [
         AuthenticationException::class,
         AuthorizationException::class,
-        \Symfony\Component\HttpKernel\Exception\HttpException::class,
-        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
+        HttpException::class,
+        ModelNotFoundException::class,
         TokenMismatchException::class,
-        \Illuminate\Validation\ValidationException::class,
+        ValidationException::class,
     ];
 
     /**
-     * A list of the inputs that are never flashed to the session on validation exceptions.
-     *
      * @var array<int, string>
      */
     protected $dontFlash = [
@@ -37,9 +38,6 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
-    /**
-     * Report or log an exception.
-     */
     public function report(Throwable $e): void
     {
         try {
@@ -50,7 +48,7 @@ class Handler extends ExceptionHandler
                 'exception'      => get_class($e),
                 'file'           => $e->getFile(),
                 'line'           => $e->getLine(),
-                'correlation_id' => (string) ($request?->header('X-Request-Id') ?: uniqid('req_', true)),
+                'correlation_id' => CorrelationContext::id(),
                 'user_id'        => $userId,
                 'url'            => $request?->fullUrl(),
                 'method'         => $request?->method(),
@@ -63,17 +61,14 @@ class Handler extends ExceptionHandler
         parent::report($e);
     }
 
-    /**
-     * Render an exception into an HTTP response.
-     */
     public function render($request, Throwable $e)
     {
+        if ($request->expectsJson()) {
+            return $this->renderJsonEnvelope($request, $e);
+        }
+
         if ($e instanceof AuthorizationException) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => $e->getMessage() ?: 'This action is unauthorized.',
-                ], 403);
-            }
+            return redirect()->back()->withErrors(trans('app.msg.unauthorized'));
         }
 
         if (app()->environment('production', 'demo')) {
@@ -93,15 +88,83 @@ class Handler extends ExceptionHandler
         return parent::render($request, $e);
     }
 
-    /**
-     * Convert an authentication exception into an unauthenticated response.
-     */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            return $this->envelope(401, 'unauthenticated', 'Authentication required.');
         }
 
         return redirect()->guest('login');
+    }
+
+    private function renderJsonEnvelope($request, Throwable $e)
+    {
+        if ($e instanceof ValidationException) {
+            return $this->envelope(400, 'validation_failed', 'The given data was invalid.', [
+                'fields' => $e->errors(),
+            ]);
+        }
+
+        if ($e instanceof AuthorizationException) {
+            return $this->envelope(403, 'forbidden', 'Access denied.');
+        }
+
+        if ($e instanceof ModelNotFoundException) {
+            return $this->envelope(404, 'not_found', 'Resource not found.');
+        }
+
+        if ($e instanceof DuplicatedAppointmentException) {
+            return $this->envelope(409, 'conflict', 'Duplicate or capacity conflict.');
+        }
+
+        if ($e instanceof HttpException) {
+            $status = $e->getStatusCode();
+            $code = $this->statusToCode($status);
+            $message = $this->statusToMessage($status);
+            return $this->envelope($status, $code, $message);
+        }
+
+        return $this->envelope(500, 'internal_error', 'An unexpected error occurred.');
+    }
+
+    private function envelope(int $status, string $code, string $message, array $extra = [])
+    {
+        $body = [
+            'error' => array_merge([
+                'code'           => $code,
+                'message'        => $message,
+                'correlation_id' => CorrelationContext::id(),
+            ], $extra),
+        ];
+
+        return response()->json($body, $status);
+    }
+
+    private function statusToCode(int $status): string
+    {
+        return match ($status) {
+            400 => 'bad_request',
+            401 => 'unauthenticated',
+            403 => 'forbidden',
+            404 => 'not_found',
+            409 => 'conflict',
+            422 => 'validation_failed',
+            429 => 'too_many_requests',
+            default => 'error',
+        };
+    }
+
+    private function statusToMessage(int $status): string
+    {
+        return match ($status) {
+            400 => 'Bad request.',
+            401 => 'Authentication required.',
+            403 => 'Access denied.',
+            404 => 'Resource not found.',
+            409 => 'Conflict.',
+            422 => 'Validation failed.',
+            429 => 'Too many requests.',
+            default => 'An error occurred.',
+        };
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AvailabilityQueryRequest;
 use App\TG\Availability\AvailabilityService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -19,7 +20,7 @@ class AvailabilityController extends Controller
         parent::__construct();
     }
 
-    public function getDates(int $businessId, int $serviceId): JsonResponse
+    public function getDates(AvailabilityQueryRequest $request, int $businessId, int $serviceId): JsonResponse
     {
         Log::info('availability.dates', [
             'actor'     => auth()->id(),
@@ -53,10 +54,11 @@ class AvailabilityController extends Controller
             'disabledDates' => $disabledDates,
             'startDate'     => $baseDate->toDateString(),
             'endDate'       => $endDate->toDateString(),
+            'timezone'      => $business->timezone,
         ], 200);
     }
 
-    public function getTimes(int $businessId, int $serviceId, string $date, string|false $preferredTimezone = false): JsonResponse
+    public function getTimes(AvailabilityQueryRequest $request, int $businessId, int $serviceId, string $date, string|false $preferredTimezone = false): JsonResponse
     {
         Log::info('availability.times', [
             'actor'     => auth()->id(),
@@ -70,7 +72,12 @@ class AvailabilityController extends Controller
 
         $timezone = $this->decideTimezone($preferredTimezone, $business->timezone);
 
-        $times = $this->availability->timezone($timezone)->getTimes($business, $service, Carbon::parse($date));
+        $parsedDate = Carbon::createFromFormat('Y-m-d', $date);
+        if (!$parsedDate) {
+            abort(400);
+        }
+
+        $times = $this->availability->timezone($timezone)->getTimes($business, $service, $parsedDate);
 
         return response()->json([
             'business' => $businessId,

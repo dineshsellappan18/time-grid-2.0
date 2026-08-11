@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Events\NewAppointmentWasBooked;
 use App\Events\NewSoftAppointmentWasBooked;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BookAppointmentRequest;
 use App\TG\AuditLogger;
 use Carbon\Carbon;
 use Event;
@@ -103,9 +104,9 @@ class AgendaController extends Controller
         );
     }
 
-    public function postStore(Request $request): View|RedirectResponse
+    public function postStore(BookAppointmentRequest $request): View|RedirectResponse
     {
-        $business = Business::findOrFail($request->input('businessId'));
+        $business = Business::findOrFail($request->validated('businessId'));
 
         Log::info('agenda.book', [
             'actor'     => auth()->id(),
@@ -114,8 +115,8 @@ class AgendaController extends Controller
             'context'   => ['business_id' => $business->id],
         ]);
 
-        $email = $request->input('email');
-        $contactId = $request->input('contact_id');
+        $email = $request->validated('email');
+        $contactId = $request->validated('contact_id');
         $isOwner = false;
 
         $issuer = auth()->user();
@@ -135,14 +136,18 @@ class AgendaController extends Controller
             auth()->once(compact('email'));
         }
 
-        $serviceId = $request->input('service_id');
+        $serviceId = $request->validated('service_id');
         $service = $business->services()->find($serviceId);
 
-        $date = Carbon::parse($request->input('_date'))->toDateString();
-        $time = Carbon::parse($request->input('_time'))->toTimeString();
-        $timezone = $request->input('_timezone') ?: $business->timezone;
+        if (!$service) {
+            abort(404);
+        }
 
-        $comments = $request->input('comments');
+        $date = $request->validated('_date');
+        $time = $request->validated('_time');
+        $timezone = $request->validated('_timezone') ?: $business->timezone;
+
+        $comments = $request->validated('comments');
         $issuer = auth()->id();
 
         $reservation = compact('issuer', 'contact', 'service', 'date', 'time', 'timezone', 'comments');
@@ -158,6 +163,10 @@ class AgendaController extends Controller
                 'operation' => 'create',
                 'context'   => ['business_id' => $business->id, 'code' => $code],
             ]);
+
+            if ($request->expectsJson()) {
+                abort(409);
+            }
 
             flash()->warning(trans('user.booking.msg.store.sorry_duplicated', compact('code')));
 
