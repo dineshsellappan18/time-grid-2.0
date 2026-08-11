@@ -17,41 +17,26 @@ class TestingDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // Create some example Businesses with example owners
+        // Deterministic fixture set (WO-003): known users, one business graph,
+        // service, vacancy, contact, appointment — no network access.
+        $demoManagerUser = $this->createDemoManagerUser();
+        $business = $this->createBusinessOwnedBy($demoManagerUser, 'Demo Venue');
+
+        $demoGuestUser = $this->createDemoGuestUser();
+        $contact = $this->createDemoGuestUserContact($demoGuestUser);
+        $this->putUserGuestContactOf($contact, $business);
+
+        $service = $this->publishServiceFor($business, 'Demo Service', 30);
+        $vacancy = $this->publishDeterministicVacancyFor($business, $service);
+        $this->publishDeterministicAppointment($business, $demoGuestUser, $contact, $service, $vacancy);
+
+        // Extra sample businesses for marketplace-style UI (still local factories only).
         $this->createBusinessOwnedBy($this->createRandomGuestUser(), 'Tomy\'s Garage');
         $this->createBusinessOwnedBy($this->createRandomGuestUser(), 'Pluto Garage');
         $this->createBusinessOwnedBy($this->createRandomGuestUser(), 'Jenny\'s');
 
-        // Create a well known Demo Manager User
-        $demoManagerUser = $this->createDemoManagerUser();
-
-        // Create a Business managed by him
-        $business = $this->createBusinessOwnedBy($demoManagerUser, 'Demo Venue');
-
-        // Create a Demo Guest User
-        $demoGuestUser = $this->createDemoGuestUser();
-
-        // Create a Contact for Guest User
-        $contact = $this->createDemoGuestUserContact($demoGuestUser);
-
-        // Put the Contact into the Business addressbok
-        $this->putUserGuestContactOf($contact, $business);
-
-        // Generate some addressbook info to fill
-        $this->generateDemoAddressBook($business, 200);
-
-        // Generate Services provided by Business
-        $serviceA = $this->publishServiceFor($business);
-        $serviceB = $this->publishServiceFor($business);
-        $serviceC = $this->publishServiceFor($business);
-
-        // Publish Vacancies for each Service for Business
-        $this->publishVacanciesFor($business, $serviceA);
-        $this->publishVacanciesFor($business, $serviceA);
-        $this->publishVacanciesFor($business, $serviceA);
-        $this->publishVacanciesFor($business, $serviceB);
-        $this->publishVacanciesFor($business, $serviceB);
-        $this->publishVacanciesFor($business, $serviceC);
+        // Bounded address book (was 200; keep smaller for suite speed).
+        $this->generateDemoAddressBook($business, 25);
     }
 
     /////////////////////////
@@ -108,13 +93,54 @@ class TestingDatabaseSeeder extends Seeder
         $business->contacts()->save($contact);
     }
 
-    private function publishServiceFor(Business $business)
+    private function publishServiceFor(Business $business, $name = null, $duration = null)
     {
-        $service = factory(Service::class)->make();
+        $attrs = [];
+        if ($name !== null) {
+            $attrs['name'] = $name;
+        }
+        if ($duration !== null) {
+            $attrs['duration'] = $duration;
+        }
+
+        $service = factory(Service::class)->make($attrs);
         $service->business()->associate($business);
         $service->save();
 
         return $service;
+    }
+
+    private function publishDeterministicVacancyFor(Business $business, Service $service)
+    {
+        $vacancy = factory(Vacancy::class)->make([
+            'date'      => '2030-06-01',
+            'start_at'  => '2030-06-01 09:00:00',
+            'finish_at' => '2030-06-01 17:00:00',
+            'capacity'  => 5,
+        ]);
+        $vacancy->business()->associate($business);
+        $vacancy->service()->associate($service);
+        $vacancy->save();
+
+        return $vacancy;
+    }
+
+    private function publishDeterministicAppointment(Business $business, User $issuer, Contact $contact, Service $service, Vacancy $vacancy)
+    {
+        $appointment = factory(\Timegridio\Concierge\Models\Appointment::class)->make([
+            'status'   => \Timegridio\Concierge\Models\Appointment::STATUS_CONFIRMED,
+            'start_at' => \Carbon\Carbon::parse('2030-06-01 10:00:00'),
+            'duration' => $service->duration,
+            'comments' => 'Deterministic testing fixture appointment',
+        ]);
+        $appointment->business()->associate($business);
+        $appointment->issuer()->associate($issuer);
+        $appointment->contact()->associate($contact);
+        $appointment->service()->associate($service);
+        $appointment->vacancy()->associate($vacancy);
+        $appointment->save();
+
+        return $appointment;
     }
 
     private function publishVacanciesFor(Business $business, Service $service)

@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use MailThief\Facades\MailThief;
 
 class UserWelcomeEmailTest extends TestCase
 {
@@ -12,7 +11,7 @@ class UserWelcomeEmailTest extends TestCase
      */
     public function it_sends_a_welcome_email_to_new_registered_user()
     {
-        MailThief::hijack();
+        MailHijacker::hijack();
 
         $user = $this->makeUser();
 
@@ -26,9 +25,9 @@ class UserWelcomeEmailTest extends TestCase
         $this->press('Register');
 
         // Check that an email was sent to this email address
-        $this->assertTrue(MailThief::hasMessageFor($user->email));
+        $this->assertTrue(MailHijacker::hasMessageFor($user->email));
 
         // Make sure the email has the correct subject
-        $this->assertEquals('Welcome to timegrid.io', MailThief::lastMessage()->subject);
+        $this->assertEquals('Welcome to timegrid.io', MailHijacker::lastMessage()->subject);
     }
 }

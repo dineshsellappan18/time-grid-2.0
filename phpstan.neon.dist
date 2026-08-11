@@ -1,0 +1,13 @@
+# WO-007 — PHPStan level 3 gate (transitional on Laravel 5.3 / PHP 7.1).
+# Full green on PHP 8.3/8.4 waits for WO-015+.
+
+parameters:
+    level: 3
+    paths:
+        - app
+        - packages/timegrid-concierge/src
+    excludePaths:
+        - app/Http/routes.php
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder#'
+    reportUnmatchedIgnoredErrors: false

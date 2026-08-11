@@ -162,6 +162,26 @@ Policy note from the same page: bug fixes ~18 months; security fixes ~2 years pe
 
 ---
 
+## D-008 — Branch constraints cleared (transitional tagged pins)
+
+**Decision:** Replace all six moving-branch Composer constraints with tagged / path / inlined equivalents while the app remains on Laravel 5.3.
+
+| Former constraint | Replacement |
+| --- | --- |
+| `timegridio/concierge@dev-master#90e65c` | path `dineshsellappan18/timegrid-concierge` **1.0.0** |
+| `timegridio/icalreader@dev-master` | path `dineshsellappan18/timegrid-icalreader` **1.0.0** |
+| `snowfire/beautymail@dev-master` | tagged **v1.1.9** |
+| `webpatser/laravel-countries@dev-master` | tagged **1.5.4** (transitional; `^2.2` requires PHP ^8.2 / Laravel 11+) |
+| `seanstewart/plan-config@dev-master` | **inlined** under `app/Support/PlanConfig` (namespace preserved) |
+| `codeclimate/php-test-reporter@dev-master` | **removed** |
+
+**Residual (D-007):** `composer install` without `--ignore-platform-reqs` on PHP 8.3/8.4 still fails until Laravel hops raise the app PHP floor (WO-015+). Characterization/contract behavioural suites expand under WO-004/WO-005.
+
+**Owner:** Release Engineer  
+**Status:** Accepted (WO-008 progress, 2026-08-11)
+
+---
+
 ## Change control
 
 | Date | Change | Author |
@@ -169,3 +189,4 @@ Policy note from the same page: bug fixes ~18 months; security fixes ~2 years pe
 | 2026-08-10 | Initial log + verified PHP/Laravel windows; moving-branch and removal decisions | WO-001 implementation |
 | 2026-08-10 | D-006 Concierge fork v1.0.0 + AGPL review + reservation contract | WO-002 implementation |
 | 2026-08-10 | D-007 Sequencing gate: WO-003…WO-020 cannot complete on Laravel 5.3 | Programme continuity |
+| 2026-08-11 | D-008 Branch constraints replaced with tags/path/inline; Code Climate removed | WO-008 implementation |

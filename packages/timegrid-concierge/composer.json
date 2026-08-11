@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "php": "^8.1|^8.2|^8.3|^8.4",
+        "php": ">=7.1|^8.0|^8.1|^8.2|^8.3|^8.4",
         "illuminate/support": "5.*|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
         "doctrine/dbal": "^2.5"
     },
@@ -28,7 +28,6 @@
         "laravel/framework": "5.2.*",
         "phpunit/phpunit": "~4.0",
         "phpspec/phpspec": "~2.1",
-        "codeclimate/php-test-reporter": "dev-master",
         "laracasts/testdummy": "~2.3",
         "orchestra/testbench": "~3.2.0"
     },
@@ -57,9 +56,13 @@
             "upstream": "timegridio/concierge",
             "upstream_ref": "dev-master#90e65c",
             "fork_tag": "1.0.0",
-            "spike_date": "2026-08-10"
+            "spike_date": "2026-08-10",
+            "php_floor_note": "Transitional >=7.1 until WO-015 raises app to ^8.3; target remains 8.3/8.4."
         }
     },
     "minimum-stability": "stable",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "replace": {
+        "timegridio/concierge": "self.version"
+    }
 }

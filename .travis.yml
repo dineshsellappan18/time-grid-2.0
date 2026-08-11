@@ -27,5 +27,4 @@ before_script:
 script:
   - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
-after_success:
-  - ./travis-codeclimate-report.sh
+# Code Climate reporter removed (WO-008 / WO-009). Coverage artefacts remain local/CI.

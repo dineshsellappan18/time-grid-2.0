@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use MailThief\Facades\MailThief;
 use Timegridio\Concierge\Models\Appointment;
 
 class BusinessReportEmailTest extends TestCase
@@ -13,7 +12,7 @@ class BusinessReportEmailTest extends TestCase
      */
     public function it_sends_schedule_report_to_business_on_the_desired_timezone()
     {
-        MailThief::hijack();
+        MailHijacker::hijack();
 
         $this->arrangeScenario();
 
@@ -22,17 +21,17 @@ class BusinessReportEmailTest extends TestCase
         $this->assertEquals(0, $exitCode);
         $this->assertContains("Sending to businessId:{$this->business->id}\n", $resultAsText);
 
-        $emailBody = MailThief::lastMessage()->getBody('text');
+        $emailBody = MailHijacker::lastMessage()->getBody('text');
 
         $testAppointment = $this->business->bookings()->first();
 
         $time = $testAppointment->start_at->timezone($this->business->timezone)->format('h:i a');
         $code = $testAppointment->code;
 
-        $this->assertTrue(MailThief::hasMessageFor($this->owner->email));
+        $this->assertTrue(MailHijacker::hasMessageFor($this->owner->email));
 
-        $this->assertContains('Schedule', MailThief::lastMessage()->subject);
-        $this->assertContains(date('Y-m-d'), MailThief::lastMessage()->subject);
+        $this->assertContains('Schedule', MailHijacker::lastMessage()->subject);
+        $this->assertContains(date('Y-m-d'), MailHijacker::lastMessage()->subject);
         $this->assertContains($time, $emailBody);
         $this->assertContains($code, $emailBody);
     }

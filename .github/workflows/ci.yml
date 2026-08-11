@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  phpunit-transitional:
+    name: PHPUnit (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.1']
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: testing_timegrid
+          MYSQL_USER: testing_timegrid
+          MYSQL_PASSWORD: testing_timegrid
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, pdo_mysql, tokenizer, xml, gd
+          coverage: none
+          tools: composer:v2.2
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --ignore-platform-reqs
+      - name: Prepare env
+        run: |
+          cp .env.testing.example .env
+          php artisan key:generate
+      - name: Migrate testing database
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: testing
+          TEST_DB_HOST: 127.0.0.1
+          TEST_DB_DATABASE: testing_timegrid
+          TEST_DB_USERNAME: testing_timegrid
+          TEST_DB_PASSWORD: testing_timegrid
+        run: php artisan migrate --force --database=testing
+      - name: Run unit + contract suites
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: testing
+          TEST_DB_HOST: 127.0.0.1
+          TEST_DB_DATABASE: testing_timegrid
+          TEST_DB_USERNAME: testing_timegrid
+          TEST_DB_PASSWORD: testing_timegrid
+        run: vendor/bin/phpunit --testsuite Unit,Contracts
+
+  constraint-lint:
+    name: No branch constraints
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail on dev-master / VCS branch pins
+        run: |
+          if grep -E '"dev-master|"dev-[^"]+"|"[^"]*#|"branch"' composer.json; then
+            echo "Branch/dev constraints remain in composer.json"
+            exit 1
+          fi
+          echo "No branch constraints found."

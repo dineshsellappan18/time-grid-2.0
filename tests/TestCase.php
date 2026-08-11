@@ -15,18 +15,47 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
+        $this->assertTestingDatabaseConfigured($app);
+
         return $app;
+    }
+
+    /**
+     * Fail loudly when the testing connection is misconfigured (WO-003).
+     *
+     * @param \Illuminate\Foundation\Application $app
+     */
+    protected function assertTestingDatabaseConfigured($app)
+    {
+        if (env('APP_ENV') !== 'testing') {
+            return;
+        }
+
+        $config = $app['config']->get('database.connections.testing');
+        $missing = [];
+        foreach (['host', 'database', 'username'] as $key) {
+            if (empty($config[$key])) {
+                $missing[] = $key;
+            }
+        }
+
+        if (!empty($missing)) {
+            throw new RuntimeException(
+                'Testing database is not configured (missing: '.implode(', ', $missing).'). '
+                .'Copy .env.testing.example to .env.testing and set TEST_DB_* values, '
+                .'or rely on phpunit.xml env defaults.'
+            );
+        }
     }
 
     public function prepareForTests()
     {
-        // Mail::pretend(true);
+        //
     }
 
     public function setupDatabase()
     {
-        // Artisan::call('migrate:reset');
-        // Artisan::call('db:seed', array('--class'=>'TestingDatabaseSeeder'));
+        //
     }
 
     public function setUp()

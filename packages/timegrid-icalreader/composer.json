@@ -1,0 +1,71 @@
+{
+    "name": "dineshsellappan18/timegrid-icalreader",
+    "type": "library",
+    "description": "Organisation fork of timegridio/icalreader for Timegrid 2.0 modernization.",
+    "keywords": [
+        "timegridio",
+        "icalreader",
+        "calendar",
+        "ical",
+        "parser",
+        "api",
+        "events",
+        "timegrid",
+        "time",
+        "date"
+    ],
+    "homepage": "https://github.com/dineshsellappan18/time-grid-2.0",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ariel Vallese",
+            "email": "alariva@timegrid.io",
+            "homepage": "http://alariva.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.1|^8.0|^8.1|^8.2|^8.3|^8.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0||~5.0",
+        "scrutinizer/ocular": "~1.1",
+        "squizlabs/php_codesniffer": "~2.3",
+        "laracasts/testdummy": "~2.3",
+        "orchestra/testbench": "~3.2.0",
+        "nesbot/carbon": "~1.21"
+    },
+    "autoload": {
+        "classmap": [
+            "tests/PackageTestCase.php"
+        ],
+        "psr-4": {
+            "Timegridio\\ICalReader\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Timegridio\\ICalReader\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "format": "phpcbf --standard=psr2 src/"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        },
+        "timegrid-fork": {
+            "upstream": "timegridio/icalreader",
+            "upstream_ref": "dev-master",
+            "fork_tag": "1.0.0",
+            "spike_date": "2026-08-11",
+            "php_floor_note": "Transitional >=7.1 until WO-015 raises app to ^8.3; target remains 8.3/8.4."
+        }
+    },
+    "version": "1.0.0",
+    "replace": {
+        "timegridio/icalreader": "self.version"
+    }
+}

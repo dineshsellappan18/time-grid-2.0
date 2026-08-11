@@ -1,9 +1,11 @@
 /vendor_local
 /vendor
-# Local path packages stay ignored; organisation Concierge fork is tracked (WO-002).
+# Local path packages stay ignored; organisation forks are tracked (WO-002 / WO-008).
 /packages/*
 !/packages/timegrid-concierge/
 !/packages/timegrid-concierge/**
+!/packages/timegrid-icalreader/
+!/packages/timegrid-icalreader/**
 /node_modules
 /tests/logs
 /build
