@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         \Illuminate\Support\Facades\Blade::directive('vite', function ($expression) {
-            return '<?php echo \\App\\Support\\Vite::tags'.$expression.'; ?>';
+            return '<?php echo \\App\\Support\\Vite::tags('.$expression.'); ?>';
         });
     }
 

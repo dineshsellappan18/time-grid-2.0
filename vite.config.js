@@ -16,8 +16,14 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    resolve: {
+        alias: {
+            // Package has no "main"; point Vite at the built plugin file.
+            'jquery-steps': 'jquery-steps/build/jquery.steps.js',
+        },
+    },
     build: {
-        manifest: true,
+        manifest: 'manifest.json',
         outDir: 'public/build',
         rollupOptions: {
             output: {

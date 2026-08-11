@@ -29,6 +29,9 @@ class Vite
         }
 
         $manifestPath = public_path('build/manifest.json');
+        if (! is_file($manifestPath)) {
+            $manifestPath = public_path('build/.vite/manifest.json');
+        }
 
         if (! is_file($manifestPath)) {
             throw new RuntimeException(
