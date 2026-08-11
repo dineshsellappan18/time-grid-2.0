@@ -270,6 +270,14 @@ Route::group(['prefix' => '{business}'], function ($business) {
             'as'   => 'manager.business.agenda.calendar',
             'uses' => 'BusinessAgendaController@getCalendar',
         ]);
+        Route::get('calendar/sharing', [
+            'as'   => 'manager.business.agenda.sharing',
+            'uses' => 'BusinessAgendaController@getSharing',
+        ]);
+        Route::post('calendar/sharing/rotate', [
+            'as'   => 'manager.business.agenda.sharing.rotate',
+            'uses' => 'BusinessAgendaController@postRotateToken',
+        ]);
 
         // BUSINESS MANAGEMENT
         Route::get('dashboard', [

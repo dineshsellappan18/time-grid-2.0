@@ -11,4 +11,9 @@ class IcalFeedPolicy
     {
         return true;
     }
+
+    public function manage(User $user, Business $business): bool
+    {
+        return $business->owners->contains($user);
+    }
 }

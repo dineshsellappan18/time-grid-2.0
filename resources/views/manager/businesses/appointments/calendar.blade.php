@@ -7,7 +7,12 @@
 @section('content')
 <div id="calendar"></div>
 
-<div class="p-3 bg-light rounded" data-ical-url>{{ $icalURL }}</div>
+<div class="p-3 bg-light rounded d-flex justify-content-between align-items-center" data-ical-url>
+    <span>{{ $icalURL }}</span>
+    <a href="{{ route('manager.business.agenda.sharing', [$business]) }}" class="btn btn-outline-primary btn-sm">
+        <i class="fa fa-cog"></i> Manage Sharing
+    </a>
+</div>
 @endsection
 
 @push('footer_scripts')

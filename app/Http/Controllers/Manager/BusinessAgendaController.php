@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Manager;
 use App\Http\Controllers\Controller;
 use App\TG\Business\Token as BusinessToken;
 use App\TG\ICalTokenService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JavaScript;
 use Timegridio\Concierge\Concierge;
@@ -89,6 +91,143 @@ class BusinessAgendaController extends Controller
         ]);
 
         return view('manager.businesses.appointments.calendar', compact('business', 'icalURL'));
+    }
+
+    public function getSharing(Business $business)
+    {
+        $this->authorize('manage', $business);
+
+        Log::info('agenda.sharing.view', [
+            'actor'     => auth()->id(),
+            'resource'  => 'ical_feed',
+            'operation' => 'view_sharing_screen',
+            'context'   => ['business_id' => $business->id],
+        ]);
+
+        $this->writeAuditRow($business, 'view_sharing_screen');
+
+        $viewModel = $this->buildSharingViewModel($business);
+
+        return view('manager.businesses.appointments.sharing', array_merge(
+            compact('business'),
+            $viewModel
+        ));
+    }
+
+    public function postRotateToken(Request $request, Business $business)
+    {
+        $this->authorize('manage', $business);
+
+        $newPlainToken = $this->tokenService->rotate($business);
+
+        Log::info('agenda.sharing.rotate', [
+            'actor'     => auth()->id(),
+            'resource'  => 'ical_token',
+            'operation' => 'rotate_token',
+            'context'   => ['business_id' => $business->id],
+        ]);
+
+        $this->writeAuditRow($business, 'rotate_token');
+
+        $newUrl = route('business.ical.download', [$business, $newPlainToken]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'url' => $newUrl,
+                'message' => 'Token rotated successfully. The previous URL will no longer work.',
+            ]);
+        }
+
+        return redirect()
+            ->route('manager.business.agenda.sharing', [$business])
+            ->with('new_token_url', $newUrl)
+            ->with('flash_success', 'Token rotated. Copy your new URL below — it will not be shown again.');
+    }
+
+    private function buildSharingViewModel(Business $business): array
+    {
+        $activeToken = $this->tokenService->getActiveToken($business);
+        $hasToken = $activeToken !== null;
+
+        $maskedUrl = null;
+        if ($hasToken) {
+            $baseUrl = route('business.ical.download', [$business, 'TOKEN']);
+            $maskedUrl = str_replace('TOKEN', '••••••••••••••••', $baseUrl);
+        }
+
+        $tokenMetadata = null;
+        if ($hasToken) {
+            $tokenMetadata = [
+                'issued_at'   => $activeToken->created_at,
+                'rotated_at'  => $activeToken->rotated_at,
+                'last_used'   => $activeToken->last_used_at ?? null,
+                'storage'     => 'SHA-256 (hashed)',
+            ];
+        }
+
+        $guardMode = config('ical.guard_mode', 'shadow');
+        $divergenceCount = $this->getDivergenceCount($business);
+
+        $authorizationMatrix = [
+            ['principal' => 'Owner', 'valid_token' => '200', 'invalid_token' => '403', 'no_token' => '404', 'revoked_token' => '403'],
+            ['principal' => 'Non-owner', 'valid_token' => '200', 'invalid_token' => '403', 'no_token' => '404', 'revoked_token' => '403'],
+            ['principal' => 'Anonymous', 'valid_token' => '200', 'invalid_token' => '403', 'no_token' => '404', 'revoked_token' => '403'],
+        ];
+
+        $denialLog = $this->getDenialLog($business);
+
+        return compact(
+            'hasToken',
+            'maskedUrl',
+            'tokenMetadata',
+            'guardMode',
+            'divergenceCount',
+            'authorizationMatrix',
+            'denialLog'
+        );
+    }
+
+    private function getDivergenceCount(Business $business): int
+    {
+        return DB::table('audit_logs')
+            ->where('entity_type', 'ical_feed')
+            ->where('entity_id', (string) $business->id)
+            ->where('action', 'guard_divergence')
+            ->count();
+    }
+
+    private function getDenialLog(Business $business, int $limit = 50): array
+    {
+        return DB::table('audit_logs')
+            ->where('entity_type', 'ical_feed')
+            ->where('entity_id', (string) $business->id)
+            ->where('action', 'access_denied')
+            ->select(['created_at', 'action', 'correlation_id'])
+            ->selectRaw("JSON_UNQUOTE(JSON_EXTRACT(context, '$.reason')) as reason")
+            ->selectRaw("JSON_UNQUOTE(JSON_EXTRACT(context, '$.outcome')) as outcome")
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get()
+            ->map(fn ($row) => [
+                'timestamp'      => $row->created_at,
+                'outcome'        => $row->outcome ?? 'denied',
+                'reason'         => $row->reason ?? 'unknown',
+                'correlation_id' => $row->correlation_id,
+            ])
+            ->toArray();
+    }
+
+    private function writeAuditRow(Business $business, string $action): void
+    {
+        DB::table('audit_logs')->insert([
+            'actor_id'       => auth()->id(),
+            'entity_type'    => 'ical_feed',
+            'entity_id'      => (string) $business->id,
+            'action'         => $action,
+            'correlation_id' => request()->header('X-Correlation-ID', \Illuminate\Support\Str::uuid()->toString()),
+            'context'        => json_encode(['ip_hash' => hash('sha256', config('app.key') . request()->ip())]),
+            'created_at'     => now(),
+        ]);
     }
 
     protected function getActiveLanguage($locale)
