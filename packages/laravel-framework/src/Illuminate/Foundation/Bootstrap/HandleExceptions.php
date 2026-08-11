@@ -59,7 +59,8 @@ class HandleExceptions
         // deprecations from Laravel 5.3 / Carbon 1 / Symfony 3 to ErrorException.
         // Inheritance fatals are addressed via #[\ReturnTypeWillChange] patches.
         if (in_array($level, [E_DEPRECATED, E_USER_DEPRECATED], true)) {
-            return;
+            // Returning true tells PHP the notice was handled (do not print).
+            return true;
         }
 
         if (error_reporting() & $level) {

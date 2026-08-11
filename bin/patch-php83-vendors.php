@@ -116,4 +116,16 @@ if (is_file($dotenv) && strpos(file_get_contents($dotenv), 'auto_detect_line_end
     echo "patched phpdotenv\n";
 }
 
+// Symfony 3 Request: CONTENT_TYPE may be null under PHP built-in server.
+$sfRequest = __DIR__ . '/../vendor/symfony/http-foundation/Request.php';
+if (is_file($sfRequest)) {
+    $t = file_get_contents($sfRequest);
+    $from = "if (0 === strpos(\$request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')";
+    $to = "if (0 === strpos((string) \$request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')";
+    if (strpos($t, $from) !== false) {
+        file_put_contents($sfRequest, str_replace($from, $to, $t));
+        echo "patched symfony Request CONTENT_TYPE\n";
+    }
+}
+
 echo "vendor attribute files touched: {$patched}\n";
