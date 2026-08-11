@@ -25,7 +25,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
      *
      * @var string
      */
-    const VERSION = '5.3.31';
+    const VERSION = '11.31.0';
 
     /**
      * The base path for the Laravel installation.
@@ -33,6 +33,16 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
      * @var string
      */
     protected $basePath;
+
+    /**
+     * Create a new application builder configured with the given base path.
+     */
+    public static function configure(?string $basePath = null): \Illuminate\Foundation\Configuration\ApplicationBuilder
+    {
+        $app = new static($basePath);
+
+        return new \Illuminate\Foundation\Configuration\ApplicationBuilder($app);
+    }
 
     /**
      * Indicates if the application has been bootstrapped before.

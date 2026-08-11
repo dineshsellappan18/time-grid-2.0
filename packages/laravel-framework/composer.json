@@ -120,7 +120,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "10.x-dev"
+            "dev-master": "11.x-dev"
         }
     },
     "suggest": {
@@ -155,5 +155,5 @@
         "sort-packages": true
     },
     "minimum-stability": "dev",
-    "version": "10.48.22"
+    "version": "11.31.0"
 }
