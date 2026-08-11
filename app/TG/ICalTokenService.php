@@ -2,6 +2,7 @@
 
 namespace App\TG;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Timegridio\Concierge\Models\Business;
@@ -14,13 +15,14 @@ class ICalTokenService
     {
         $plaintext = $this->generateToken();
         $hash = $this->hashToken($plaintext);
+        $timestamp = Carbon::now();
 
         DB::table(self::TABLE)->insert([
             'business_id' => $business->id,
             'token_hash'  => $hash,
-            'rotated_at'  => now(),
-            'created_at'  => now(),
-            'updated_at'  => now(),
+            'rotated_at'  => $timestamp,
+            'created_at'  => $timestamp,
+            'updated_at'  => $timestamp,
         ]);
 
         return $plaintext;
@@ -37,7 +39,7 @@ class ICalTokenService
         $stored = DB::table(self::TABLE)
             ->where('business_id', $business->id)
             ->whereNull('revoked_at')
-            ->orderByDesc('created_at')
+            ->orderBy('created_at', 'desc')
             ->first();
 
         if ($stored === null) {
@@ -49,7 +51,7 @@ class ICalTokenService
         if ($valid) {
             DB::table(self::TABLE)
                 ->where('id', $stored->id)
-                ->update(['last_used_at' => now()]);
+                ->update(['last_used_at' => Carbon::now()]);
         }
 
         return $valid;
@@ -60,7 +62,7 @@ class ICalTokenService
         DB::table(self::TABLE)
             ->where('business_id', $business->id)
             ->whereNull('revoked_at')
-            ->update(['revoked_at' => now()]);
+            ->update(['revoked_at' => Carbon::now()]);
 
         return $this->issue($business);
     }
@@ -70,7 +72,7 @@ class ICalTokenService
         return DB::table(self::TABLE)
             ->where('business_id', $business->id)
             ->whereNull('revoked_at')
-            ->orderByDesc('created_at')
+            ->orderBy('created_at', 'desc')
             ->first();
     }
 
@@ -86,12 +88,14 @@ class ICalTokenService
             return false;
         }
 
+        $timestamp = Carbon::now();
+
         DB::table(self::TABLE)->insert([
             'business_id' => $business->id,
             'token_hash'  => $hash,
             'rotated_at'  => null,
-            'created_at'  => now(),
-            'updated_at'  => now(),
+            'created_at'  => $timestamp,
+            'updated_at'  => $timestamp,
         ]);
 
         return true;
