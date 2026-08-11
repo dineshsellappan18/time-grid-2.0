@@ -61,9 +61,9 @@ class User extends EloquentModel implements AuthenticatableContract, Authorizabl
         );
     }
 
-    public function isOwnerOf(int $businessId): bool
+    public function isOwnerOf(int|Business $business): bool
     {
-        return $this->businesses()->withTrashed()->get()->contains($businessId);
+        return $this->businesses()->withTrashed()->get()->contains($business);
     }
 
     public function hasBusiness(): bool

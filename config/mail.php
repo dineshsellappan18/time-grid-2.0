@@ -13,7 +13,31 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    'default' => env('MAIL_MAILER', env('MAIL_DRIVER', 'log')),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Legacy Mail Driver Keys
+    |--------------------------------------------------------------------------
+    |
+    | The path-forked framework still resolves Swift via mail.driver and the
+    | classic host/port/encryption keys. Keep these in sync with mailers.*.
+    |
+    */
+
+    'driver' => env('MAIL_DRIVER', env('MAIL_MAILER', 'log')),
+
+    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+
+    'port' => env('MAIL_PORT', 587),
+
+    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+
+    'username' => env('MAIL_USERNAME'),
+
+    'password' => env('MAIL_PASSWORD'),
+
+    'sendmail' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
 
     /*
     |--------------------------------------------------------------------------

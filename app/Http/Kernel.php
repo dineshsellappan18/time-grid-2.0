@@ -45,11 +45,14 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * The application's middleware aliases.
+     * The application's route middleware aliases.
+     *
+     * Named $routeMiddleware for the path-forked Http Kernel, which registers
+     * aliases from that property (Laravel 11 uses $middlewareAliases).
      *
      * @var array<string, class-string|string>
      */
-    protected $middlewareAliases = [
+    protected $routeMiddleware = [
         'auth'       => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings'   => \Illuminate\Routing\Middleware\SubstituteBindings::class,

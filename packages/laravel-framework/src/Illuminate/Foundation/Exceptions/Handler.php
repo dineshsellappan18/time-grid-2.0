@@ -116,6 +116,10 @@ class Handler implements ExceptionHandlerContract
     public function render($request, Throwable $e)
     {
         foreach ($this->renderCallbacks as $callback) {
+            if (! $this->callbackAcceptsException($callback, $e)) {
+                continue;
+            }
+
             $response = $callback($e, $request);
             if ($response !== null) {
                 return $response;
@@ -133,6 +137,32 @@ class Handler implements ExceptionHandlerContract
         }
 
         return $this->prepareResponse($request, $e);
+    }
+
+    /**
+     * Determine if a renderable callback can accept the given exception.
+     */
+    protected function callbackAcceptsException(callable $callback, Throwable $e): bool
+    {
+        try {
+            $reflection = new \ReflectionFunction(\Closure::fromCallable($callback));
+        } catch (\ReflectionException $reflectionException) {
+            return true;
+        }
+
+        $parameters = $reflection->getParameters();
+        if ($parameters === []) {
+            return true;
+        }
+
+        $type = $parameters[0]->getType();
+        if (! $type instanceof \ReflectionNamedType || $type->isBuiltin()) {
+            return true;
+        }
+
+        $expected = $type->getName();
+
+        return $e instanceof $expected;
     }
 
     protected function unauthenticated($request, AuthenticationException $exception)
@@ -166,7 +196,16 @@ class Handler implements ExceptionHandlerContract
 
     public function renderForConsole($output, Throwable $e): void
     {
-        (new ConsoleApplication)->renderThrowable($e, $output);
+        if (method_exists(ConsoleApplication::class, 'renderThrowable')) {
+            (new ConsoleApplication)->renderThrowable($e, $output);
+
+            return;
+        }
+
+        // Symfony Console < 4.4 compatibility for the path-forked framework.
+        $output->writeln('<error>'.get_class($e).': '.$e->getMessage().'</error>');
+        $output->writeln($e->getFile().':'.$e->getLine());
+        $output->writeln($e->getTraceAsString());
     }
 
     protected function renderHttpException(HttpException $e)

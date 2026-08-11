@@ -97,6 +97,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Logging Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Compatibility keys for the path-forked framework's ConfigureLogging
+    | bootstrapper (reads app.log / app.log_level). Channel config lives in
+    | config/logging.php for modern Laravel hops.
+    |
+    */
+
+    'log' => env('APP_LOG', 'single'),
+
+    'log_level' => env('APP_LOG_LEVEL', 'debug'),
+
+    'log_max_files' => env('APP_LOG_MAX_FILES', 5),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |

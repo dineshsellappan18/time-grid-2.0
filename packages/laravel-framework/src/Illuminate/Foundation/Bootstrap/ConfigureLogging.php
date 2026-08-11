@@ -54,7 +54,16 @@ class ConfigureLogging
      */
     protected function configureHandlers(Application $app, Writer $log)
     {
-        $method = 'configure'.ucfirst($app['config']['app.log']).'Handler';
+        $driver = $app['config']['app.log'] ?? 'single';
+        if (! is_string($driver) || $driver === '') {
+            $driver = 'single';
+        }
+
+        $method = 'configure'.ucfirst($driver).'Handler';
+
+        if (! method_exists($this, $method)) {
+            $method = 'configureSingleHandler';
+        }
 
         $this->{$method}($app, $log);
     }

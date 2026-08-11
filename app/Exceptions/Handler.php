@@ -5,6 +5,8 @@ namespace App\Exceptions;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -16,7 +18,12 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<Throwable>>
      */
     protected $dontReport = [
-        //
+        AuthenticationException::class,
+        AuthorizationException::class,
+        \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
+        TokenMismatchException::class,
+        \Illuminate\Validation\ValidationException::class,
     ];
 
     /**
@@ -31,57 +38,59 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Register the exception handling callbacks for the application.
+     * Report or log an exception.
      */
-    public function register(): void
+    public function report(Throwable $e): void
     {
-        $this->reportable(function (Throwable $e) {
+        try {
+            $request = app()->bound('request') ? request() : null;
+            $userId = app()->bound('auth') ? auth()->id() : null;
+
             Log::error($e->getMessage(), [
                 'exception'      => get_class($e),
                 'file'           => $e->getFile(),
                 'line'           => $e->getLine(),
-                'correlation_id' => (string) request()?->header('X-Request-Id', uniqid('req_', true)),
-                'user_id'        => \Auth::id(),
-                'url'            => request()?->fullUrl(),
-                'method'         => request()?->method(),
+                'correlation_id' => (string) ($request?->header('X-Request-Id') ?: uniqid('req_', true)),
+                'user_id'        => $userId,
+                'url'            => $request?->fullUrl(),
+                'method'         => $request?->method(),
             ]);
+        } catch (Throwable $loggingError) {
+            error_log('Exception reporter failed: '.$loggingError->getMessage());
+            error_log('Original: '.get_class($e).': '.$e->getMessage().' @ '.$e->getFile().':'.$e->getLine());
+        }
 
-            return false;
-        });
+        parent::report($e);
+    }
 
-        $this->renderable(function (AuthorizationException $e, $request) {
+    /**
+     * Render an exception into an HTTP response.
+     */
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof AuthorizationException) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => $e->getMessage() ?: 'This action is unauthorized.',
                 ], 403);
             }
+        }
 
-            return null;
-        });
-
-        $this->renderable(function (\Illuminate\Session\TokenMismatchException $e, $request) {
-            if (app()->environment('production', 'demo')) {
+        if (app()->environment('production', 'demo')) {
+            if ($e instanceof TokenMismatchException) {
                 return redirect($request->fullUrl())->withErrors(trans('app.msg.invalid_token'));
             }
 
-            return null;
-        });
-
-        $this->renderable(function (Throwable $e, $request) {
-            if (!app()->environment('production', 'demo')) {
-                return null;
-            }
-
-            if ($e instanceof \Illuminate\Http\Exceptions\HttpResponseException) {
+            if ($e instanceof HttpResponseException) {
                 return redirect(route('user.directory.list'))->withErrors(trans('app.msg.invalid_url'));
             }
 
-            if (!app()->isDownForMaintenance() && $request->user()) {
+            if (! app()->isDownForMaintenance() && $request->user()) {
                 return redirect(route('whoops'))->withErrors(trans('app.msg.general_exception'));
             }
+        }
 
-            return null;
-        });
+        return parent::render($request, $e);
     }
 
     /**
