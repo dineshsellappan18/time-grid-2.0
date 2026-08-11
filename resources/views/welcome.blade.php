@@ -57,7 +57,7 @@
         <div class="row">
         	<div class="col-12">
         		<span class="btn-group">
-                {!! Button::success(trans('welcome.jumbotron.btn.begin'))->asLinkTo( url('/register') ) !!}
+                {!! Button::success(trans('welcome.jumbotron.btn.begin'))->asLinkTo( url('/register') )->withAttributes(['data-nav' => 'get-started']) !!}
                 {!! Button::normal(trans('welcome.jumbotron.btn.login'))->asLinkTo( url('/login') ) !!}
             	</span>
         	</div>

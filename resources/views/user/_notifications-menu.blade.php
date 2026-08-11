@@ -1,5 +1,5 @@
 <!-- Notifications Menu -->
-<li class="nav-item dropdown">
+<li class="nav-item dropdown" data-nav="notifications">
     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
         <i class="fa fa-calendar-check-o"></i>
         <span class="badge {{ $appointments->count() > 0 ? 'bg-warning text-dark' : 'bg-secondary' }}">{{ $appointments->count() }}</span>

@@ -1,5 +1,5 @@
 {{-- Language Switcher Dropdown --}}
-<li id="navLang" class="nav-item dropdown">
+<li id="navLang" class="nav-item dropdown" data-nav="lang-switch">
     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
         {{ $availableLanguages[$appLocale] }}
     </a>

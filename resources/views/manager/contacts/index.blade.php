@@ -88,14 +88,14 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="card-header">
             <h3 class="card-title">{{ trans('manager.contacts.title') }}</h3>
             <div class="float-end">
-                <button class="btn btn-outline-secondary btn-xs btn-filter">
+                <button class="btn btn-outline-secondary btn-xs btn-filter" data-action="toggle-filter">
                     <span class="glyphicon glyphicon-filter"></span>&nbsp;{{ trans('manager.contacts.list.btn.filter') }}
                 </button>
             </div>
         </div>
         <table class="table table-condensed table-hover table-striped">
             <thead>
-                <tr class="filters">
+                <tr class="filters" data-search-filter>
                     <th><input type="text" class="form-control" placeholder="{{ trans('manager.contacts.list.header.lastname') }}" disabled></th>
                     <th><input type="text" class="form-control" placeholder="{{ trans('manager.contacts.list.header.firstname') }}" disabled></th>
                     <th><input type="text" class="form-control" placeholder="{{ trans('manager.contacts.list.header.email') }}" disabled></th>

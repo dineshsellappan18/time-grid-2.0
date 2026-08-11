@@ -5,7 +5,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-12">
-                <ul class="demo">
+                <ul class="demo" data-notification-list>
                     @foreach ($notifications as $notification)
                     @include('manager.businesses._notification', ['notification' => $notification->toArray(), 'timestamp' => Carbon::parse($notification['created_at'])->timezone($business->timezone)])
                     @endforeach

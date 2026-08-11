@@ -7,25 +7,25 @@
 {!! Form::hidden('serviceId', $service->id) !!}
 <ul class="list-group">
     <li class="list-group-item">{{ trans('datetime.weekday.monday') }}
-        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" name="weekdays[mon]" checked></span>
+        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" data-control="availability-switch" name="weekdays[mon]" checked></span>
     </li>
     <li class="list-group-item">{{ trans('datetime.weekday.tuesday') }}
-        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" name="weekdays[tue]" checked></span>
+        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" data-control="availability-switch" name="weekdays[tue]" checked></span>
     </li>
     <li class="list-group-item">{{ trans('datetime.weekday.wednesday') }}
-        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" name="weekdays[wed]" checked></span>
+        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" data-control="availability-switch" name="weekdays[wed]" checked></span>
     </li>
     <li class="list-group-item">{{ trans('datetime.weekday.thursday') }}
-        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" name="weekdays[thu]" checked></span>
+        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" data-control="availability-switch" name="weekdays[thu]" checked></span>
     </li>
     <li class="list-group-item">{{ trans('datetime.weekday.friday') }}
-        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" name="weekdays[fri]" checked></span>
+        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" data-control="availability-switch" name="weekdays[fri]" checked></span>
     </li>
     <li class="list-group-item">{{ trans('datetime.weekday.saturday') }}
-        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" name="weekdays[sat]"></span>
+        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" data-control="availability-switch" name="weekdays[sat]"></span>
     </li>
     <li class="list-group-item">{{ trans('datetime.weekday.sunday') }}
-        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" name="weekdays[sun]"></span>
+        <span class="float-end"><input type="checkbox" data-size="mini" class="weekday" data-control="availability-switch" name="weekdays[sun]"></span>
     </li>
 </ul>
 {!! Form::close() !!}

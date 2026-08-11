@@ -1,5 +1,5 @@
 <!-- User Account Menu -->
-<li class="nav-item dropdown">
+<li class="nav-item dropdown" data-nav="user-menu">
     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
         <img src="{{ $gravatarURL }}" class="rounded-circle" width="25" height="25" alt="{{ $user->name }}">
         <span class="d-none d-sm-inline">{{ $user->name }}</span>

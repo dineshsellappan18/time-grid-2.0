@@ -70,7 +70,7 @@
 <div class="form-group">
     {!! Form::label( trans('manager.service.form.color.label'), null, ['class' => 'control-label col-sm-4 col-md-4'] ) !!}
     <div class="col-sm-4 col-md-4">
-        <div class="input-group color-picker">
+        <div class="input-group color-picker" data-control="color-picker">
             {!! Form::text('color', null, [
                 'class'=>'form-control',
                 'placeholder'=> trans('manager.service.form.color.label')
