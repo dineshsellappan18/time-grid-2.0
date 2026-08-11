@@ -1,40 +1,97 @@
 @extends('layouts.app')
 
-@section('title', trans('manager.humanresource.show.title'))
-@section('subtitle', trans('manager.humanresource.show.subtitle'))
+@section('title', $humanresource->name)
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
+<div class="container-fluid px-0">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
 
-            <div class="card border-info">
-                <div class="card-header">
-                    <h3 class="card-title">{{ $humanresource->name }}</h3>
+            {{-- Detail Header --}}
+            <div class="tg-detail-header">
+                <div class="tg-detail-header__avatar">
+                    <div class="tg-detail-header__initials">{{ strtoupper(substr($humanresource->name, 0, 2)) }}</div>
+                </div>
+                <div class="tg-detail-header__info">
+                    <h1 class="tg-detail-header__title">{{ $humanresource->name }}</h1>
+                    <div class="tg-detail-header__meta">
+                        <span class="tg-detail-header__meta-item">
+                            <i class="fa fa-tag"></i> {{ $humanresource->slug }}
+                        </span>
+                        @if($humanresource->capacity)
+                        <span class="tg-detail-header__meta-item">
+                            <i class="fa fa-users"></i> Capacity: {{ $humanresource->capacity }}
+                        </span>
+                        @endif
+                    </div>
+                </div>
+                <div class="tg-detail-header__actions">
+                    <a href="{{ route('manager.business.humanresource.edit', [$humanresource->business, $humanresource->id]) }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fa fa-pencil"></i> {{ trans('manager.humanresource.btn.edit', ['default' => 'Edit']) }}
+                    </a>
+                    <form method="POST" action="{{ route('manager.business.humanresource.destroy', [$humanresource->business, $humanresource]) }}" class="d-inline"
+                          onsubmit="return confirm('{{ trans('manager.humanresource.btn.delete', ['default' => 'Delete this staff member']) }}?')">
+                        {{ csrf_field() }}
+                        {{ method_field('DELETE') }}
+                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                            <i class="fa fa-trash"></i> {{ trans('manager.humanresource.btn.delete', ['default' => 'Delete']) }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                {{-- Main Content --}}
+                <div class="col-lg-8">
+                    <div class="tg-detail-tabs">
+                        <ul class="tg-detail-tabs__nav" role="tablist">
+                            <li><button class="tg-detail-tabs__btn is-active" data-tab="details" role="tab" aria-selected="true">
+                                <i class="fa fa-info-circle"></i> Details
+                            </button></li>
+                        </ul>
+
+                        <div class="tg-detail-tabs__panel is-active" data-tab-panel="details" role="tabpanel">
+                            <div class="tg-detail-fields">
+                                <div class="tg-detail-field">
+                                    <span class="tg-detail-field__label">Name</span>
+                                    <span class="tg-detail-field__value">{{ $humanresource->name }}</span>
+                                </div>
+                                <div class="tg-detail-field">
+                                    <span class="tg-detail-field__label">Slug</span>
+                                    <span class="tg-detail-field__value"><code>{{ $humanresource->slug }}</code></span>
+                                </div>
+                                @if($humanresource->capacity)
+                                <div class="tg-detail-field">
+                                    <span class="tg-detail-field__label">Capacity</span>
+                                    <span class="tg-detail-field__value">{{ $humanresource->capacity }}</span>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        {{ $humanresource->slug }}
-                    </li>
-                </ul>
-
-                <div class="card-body">
-                    <p>{{ $humanresource->capacity }}</p>
-                </div>
-
-                <div class="card-footer">
-                    {!! Button::normal()
-                        ->withIcon(Icon::edit())
-                        ->asLinkTo(route('manager.business.humanresource.edit', [$humanresource->business, $humanresource->id]) ) !!}
-
-                        {!! Button::danger()->withIcon(Icon::trash())->withAttributes([
-                            'type' => 'button',
-                            'data-bs-toggle' => 'tooltip',
-                            'title' => trans('manager.humanresource.btn.delete'),
-                            'data-method' => 'DELETE',
-                            'data-confirm' => trans('manager.humanresource.btn.delete').'?']
-                        )->asLinkTo( route('manager.business.humanresource.destroy', [$humanresource->business, $humanresource]) ) !!}
+                {{-- Related Items Sidebar --}}
+                <div class="col-lg-4">
+                    <div class="tg-detail-sidebar">
+                        <div class="tg-detail-sidebar__section">
+                            <h3 class="tg-detail-sidebar__title"><i class="fa fa-building-o"></i> Business</h3>
+                            <div class="tg-detail-sidebar__item">
+                                <a href="{{ route('manager.business.show', $humanresource->business) }}">{{ $humanresource->business->name }}</a>
+                            </div>
+                        </div>
+                        <div class="tg-detail-sidebar__section">
+                            <h3 class="tg-detail-sidebar__title"><i class="fa fa-list"></i> Quick Actions</h3>
+                            <a href="{{ route('manager.business.humanresource.edit', [$humanresource->business, $humanresource->id]) }}"
+                               class="btn btn-outline-secondary btn-sm w-100 mb-2">
+                                <i class="fa fa-pencil"></i> Edit Staff Member
+                            </a>
+                            <a href="{{ route('manager.business.humanresource.index', $humanresource->business) }}"
+                               class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fa fa-arrow-left"></i> Back to Staff
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -43,107 +100,5 @@
 @endsection
 
 @push('footer_scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-        var panels = document.querySelectorAll('.user-infos');
-        var panelsButton = document.querySelectorAll('.dropdown-user');
-        panels.hide();
-
-        //Click dropdown
-        panelsButton.click(function() {
-                //get data-for attribute
-                var dataFor = this.attr('data-for');
-                var idFor = $(dataFor);
-
-                //current button
-                var currentButton = this;
-                idFor.slideToggle(400, function() {
-                        //Completed slidetoggle
-                        if(idFor.is(':visible'))
-                        {
-                                currentButton.html('<i class="glyphicon glyphicon-chevron-up text-muted"></i>');
-                        }
-                        else
-                        {
-                                currentButton.html('<i class="glyphicon glyphicon-chevron-down text-muted"></i>');
-                        }
-                })
-        });
-
-
-        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) { new bootstrap.Tooltip(el); });
-
-        document.querySelectorAll('button').click(function(e) {
-                e.preventDefault();
-                alert("This is a demo.\n :-)");
-        });
-});
-
-(function() {
- 
-    var laravel = {
-        initialize: function() {,
- 
-        registerEvents: function() {
-            this.methodLinks.on('click', this.handleMethod);
-        },
- 
-        handleMethod: function(e) {
-            var link = this;
-            var httpMethod = link.data('method').toUpperCase();
-            var form;
- 
-            // If the data-method attribute is not PUT or DELETE,
-            // then we don't know what to do. Just ignore.
-            if ( $.inArray(httpMethod, ['PUT', 'DELETE']) === - 1 ) {
-                return;
-            }
- 
-            // Allow user to optionally provide data-confirm="Are you sure?"
-            if ( link.data('confirm') ) {
-                if ( ! laravel.verifyConfirm(link) ) {
-                    return false;
-                }
-            }
- 
-            form = laravel.createForm(link);
-            form.submit();
- 
-            e.preventDefault();
-        },
- 
-        verifyConfirm: function(link) {
-            return confirm(link.data('confirm'));
-        },
- 
-        createForm: function(link) {
-            var form =
-            $('<form>', {
-                'method': 'POST',
-                'action': link.attr('href')
-            });
- 
-            var token =
-            $('<input>', {
-                'type': 'hidden',
-                'name': '_token',
-                    'value': '{{ csrf_token() }}'
-                });
- 
-            var hiddenInput =
-            $('<input>', {
-                'name': '_method',
-                'type': 'hidden',
-                'value': link.data('method')
-            });
- 
-            return form.append(token, hiddenInput)
-                                 .appendTo('body');
-        }
-    };
- 
-    laravel.initialize();
- 
-})();
-</script>
+@vite(['resources/js/detail-view.js'])
 @endpush

@@ -16,6 +16,7 @@ export default defineConfig({
                 'resources/js/auth-validation.js',
                 'resources/js/settings.js',
                 'resources/js/datatable.js',
+                'resources/js/detail-view.js',
             ],
             refresh: true,
         }),
