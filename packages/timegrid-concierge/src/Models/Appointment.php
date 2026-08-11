@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use McCool\LaravelAutoPresenter\HasPresenter;
 use Timegridio\Concierge\Presenters\AppointmentPresenter;
+use Timegridio\Concierge\Traits\Presentable;
 
 /**
  * An Appointment can be understood as a reservation of a given Service,
@@ -40,6 +41,8 @@ use Timegridio\Concierge\Presenters\AppointmentPresenter;
  */
 class Appointment extends EloquentModel implements HasPresenter
 {
+    use Presentable;
+
     /**
      * The attributes that are mass assignable.
      *

@@ -9,7 +9,7 @@ class AvailabilityServiceUnitTest extends TestCase
 
     protected $availability;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

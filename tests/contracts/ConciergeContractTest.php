@@ -24,14 +24,14 @@ class ConciergeContractTest extends TestCase
      */
     protected $concierge;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->concierge = $this->app->make(Concierge::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Carbon::setTestNow();
 

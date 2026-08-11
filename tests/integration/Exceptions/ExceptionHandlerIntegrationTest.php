@@ -16,8 +16,8 @@ class ExceptionHandlerIntegrationTest extends TestCase
         $response = $this->call('GET', '/__test/throw-secret');
 
         $this->assertTrue(in_array($response->getStatusCode(), [500, 302, 200]));
-        $this->assertNotContains('SECRET_STACK_MARKER_SHOULD_NOT_LEAK', $response->getContent());
-        $this->assertNotContains('Stack trace', $response->getContent());
-        $this->assertNotContains('rollbar', strtolower($response->getContent()));
+        $this->assertStringNotContainsString('SECRET_STACK_MARKER_SHOULD_NOT_LEAK', $response->getContent());
+        $this->assertStringNotContainsString('Stack trace', $response->getContent());
+        $this->assertStringNotContainsString('rollbar', strtolower($response->getContent()));
     }
 }

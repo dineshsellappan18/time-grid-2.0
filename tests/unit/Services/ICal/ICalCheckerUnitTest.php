@@ -11,7 +11,7 @@ class ICalCheckerUnitTest extends TestCase
      */
     protected $icalchecker;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

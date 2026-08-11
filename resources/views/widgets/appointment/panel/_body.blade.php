@@ -9,7 +9,7 @@
 --}}
 <div class='panel panel-{{ $appointment->statusToCssClass }}' id='{{ $appointment->code }}'>
     <div class='panel-heading'>
-        <h3 class='panel-title'>{{ $appointment->status }}</h3>
+        <h3 class='panel-title'>{{ $appointment->status() }}</h3>
     </div>
 
     <div class='panel-body'>

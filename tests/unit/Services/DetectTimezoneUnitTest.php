@@ -13,7 +13,7 @@ class DetectTimezoneUnitTest extends TestCase
         $timezone = 'America/New_York';
         $detectTimezone = $this->makeDetectTimezone($timezone);
         $detectedTimezone = $detectTimezone->get();
-        $this->assertInternalType('string', $detectedTimezone);
+        $this->assertIsString($detectedTimezone);
         $this->assertEquals($timezone, $detectedTimezone);
     }
 
@@ -25,7 +25,7 @@ class DetectTimezoneUnitTest extends TestCase
         $timezone = 'America/New_York';
         $detectTimezone = $this->makeDetectTimezone($timezone);
         $detectedTimezone = $detectTimezone->get();
-        $this->assertInternalType('string', "$detectedTimezone");
+        $this->assertIsString("$detectedTimezone");
         $this->assertEquals($timezone, "$detectedTimezone");
     }
 

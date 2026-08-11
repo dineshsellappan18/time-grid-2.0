@@ -14,7 +14,7 @@ class SendRootReportTest extends TestCase
 
     protected $commandTester;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -38,7 +38,7 @@ class SendRootReportTest extends TestCase
             'command' => $this->command->getName(),
         ]);
 
-        $this->assertRegExp('/Root report was sent/', $this->commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Root report was sent/', $this->commandTester->getDisplay());
     }
 
     protected function arrangeFixture()

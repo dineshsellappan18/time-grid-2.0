@@ -219,6 +219,25 @@ Policy note from the same page: bug fixes ~18 months; security fixes ~2 years pe
 
 ---
 
+## D-011 — PHP 8.3/8.4 interpreter raise on Laravel 5.3 (WO-015)
+
+**Decision:** Raise `composer.json` `php` to `^8.3|^8.4` while keeping Laravel **5.3** via a path-forked framework (`packages/laravel-framework`) and path-forked Carbon (`packages/timegrid-carbon`), plus post-install Symfony/phpdotenv attribute patches (`bin/patch-php83-vendors.php`).
+
+| Technique | Purpose |
+| --- | --- |
+| `#[\ReturnTypeWillChange]` on Illuminate / Symfony / Carbon | Prevent inheritance fatals under PHP 8.1+ |
+| `array_values()` in controller dispatch | Avoid PHP 8 named-argument fatals on route params |
+| Soft deprecations not escalated in `HandleExceptions` | Keep `error_reporting(-1)` without converting E_DEPRECATED to ErrorException (L5.3/Carbon1 noise) |
+| PHPUnit 10 + aliases | Replace PHPUnit 5; legacy `PHPUnit_Framework_*` aliases in `bootstrap/autoload.php` |
+| Path forks: geoip, cookie-consent | Raise package PHP floors without Laravel API change |
+
+**Residual:** Soft deprecation notices remain until Laravel hops / Carbon 2 (WO-016+). Dusk still deferred (WO-006). Full-app PHPStan still scoped (WO-007 residual).
+
+**Owner:** Platform Maintainer  
+**Status:** Accepted (WO-015, 2026-08-11)
+
+---
+
 ## Change control
 
 | Date | Change | Author |
@@ -229,3 +248,4 @@ Policy note from the same page: bug fixes ~18 months; security fixes ~2 years pe
 | 2026-08-11 | D-008 Branch constraints replaced with tags/path/inline; Code Climate removed | WO-008 implementation |
 | 2026-08-11 | D-009 Rollbar/Debugbar/abandoned package removals; Bootstrapper vendored | WO-009 implementation |
 | 2026-08-11 | D-010 Transitional Phase-1 completion policy for WO-003…WO-014 | Programme continuity |
+| 2026-08-11 | D-011 PHP 8.3/8.4 raise via L5.3 path forks + PHPUnit 10 | WO-015 implementation |

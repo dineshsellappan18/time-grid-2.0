@@ -16,7 +16,7 @@ class AvailabilityCharacterizationTest extends TestCase
     /** @var AvailabilityService */
     protected $availability;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -24,7 +24,7 @@ class AvailabilityCharacterizationTest extends TestCase
         $this->seedCharacterizationFixture();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Carbon::setTestNow();
 
@@ -104,7 +104,7 @@ class AvailabilityCharacterizationTest extends TestCase
         $this->assertContains(static::$vacancyDate, $payload['dates']);
         $this->assertSame('2024-06-16', $payload['startDate']);
         $this->assertSame('2024-06-24', $payload['endDate']);
-        $this->assertInternalType('array', $payload['disabledDates']);
+        $this->assertIsArray($payload['disabledDates']);
     }
 
     /**
@@ -132,10 +132,10 @@ class AvailabilityCharacterizationTest extends TestCase
         $this->assertEquals($service->id, $payload['service']['id']);
         $this->assertSame(static::$vacancyDate, $payload['date']);
         $this->assertSame(static::$businessTimezone, $payload['timezone']);
-        $this->assertInternalType('array', $payload['times']);
+        $this->assertIsArray($payload['times']);
         $this->assertNotEmpty($payload['times']);
         foreach ($payload['times'] as $time) {
-            $this->assertRegExp('/^\d{2}:\d{2}$/', $time);
+            $this->assertMatchesRegularExpression('/^\d{2}:\d{2}$/', $time);
         }
         $this->assertNotContains('10:00', $payload['times'], 'Seed appointment at 10:00 must block that slot');
         $this->assertContains('09:00', $payload['times']);

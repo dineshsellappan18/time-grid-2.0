@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use McCool\LaravelAutoPresenter\HasPresenter;
 use Timegridio\Concierge\Presenters\ContactPresenter;
+use Timegridio\Concierge\Traits\Presentable;
 
 /**
  * @property int $id
@@ -27,6 +28,8 @@ use Timegridio\Concierge\Presenters\ContactPresenter;
  */
 class Contact extends EloquentModel implements HasPresenter
 {
+    use Presentable;
+
     /**
      * The attributes that are mass assignable.
      *

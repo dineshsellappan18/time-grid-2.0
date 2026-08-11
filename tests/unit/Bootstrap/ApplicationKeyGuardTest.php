@@ -7,6 +7,8 @@ class ApplicationKeyGuardTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_allows_local_environment_with_placeholder_key()
     {
+        $this->expectNotToPerformAssertions();
+
         $guard = new ApplicationKeyGuard();
 
         $guard->assertSecureKey('local', ApplicationKeyGuard::PLACEHOLDER_KEY);
@@ -17,39 +19,38 @@ class ApplicationKeyGuardTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_allows_non_local_environment_with_a_real_key()
     {
+        $this->expectNotToPerformAssertions();
+
         $guard = new ApplicationKeyGuard();
 
         $guard->assertSecureKey('production', 'base64:dGVzdC1rZXktZm9yLXVuaXQtdGVzdHM=');
         $guard->assertSecureKey('staging', 'SomeGeneratedApplicationKeyValue123');
     }
 
-    /**
-     * @test
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Application key is missing or still a placeholder
-     */
+    /** @test */
     public function it_rejects_empty_key_outside_local()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Application key is missing or still a placeholder');
+
         (new ApplicationKeyGuard())->assertSecureKey('production', '');
     }
 
-    /**
-     * @test
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Application key is missing or still a placeholder
-     */
+    /** @test */
     public function it_rejects_placeholder_key_outside_local()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Application key is missing or still a placeholder');
+
         (new ApplicationKeyGuard())->assertSecureKey('production', ApplicationKeyGuard::PLACEHOLDER_KEY);
     }
 
-    /**
-     * @test
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Application key is missing or still a placeholder
-     */
+    /** @test */
     public function it_rejects_null_key_in_staging()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Application key is missing or still a placeholder');
+
         (new ApplicationKeyGuard())->assertSecureKey('staging', null);
     }
 

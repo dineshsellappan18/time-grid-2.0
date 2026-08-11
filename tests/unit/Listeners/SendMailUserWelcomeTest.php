@@ -8,7 +8,7 @@ class SendMailUserWelcomeTest extends TestCase
 {
     use CreateUser;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->transmail = Mockery::mock(TransMail::class);

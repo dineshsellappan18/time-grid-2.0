@@ -1,8 +1,10 @@
 <?php
 
+use PHPUnit\Framework\TestCase as BaseTestCase;
+
 abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
-    protected $baseUrl = 'http://localhost:8000';
+    protected $baseUrl = 'http://127.0.0.1:8000';
 
     /**
      * Creates the application.
@@ -58,14 +60,14 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         //
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->prepareForTests();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 

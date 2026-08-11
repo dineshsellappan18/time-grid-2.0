@@ -32,10 +32,7 @@ class AppServiceProvider extends ServiceProvider
             \App\TG\Registrar::class
         );
 
-        if ($this->app->environment() == 'local') {
-            $this->app->register(\Laracasts\Generators\GeneratorsServiceProvider::class);
-            $this->app->register(\Potsky\LaravelLocalizationHelpers\LaravelLocalizationHelpersServiceProvider::class);
-        }
+        // Local-only generators / localization-helpers removed for PHP 8.3+ install (WO-015).
 
         // ROLLBAR_TOKEN in .env is ignored — Rollbar provider intentionally not registered (WO-009).
     }

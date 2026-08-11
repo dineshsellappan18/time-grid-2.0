@@ -13,14 +13,14 @@ class IcalFeedCharacterizationTest extends TestCase
     use CharacterizationFixture;
     use CreateBusiness, CreateUser, CreateContact, CreateAppointment, CreateService, CreateVacancy;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->seedCharacterizationFixture();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Carbon::setTestNow();
 

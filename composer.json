@@ -32,6 +32,20 @@
     "repositories": [
         {
             "type": "path",
+            "url": "packages/laravel-framework",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "packages/timegrid-carbon",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
             "url": "packages/timegrid-concierge",
             "options": {
                 "symlink": true
@@ -43,10 +57,24 @@
             "options": {
                 "symlink": true
             }
+        },
+        {
+            "type": "path",
+            "url": "packages/timegrid-geoip",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "packages/timegrid-cookie-consent",
+            "options": {
+                "symlink": true
+            }
         }
     ],
     "require": {
-        "php": ">=5.6",
+        "php": "^8.3|^8.4",
         "anhskohbo/no-captcha": "2.*",
         "barryvdh/laravel-snappy": "~0.2",
         "bassjobsen/bootstrap-3-typeahead": "~4.0",
@@ -56,7 +84,7 @@
         "guzzlehttp/guzzle": "~6.0",
         "intervention/image": "^2.2",
         "laracasts/flash": "~2.0",
-        "laravel/framework": "5.3.*",
+        "laravel/framework": "5.3.31",
         "laravel/socialite": "~2.0",
         "laravelcollective/html": "~5.2",
         "pid/speakingurl": "^0.11.0",
@@ -72,20 +100,19 @@
         "eluceo/ical": "^0.11",
         "snowfire/beautymail": "v1.1.9",
         "dineshsellappan18/timegrid-icalreader": "1.0.0",
-        "spatie/laravel-cookie-consent": "^1.2",
-        "torann/geoip": "1.0.*",
         "geoip2/geoip2": "~2.1",
-        "nesbot/carbon": "^1.22",
-        "jackiedo/timezonelist": "^5.0"
+        "nesbot/carbon": "1.39.1",
+        "jackiedo/timezonelist": "^5.0",
+        "dineshsellappan18/timegrid-geoip": "1.0.9",
+        "dineshsellappan18/timegrid-cookie-consent": "1.8.0",
+        "pelago/emogrifier": "^7.0"
     },
     "require-dev": {
-        "fakerphp/faker": "1.9.2",
-        "laracasts/generators": "^1.1",
-        "phpunit/phpunit": "~5.7",
-        "potsky/laravel-localization-helpers": "2.4.*",
-        "symfony/css-selector": "~3.0",
-        "symfony/dom-crawler": "~3.0",
-        "mockery/mockery": "^0.9.9",
+        "fakerphp/faker": "^1.23",
+        "phpunit/phpunit": "^10.5",
+        "symfony/css-selector": "^6.4|^7.0",
+        "symfony/dom-crawler": "^6.4|^7.0",
+        "mockery/mockery": "^1.6",
         "phpstan/phpstan": "1.10.67"
     },
     "autoload": {
@@ -119,10 +146,12 @@
             "php artisan key:generate"
         ],
         "post-install-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postInstall"
+            "Illuminate\\Foundation\\ComposerScripts::postInstall",
+            "@php bin/patch-php83-vendors.php"
         ],
         "post-update-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postUpdate"
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "@php bin/patch-php83-vendors.php"
         ],
         "test:unit": "vendor/bin/phpunit --testsuite Unit",
         "test:contracts": "vendor/bin/phpunit --testsuite Contracts",
@@ -133,12 +162,16 @@
     },
     "config": {
         "preferred-install": "dist",
-        "platform-check": false,
+        "platform-check": true,
         "audit": {
             "block-insecure": false
         },
         "allow-plugins": {
             "kylekatarnls/update-helper": true
         }
+    },
+    "replace": {
+        "psy/psysh": "*",
+        "classpreloader/classpreloader": "*"
     }
 }

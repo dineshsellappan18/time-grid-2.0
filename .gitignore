@@ -6,6 +6,14 @@
 !/packages/timegrid-concierge/**
 !/packages/timegrid-icalreader/
 !/packages/timegrid-icalreader/**
+!/packages/timegrid-geoip/
+!/packages/timegrid-geoip/**
+!/packages/timegrid-cookie-consent/
+!/packages/timegrid-cookie-consent/**
+!/packages/laravel-framework/
+!/packages/laravel-framework/**
+!/packages/timegrid-carbon/
+!/packages/timegrid-carbon/**
 /node_modules
 /tests/logs
 /build
@@ -28,3 +36,4 @@
 
 /storage/architecture/
 /storage/architecture/**
+.phpunit.cache

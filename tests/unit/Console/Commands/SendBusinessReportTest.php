@@ -20,7 +20,7 @@ class SendBusinessReportTest extends TestCase
      */
     protected $business;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -44,7 +44,7 @@ class SendBusinessReportTest extends TestCase
             'command' => $this->command->getName(),
         ]);
 
-        $this->assertRegExp('/Scanning all businesses../', $this->commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Scanning all businesses../', $this->commandTester->getDisplay());
     }
 
     /** @test */
@@ -55,7 +55,7 @@ class SendBusinessReportTest extends TestCase
             'business' => $this->business->id,
         ]);
 
-        $this->assertRegExp("/Sending to businessId:{$this->business->id}/", $this->commandTester->getDisplay());
+        $this->assertMatchesRegularExpression("/Sending to businessId:{$this->business->id}/", $this->commandTester->getDisplay());
     }
 
     /** @test */
@@ -68,8 +68,8 @@ class SendBusinessReportTest extends TestCase
             'business' => $this->business->id,
         ]);
 
-        $this->assertRegExp("/Sending to businessId:{$this->business->id}/", $this->commandTester->getDisplay());
-        $this->assertRegExp("/Skipped report/", $this->commandTester->getDisplay());
+        $this->assertMatchesRegularExpression("/Sending to businessId:{$this->business->id}/", $this->commandTester->getDisplay());
+        $this->assertMatchesRegularExpression("/Skipped report/", $this->commandTester->getDisplay());
     }
 
     protected function arrangeFixture()

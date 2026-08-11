@@ -16,8 +16,8 @@ class AuthComposerUnitTest extends TestCase
 
         $view = view();
 
-        $this->assertInternalType('bool', $view->shared('isGuest'));
-        $this->assertInternalType('bool', $view->shared('signedIn'));
+        $this->assertIsBool($view->shared('isGuest'));
+        $this->assertIsBool($view->shared('signedIn'));
         $this->assertNull($view->shared('user'));
         $this->assertEquals('http://placehold.it/150x150', $view->shared('gravatarURL'));
         $this->assertInstanceOf(Illuminate\Support\Collection::class, $view->shared('appointments'));
@@ -36,10 +36,10 @@ class AuthComposerUnitTest extends TestCase
 
         $view = view();
 
-        $this->assertInternalType('bool', $view->shared('isGuest'));
-        $this->assertInternalType('bool', $view->shared('signedIn'));
+        $this->assertIsBool($view->shared('isGuest'));
+        $this->assertIsBool($view->shared('signedIn'));
         $this->assertEquals($user, $view->shared('user'));
-        $this->assertInternalType('string', $view->shared('gravatarURL'));
+        $this->assertIsString($view->shared('gravatarURL'));
         $this->assertInstanceOf(Illuminate\Support\Collection::class, $view->shared('appointments'));
     }
 }

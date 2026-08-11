@@ -13,14 +13,14 @@ class BookingCharacterizationTest extends TestCase
     use CharacterizationFixture;
     use CreateBusiness, CreateUser, CreateContact, CreateAppointment, CreateService, CreateVacancy;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->seedCharacterizationFixture();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Carbon::setTestNow();
 
@@ -69,7 +69,7 @@ class BookingCharacterizationTest extends TestCase
         $this->assertSame(4, strlen($appointment->code));
         $this->assertSame(strtoupper(substr($appointment->hash, 0, 4)), $appointment->code);
         $this->assertSame(Appointment::STATUS_RESERVED, $appointment->status);
-        $this->assertRegExp('/^[A-F0-9]{4}$/', $appointment->code);
+        $this->assertMatchesRegularExpression('/^[A-F0-9]{4}$/', $appointment->code);
     }
 
     /**

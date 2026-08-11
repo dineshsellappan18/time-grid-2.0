@@ -17,7 +17,7 @@ class SyncICalTest extends TestCase
 
     protected $business;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -45,7 +45,7 @@ class SyncICalTest extends TestCase
             'command' => $this->command->getName(),
         ]);
 
-        $this->assertRegExp('/Syncing ICal for all businesses/', $this->commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Syncing ICal for all businesses/', $this->commandTester->getDisplay());
     }
 
     /** @test */
@@ -56,7 +56,7 @@ class SyncICalTest extends TestCase
             'business' => $this->business->id,
         ]);
 
-        $this->assertRegExp("/Syncing ICal for {$this->business->id}/", $this->commandTester->getDisplay());
+        $this->assertMatchesRegularExpression("/Syncing ICal for {$this->business->id}/", $this->commandTester->getDisplay());
     }
 
     protected function arrangeFixture()

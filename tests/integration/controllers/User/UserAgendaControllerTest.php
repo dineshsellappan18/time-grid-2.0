@@ -9,11 +9,11 @@ class UserAgendaControllerTest extends TestCase
     use DatabaseTransactions;
     use CreateBusiness, CreateUser, CreateContact, CreateAppointment, CreateService, CreateVacancy;
 
-    public function __construct()
+    public function setUp(): void
     {
-        $this->faker = Factory::create();
+        parent::setUp();
 
-        parent::__construct();
+        $this->faker = Factory::create();
     }
 
     /**

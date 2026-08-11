@@ -16,7 +16,7 @@ class CommandArgumentDefinitionTest extends TestCase
 
         $this->assertSame('business', $arguments[0][0]);
         $this->assertSame(InputArgument::OPTIONAL, $arguments[0][1]);
-        $this->assertInternalType('string', $arguments[0][2]);
+        $this->assertIsString($arguments[0][2]);
     }
 
     /** @test */
@@ -29,6 +29,6 @@ class CommandArgumentDefinitionTest extends TestCase
 
         $this->assertSame('business', $arguments[0][0]);
         $this->assertSame(InputArgument::OPTIONAL, $arguments[0][1]);
-        $this->assertInternalType('string', $arguments[0][2]);
+        $this->assertIsString($arguments[0][2]);
     }
 }

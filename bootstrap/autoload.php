@@ -16,6 +16,19 @@ define('LARAVEL_START', microtime(true));
 
 require __DIR__.'/../vendor/autoload.php';
 
+// WO-015 — PHPUnit 10 aliases for Laravel 5.3 testing concerns.
+$phpunitAliases = [
+    'PHPUnit_Framework_TestCase' => \PHPUnit\Framework\TestCase::class,
+    'PHPUnit_Framework_Assert' => \PHPUnit\Framework\Assert::class,
+    'PHPUnit_Framework_Constraint' => \PHPUnit\Framework\Constraint\Constraint::class,
+    'PHPUnit_Framework_ExpectationFailedException' => \PHPUnit\Framework\ExpectationFailedException::class,
+];
+foreach ($phpunitAliases as $legacy => $modern) {
+    if (!class_exists($legacy, false) && class_exists($modern)) {
+        class_alias($modern, $legacy);
+    }
+}
+
 /*
 |--------------------------------------------------------------------------
 | Include The Compiled Class File

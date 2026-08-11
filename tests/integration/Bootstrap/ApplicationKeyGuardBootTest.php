@@ -4,13 +4,12 @@ use App\Bootstrap\ApplicationKeyGuard;
 
 class ApplicationKeyGuardBootTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @test
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Application key is missing or still a placeholder
-     */
+    /** @test */
     public function it_fails_closed_when_booting_with_placeholder_key_outside_local()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Application key is missing or still a placeholder');
+
         putenv('APP_ENV=production');
         putenv('APP_KEY='.ApplicationKeyGuard::PLACEHOLDER_KEY);
         $_ENV['APP_ENV'] = 'production';
@@ -22,7 +21,7 @@ class ApplicationKeyGuardBootTest extends PHPUnit_Framework_TestCase
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         putenv('APP_ENV=local');
         putenv('APP_KEY');

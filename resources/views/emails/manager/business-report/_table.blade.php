@@ -17,7 +17,7 @@
         <td style="padding:4px; color:#444;">{{ $appointment->time() }}</td>
         <td style="padding:4px; color:#444;">{{ $appointment->contact->firstname }}</td>
         <td style="padding:4px; color:#444;">{{ $appointment->service->name }}</td>
-        <td style="padding:4px; color:#444;">{{ $appointment->status }}</td>
+        <td style="padding:4px; color:#444;">{{ $appointment->status() }}</td>
     </tr>
     @endforeach
     </tbody>

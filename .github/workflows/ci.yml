@@ -36,11 +36,13 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.3'
           coverage: none
           tools: composer:v2
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --ignore-platform-reqs
+        run: composer install --prefer-dist --no-interaction
+      - name: Patch Symfony/phpdotenv for PHP 8.3+
+        run: php bin/patch-php83-vendors.php
       - name: Analyse
         run: |
           echo "PHPStan level=3"
@@ -54,15 +56,13 @@ jobs:
           name: phpstan-output
           path: phpstan-output.txt
 
-  phpunit-transitional:
+  phpunit:
     name: PHPUnit (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        # Transitional oracle on highest PHP that boots Laravel 5.3.
-        # PHP 8.3/8.4 matrix without --ignore-platform-reqs lands with WO-015.
-        php: ['7.1']
+        php: ['8.3', '8.4']
     services:
       mysql:
         image: mysql:8.0
@@ -95,14 +95,16 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: mbstring, pdo_mysql, tokenizer, xml, gd, redis
           coverage: none
-          tools: composer:v2.2
+          tools: composer:v2
       - name: Cache Composer
         uses: actions/cache@v4
         with:
           path: vendor
           key: composer-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --ignore-platform-reqs
+      - name: Install dependencies (no ignore-platform-reqs)
+        run: composer install --prefer-dist --no-interaction
+      - name: Patch Symfony/phpdotenv for PHP 8.3+
+        run: php bin/patch-php83-vendors.php
       - name: Prepare env
         run: |
           cp .env.testing.example .env
@@ -166,27 +168,3 @@ jobs:
             exit 1
           fi
           echo "Dusk job deferred (WO-006 transitional)."
-
-  php84-install-probe:
-    name: PHP 8.4 install probe (expect ignore until WO-015)
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup PHP 8.4
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          coverage: none
-          tools: composer:v2
-      - name: Probe install without ignore-platform-reqs
-        run: |
-          set +e
-          composer install --prefer-dist --no-interaction --no-scripts
-          CODE=$?
-          set -e
-          if [ "$CODE" -eq 0 ]; then
-            echo "Unexpected: install succeeded without ignore — review WO-015 residuals"
-          else
-            echo "Expected failure until WO-015 raises PHP floor (exit=$CODE)"
-          fi

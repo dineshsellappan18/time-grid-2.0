@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
          bootstrap="bootstrap/autoload.php"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="true"
-         syntaxCheck="false">
+         cacheDirectory=".phpunit.cache"
+         beStrictAboutOutputDuringTests="false">
     <testsuites>
         <testsuite name="Unit">
             <directory suffix="Test.php">./tests/unit/</directory>
@@ -31,6 +27,7 @@
     </testsuites>
     <php>
         <env name="APP_ENV" value="testing"/>
+        <env name="APP_URL" value="http://127.0.0.1:8000"/>
         <env name="APP_LOG" value="syslog"/>
         <env name="DB_CONNECTION" value="testing"/>
         <env name="TEST_DB_HOST" value="127.0.0.1"/>
@@ -42,13 +39,12 @@
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="MAIL_DRIVER" value="log"/>
     </php>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true" addUncoveredFilesFromWhitelist="true">
+    <source>
+        <include>
             <directory suffix=".php">app/</directory>
-            <exclude>
-                <file>./app/Http/routes.php</file>
-                <directory suffix=".js">public/</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+        </include>
+        <exclude>
+            <file>./app/Http/routes.php</file>
+        </exclude>
+    </source>
 </phpunit>

@@ -9,6 +9,7 @@ use Timegridio\Concierge\Addressbook;
 use Timegridio\Concierge\Presenters\BusinessPresenter;
 use Timegridio\Concierge\Traits\IsIntoDomain;
 use Timegridio\Concierge\Traits\Preferenceable;
+use Timegridio\Concierge\Traits\Presentable;
 
 /**
  * @property int $id
@@ -33,7 +34,7 @@ use Timegridio\Concierge\Traits\Preferenceable;
  */
 class Business extends EloquentModel implements HasPresenter
 {
-    use SoftDeletes, Preferenceable, IsIntoDomain;
+    use SoftDeletes, Preferenceable, IsIntoDomain, Presentable;
 
     /**
      * The attributes that are mass assignable.
@@ -304,7 +305,7 @@ class Business extends EloquentModel implements HasPresenter
      */
     public function setPhoneAttribute($phone)
     {
-        $this->attributes['phone'] = trim($phone) ?: null;
+        $this->attributes['phone'] = trim((string) $phone) ?: null;
     }
 
     /**

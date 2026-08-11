@@ -25,7 +25,7 @@ class TransMailTest extends TestCase
      */
     protected $params = [];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -48,6 +48,8 @@ class TransMailTest extends TestCase
                         ->template('user.welcome.welcome')
                         ->subject('user.welcome.subject')
                         ->send($this->header, $this->params);
+
+        $this->addToAssertionCount(1);
     }
 
     /**
@@ -68,10 +70,11 @@ class TransMailTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Exception
      */
     public function it_throws_exception_on_unexisting_view()
     {
+        $this->expectException(\Exception::class);
+
         $this->transmail->locale('en_US.utf8')
                         ->template('!!!UNEXISTING!!!')
                         ->subject('welcome')

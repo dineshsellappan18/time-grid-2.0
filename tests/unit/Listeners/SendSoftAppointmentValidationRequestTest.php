@@ -8,14 +8,14 @@ class SendSoftAppointmentValidationRequestTest extends TestCase
 {
     use CreateAppointment;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->transmail = Mockery::mock(TransMail::class);
         $this->appointment = $this->createAppointment();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }
@@ -55,5 +55,6 @@ class SendSoftAppointmentValidationRequestTest extends TestCase
         $listener->handle(new NewSoftAppointmentWasBooked($this->appointment));
 
         $transmailSpy->shouldNotHaveReceived('send');
+        $this->addToAssertionCount(1);
     }
 }

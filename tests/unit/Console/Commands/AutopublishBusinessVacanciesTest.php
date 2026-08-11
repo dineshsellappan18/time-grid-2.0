@@ -19,7 +19,7 @@ class AutopublishBusinessVacanciesTest extends TestCase
      */
     protected $business;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -43,7 +43,7 @@ class AutopublishBusinessVacanciesTest extends TestCase
             'command' => $this->command->getName(),
         ]);
 
-        $this->assertRegExp('/Scanning all businesses/', $this->commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Scanning all businesses/', $this->commandTester->getDisplay());
     }
 
     /** @test */
@@ -54,7 +54,7 @@ class AutopublishBusinessVacanciesTest extends TestCase
             'business' => $this->business->id,
         ]);
 
-        $this->assertRegExp("/Publishing vacancies for businessId:{$this->business->id}/", $this->commandTester->getDisplay());
+        $this->assertMatchesRegularExpression("/Publishing vacancies for businessId:{$this->business->id}/", $this->commandTester->getDisplay());
     }
 
     /** @test */
@@ -67,7 +67,7 @@ class AutopublishBusinessVacanciesTest extends TestCase
             'business' => $this->business->id,
         ]);
 
-        $this->assertRegExp('/Skipped autopublishing vacancies/', $this->commandTester->getDisplay());
+        $this->assertMatchesRegularExpression('/Skipped autopublishing vacancies/', $this->commandTester->getDisplay());
     }
 
     protected function arrangeFixture()
