@@ -16,7 +16,7 @@ class AuthComposer
         view()->share('timezone', session()->get('timezone'));
 
         if (auth()->user()) {
-            view()->share('gravatarURL', Gravatar::get(auth()->user()->email, ['size' => 24, 'secure' => true]));
+            view()->share('gravatarURL', Gravatar::get(auth()->user()->email, ['size' => 80, 'secure' => true]));
             view()->share('appointments', $this->getActiveAppointments());
         } else {
             view()->share('gravatarURL', 'http://placehold.it/150x150');

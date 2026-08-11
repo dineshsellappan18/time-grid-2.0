@@ -5,86 +5,65 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ trans('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-    <!-- Ionicons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-
     <link rel="manifest" href="/manifest.json">
 
 @yield('css')
-
 @yield('headscripts')
-
 </head>
-<body class="skin-blue">
+<body class="tg-public">
 
     {!! Analytics::render() !!}
-
     @include('_github-forkme')
 
-    <div class="wrapper">
-
+    <div class="tg-public-shell">
         @include('cookieConsent::index')
 
-        <header class="main-header">
+        <header class="tg-public-topbar">
+            <div class="container tg-public-topbar__inner">
+                <a href="{{ route('home') }}" class="tg-public-brand">time<b>grid</b></a>
 
-            <nav class="navbar navbar-expand-lg">
-                <div class="container">
-                    <a href="{{ route('home') }}" class="navbar-brand">time<b>grid</b></a>
-                    <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse">
-                        <i class="fa fa-bars"></i>
-                    </button>
+                <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#tg-public-nav">
+                    <i class="fa fa-bars"></i>
+                </button>
 
-                    <div class="collapse navbar-collapse" id="navbar-collapse">
-                        <ul class="navbar-nav me-auto">
-                            @include('_navi18n')
-
-                            @if(auth()->check())
-                                @include('user._navmenu')
-                            @endif
-                        </ul>
-                    </div>
-
-                    <div class="ms-auto">
-                        <ul class="navbar-nav">
-
-                            @if(auth()->check())
-                                @include('user._notifications-menu')
-                                @include('_user-account-menu')
-                            @endif
-
-                        </ul>
-                    </div>
+                <div class="collapse navbar-collapse tg-public-nav" id="tg-public-nav">
+                    <ul class="nav align-items-center gap-1 mb-0">
+                        @include('_navi18n')
+                        @if(auth()->check())
+                            @include('user._navmenu')
+                        @endif
+                    </ul>
+                    <ul class="nav align-items-center gap-1 mb-0 ms-lg-auto">
+                        @if(auth()->check())
+                            @include('user._notifications-menu')
+                            @include('_user-account-menu')
+                        @endif
+                    </ul>
                 </div>
-            </nav>
+            </div>
         </header>
 
-        <div class="content-wrapper" style="margin-left: 0;">
+        <main class="tg-public-main">
             <div class="container">
-                <section class="content">
-
+                <section class="tg-public-content">
                     @include('flash::message')
                     @include('_errors')
-
                     @yield('content')
-
                 </section>
             </div>
-        </div>
+        </main>
 
         @include('_footer')
-
-</div>
-<!-- ./wrapper -->
+    </div>
 
 @vite(['resources/js/app.js'])
-
 @stack('footer_scripts')
-
 </body>
 </html>

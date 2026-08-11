@@ -5,159 +5,135 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ isset($business) ? $business->name . ' / ' : '' }}{{ trans('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-    <!-- Ionicons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-
     <link rel="manifest" href="/manifest.json">
 
 @yield('css')
-
 @yield('headscripts')
-
 </head>
-
-<body class="skin-blue">
+<body class="tg-app">
 
     {!! Analytics::render() !!}
 
-    <div class="wrapper">
+    <div class="tg-shell">
+        <aside class="offcanvas-lg offcanvas-start tg-sidebar" tabindex="-1" id="main-sidebar" aria-label="Business navigation">
+            <div class="offcanvas-header tg-sidebar__brand d-lg-none">
+                <a href="{{ url('/') }}" class="tg-brand">time<b>grid</b></a>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#main-sidebar" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body p-0 d-flex flex-column">
+                <div class="tg-sidebar__brand d-none d-lg-flex">
+                    <a href="{{ url('/') }}" class="tg-brand">time<b>grid</b></a>
+                </div>
 
-        <!-- Main Header -->
-        <header class="main-header">
+                <div class="tg-sidebar__body">
+                    @if(isset($business))
+                        @include('manager._sidebar-userpanel', compact('business'))
+                        @include('manager._search', compact('business'))
+                        @include('manager._sidebar-menu', compact('business'))
+                    @endif
+                </div>
+            </div>
+        </aside>
 
-            <!-- Logo -->
-            <a href="{{ url('/') }}" class="logo">
-                <span class="logo-mini"><b>t</b>g</span>
-                <span class="logo-lg">time<b>grid</b></span>
-            </a>
-
-            <!-- Header Navbar -->
-            <nav class="navbar navbar-expand-lg">
-                <!-- Sidebar toggle button-->
-                <button class="btn btn-link sidebar-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#main-sidebar">
+        <div class="tg-main">
+            <header class="tg-topbar">
+                <button class="btn btn-link tg-topbar__toggle d-lg-none" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#main-sidebar" aria-controls="main-sidebar">
                     <span class="visually-hidden">Toggle navigation</span>
                     <i class="fa fa-bars"></i>
                 </button>
-                <!-- Navbar Right Menu -->
-                <div class="ms-auto">
-                    <ul class="nav">
 
+                <div class="tg-topbar__crumbs">
+                    @if(isset($business))
+                        <span class="tg-topbar__crumb">{{ $business->name }}</span>
+                        <span class="tg-topbar__sep">/</span>
+                    @endif
+                    <span class="tg-topbar__crumb tg-topbar__crumb--current">@yield('title', '')</span>
+                </div>
+
+                @if(isset($business))
+                <form class="tg-topbar__search d-none d-md-flex" method="post" action="{{ route('manager.search', $business) }}" role="search">
+                    {{ csrf_field() }}
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        <input type="text" name="criteria" class="form-control" placeholder="{{ trans('app.search.placeholder') }}">
+                    </div>
+                </form>
+                @endif
+
+                <div class="tg-topbar__chip d-none d-lg-inline-flex" title="Timezone">
+                    <i class="fa fa-globe"></i>
+                    <span>{{ $timezone ?? (isset($business) ? $business->timezone : config('app.timezone')) }}</span>
+                </div>
+
+                <div class="tg-topbar__actions">
+                    <ul class="nav align-items-center gap-1 mb-0">
                         @include('_navi18n')
                         @include('user._navmenu')
-
-                        <!-- User Account Menu -->
                         @include('_user-account-menu')
-
-                        <!-- Control Sidebar Toggle Button -->
                         <li class="nav-item">
-                            <a href="#" class="nav-link" data-bs-toggle="offcanvas" data-bs-target="#control-sidebar"><i class="fa fa-question"></i></a>
+                            <a href="#" class="nav-link" data-bs-toggle="offcanvas" data-bs-target="#control-sidebar" aria-label="Help">
+                                <i class="fa fa-question-circle"></i>
+                            </a>
                         </li>
                     </ul>
                 </div>
-            </nav>
-        </header>
+            </header>
 
-        <!-- Left side column. contains the logo and sidebar -->
-        <aside class="main-sidebar" id="main-sidebar">
+            <div class="tg-page">
+                <section class="tg-page__header">
+                    <h1 class="tg-page__title">
+                        @yield('title', '')
+                        @hasSection('subtitle')
+                            <small class="tg-page__subtitle">@yield('subtitle')</small>
+                        @endif
+                    </h1>
+                </section>
 
-            <section class="sidebar">
+                <section class="tg-page__body">
+                    @include('flash::message')
+                    @include('_errors')
+                    @yield('content')
 
-                @if(isset($business))
+                    @if(!session()->has('selected.business'))
+                        {!! Button::success(trans('app.btn.get_to_dashboard'))
+                                    ->large()
+                                    ->block()
+                                    ->asLinkTo( route('manager.business.index') ) !!}
+                    @endif
+                </section>
 
-                @include('manager._sidebar-userpanel', compact('business'))
-
-                @include('manager._search', compact('business'))
-
-                @include('manager._sidebar-menu', compact('business'))
-
-                @endif
-
-            </section>
-        </aside>
-
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <section class="content-header">
-                <h1>
-                    @yield('title', '')
-                    <small>@yield('subtitle', '')</small>
-                </h1>
-            </section>
-
-            <!-- Main content -->
-            <section class="content">
-
-                @include('flash::message')
-                @include('_errors')
-
-                @yield('content')
-
-                @if(!session()->has('selected.business'))
-                    {!! Button::success(trans('app.btn.get_to_dashboard'))
-                                ->large()
-                                ->block()
-                                ->asLinkTo( route('manager.business.index') ) !!}
-                @endif
-
-            </section>
+                @include('_footer')
+            </div>
         </div>
 
-        <!-- Main Footer -->
-        @include('_footer')
-
-        <!-- Control Sidebar -->
         <aside class="offcanvas offcanvas-end" id="control-sidebar" tabindex="-1">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title">{{ trans('app.nav.help') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
-                <!-- Tabs -->
-                <ul class="nav nav-tabs nav-justified" role="tablist">
-                    <li class="nav-item"><a class="nav-link active" href="#control-sidebar-userhelp-tab" data-bs-toggle="tab"><i class="fa fa-question"></i></a></li>
-                    <li class="nav-item"><a class="nav-link" href="#control-sidebar-settings-tab" data-bs-toggle="tab"><i class="fa fa-gears"></i></a></li>
-                </ul>
-                <div class="tab-content mt-3">
-                    <div class="tab-pane fade show active" id="control-sidebar-userhelp-tab">
-                        {!! $help !!}
-                    </div>
-                    <div class="tab-pane fade" id="control-sidebar-settings-tab">
-                        <form method="post">
-                            <h5>General Settings</h5>
-                            <div class="mb-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" checked>
-                                    <label class="form-check-label">Report panel usage</label>
-                                </div>
-                                <p class="text-muted small">Some information about this general settings option</p>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                {!! $help !!}
             </div>
         </aside>
-
-</div>
-<!-- ./wrapper -->
+    </div>
 
 @vite(['resources/js/app.js'])
-
 @stack('footer_scripts')
 
-<script type="text/javascript">
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
         new bootstrap.Tooltip(el);
     });
 });
 </script>
-
 </body>
 </html>

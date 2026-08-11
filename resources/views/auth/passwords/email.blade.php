@@ -1,47 +1,32 @@
-@extends('layouts.user')
+@extends('layouts.auth')
 
-<!-- Main Content -->
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="card">
-                <div class="card-header">{{ trans('auth.reset.title') }}</div>
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+<div class="tg-auth-card">
+    <h1 class="tg-auth-card__title">{{ trans('auth.reset.title') }}</h1>
+    <p class="tg-auth-card__subtitle">{{ trans('app.name') }}</p>
 
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/password/email') }}">
-                        {{ csrf_field() }}
+    @if (session('status'))
+        <div class="alert alert-success">{{ session('status') }}</div>
+    @endif
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">{{ trans('auth.login.email') }}</label>
+    <form method="POST" action="{{ url('/password/email') }}" class="tg-auth-form">
+        {{ csrf_field() }}
 
-                            <div class="col-md-6">
-                                <input type="email" class="form-control" name="email" value="{{ old('email') }}">
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-btn fa-envelope"></i>{{ trans('auth.reset.btn.send_link') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div class="mb-4">
+            <label class="form-label" for="email">{{ trans('auth.login.email') }}</label>
+            <input id="email" type="email" class="form-control form-control-lg{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required autofocus>
+            @if ($errors->has('email'))
+                <div class="invalid-feedback">{{ $errors->first('email') }}</div>
+            @endif
         </div>
-    </div>
+
+        <button type="submit" class="btn btn-primary btn-lg w-100">
+            {{ trans('auth.reset.btn.send_link') }}
+        </button>
+    </form>
+
+    <p class="tg-auth-switch text-center mb-0 mt-3">
+        <a class="tg-auth-link" href="{{ url('/login') }}">{{ trans('auth.btn.already_registered') }}</a>
+    </p>
 </div>
 @endsection

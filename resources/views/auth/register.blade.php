@@ -1,127 +1,70 @@
-@extends('layouts.bare')
+@extends('layouts.auth')
 
 @section('content')
-<div class="register-box">
-    <div class="register-logo">
-        <a href="{{ url('/') }}">time<b>grid</b></a>
+<div class="tg-auth-card">
+    <h1 class="tg-auth-card__title">{{ trans('auth.register.btn.submit') }}</h1>
+    <p class="tg-auth-card__subtitle">{{ trans('auth.register.title') }}</p>
+
+    @unless(config('root.app.allow_register'))
+        <div class="alert alert-danger">{{ trans('app.allow_register') }}</div>
+    @endunless
+
+    @if (count($errors) > 0)
+    <div class="alert alert-danger">
+        <strong>{{ trans('auth.login.alert.whoops') }}</strong> {{ trans('auth.login.alert.message') }}
+        <ul class="mb-0 mt-2">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
+    @if ($errors->has('email'))
+        <a class="btn btn-success w-100 mb-3" href="{{ url('/login') }}">{{ trans('auth.btn.already_registered') }}</a>
+    @endif
+    @if ($errors->has('password'))
+        <a class="btn btn-warning w-100 mb-3" href="{{ url('/password/email') }}">{{ trans('auth.btn.forgot') }}</a>
+    @endif
+    @endif
 
-    <div class="register-box-body">
-        <p class="login-box-msg">{{ trans('auth.register.title') }}</p>
+    <form method="POST" action="{{ url('/register') }}" id="registration" class="tg-auth-form">
+        {{ csrf_field() }}
 
-        @unless(config('root.app.allow_register'))
-            <div class="alert alert-danger">
-                {{ trans('app.allow_register') }}
-            </div>
-        @endif
-
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>{{ trans('auth.login.alert.whoops') }}</strong> {{ trans('auth.login.alert.message') }}<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        @if (!app()->environment('local'))
+        <div class="mb-3">
+            {!! app('captcha')->display() !!}
         </div>
-        @if ($errors->has('email'))
-        {!! Button::success(trans('auth.btn.already_registered'))->block()->asLinkTo(url('/login')) !!}
-        @endif
-        @if ($errors->has('password'))
-        {!! Button::warning(trans('auth.btn.forgot'))->block()->asLinkTo(url('/password/email')) !!}
-        @endif
-        <p>&nbsp;</p>
         @endif
 
-        <div class="container-fluid">
-            <div class="row">
-                <form role="form" method="POST" action="{{ url('/register') }}" id="registration" role="form">
-                    {{ csrf_field() }}
-
-                    <div class="form-group has-feedback">
-                        @if (!app()->environment('local'))
-                        {!! app('captcha')->display() !!}
-                        @endif
-                        <div class="help-block with-errors"></div>
-                    </div>
-
-                    <div class="form-group has-feedback">
-                        <input type="email" class="form-control" name="email" placeholder="{{ trans('auth.register.email') }}" value="{{ old('email') }}" id="email" required>
-                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                        <div class="help-block with-errors"></div>
-                    </div>
-
-                    <div class="form-group has-feedback">
-                        <input class="form-control" name="name" placeholder="{{ trans('auth.register.name') }}" value="{{ old('name') }}" data-minlength="3" required>
-                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                        <div class="help-block with-errors"></div>
-                    </div>
-
-                    <div class="form-group has-feedback">
-                        <input type="password" class="form-control" name="password" placeholder="{{ trans('auth.register.password') }}" id="password" data-minlength="6" placeholder="" required>
-                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                        <div class="help-block with-errors"></div>
-                    </div>
-
-                    <div class="form-group has-feedback">
-                        <input type="password" class="form-control" name="password_confirmation" placeholder="{{ trans('auth.register.password_confirmation') }}" id="password_confirmation" data-minlength="6" placeholder="" required>
-                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                        <div class="help-block with-errors"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary" id="submit">
-                                {{ trans('auth.register.btn.submit') }}
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="row">
-                <div class="social-auth-links text-center">
-                    <p>{{ trans('auth.label.oauth_direct_access') }}</p>
-                    @include('auth/social')
-                </div>
-            </div>
+        <div class="mb-3">
+            <label class="form-label" for="email">{{ trans('auth.register.email') }}</label>
+            <input id="email" type="email" class="form-control form-control-lg" name="email" value="{{ old('email') }}" required>
         </div>
-        <!-- /.container-fluid -->
 
-        <a href="{{ url('auth/login') }}" class="text-center">{{ trans('auth.btn.already_registered') }}</a>
-    </div>
-    <!-- /.register-box-body -->
+        <div class="mb-3">
+            <label class="form-label" for="name">{{ trans('auth.register.name') }}</label>
+            <input id="name" class="form-control form-control-lg" name="name" value="{{ old('name') }}" minlength="3" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="password">{{ trans('auth.register.password') }}</label>
+            <input id="password" type="password" class="form-control form-control-lg" name="password" minlength="6" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label" for="password_confirmation">{{ trans('auth.register.password_confirmation') }}</label>
+            <input id="password_confirmation" type="password" class="form-control form-control-lg" name="password_confirmation" minlength="6" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg w-100" id="submit">
+            {{ trans('auth.register.btn.submit') }}
+        </button>
+    </form>
+
+    <div class="tg-auth-divider"><span>{{ trans('auth.label.oauth_direct_access') }}</span></div>
+    @include('auth/social')
+
+    <p class="tg-auth-switch text-center mb-0">
+        <a class="tg-auth-link" href="{{ url('/login') }}">{{ trans('auth.btn.already_registered') }}</a>
+    </p>
 </div>
-<!-- /.register-box -->
 @endsection
-
-@push('footer_scripts')
-<script src="{{ asset('js/forms.js') }}"></script>
-<script type="text/javascript">
-document.addEventListener('DOMContentLoaded', function() {
-
-    var count = 0;
-    document.getElementById('submit').click(function(){
-        count++;
-        if(count == 5) {
-            var script = document.createElement( 'script' );
-            script.type = 'text/javascript';
-            script.src = '{{ TidioChat::src() }}';
-            document.querySelectorAll('body').append( script );
-            alert('{!! trans('auth.register.need_help') !!}');
-        }
-    });
-
-    document.getElementById('registration').validator({
-        feedback: {
-          success: 'glyphicon-ok',
-          error: 'glyphicon-remove'
-        },
-        errors: {
-            // #
-        }
-    });
-
-});
-</script>
-@endpush

@@ -1,163 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{{trans('app.name')}}</title>
+    <title>{{ trans('app.name') }}</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
-    
-    <link rel="stylesheet" href="{{ asset('css/app.min.css') }}">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
-    <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <link rel="manifest" href="/manifest.json">
-
-    <style type="text/css">
-    @import url(https://fonts.googleapis.com/css?family=Montserrat);
-    @import url(https://fonts.googleapis.com/css?family=Arvo);
-
-    h1 {font-family: 'Montserrat', sans-serif;}
-    .jumbotron {
-        color:#fff;
-        background-color: #367FA9;
-    }
-	.image-container {
-		position: relative;
-		display: inline-block;
-		width: 100px;
-		height: 100px;
-		background-size: cover;
-		background-position: center center;
-		border-radius: 4px;
-	}
-    #inspire {font-family: 'Arvo', serif;}
-    .panel{
-    	text-align: center;
-    	border: none;
-    	box-shadow: none;
-    }
-    </style>
-
 </head>
-<body>
+<body class="tg-welcome">
 
     {!! Analytics::render() !!}
 
-<!-- Page Content -->
-<div class="container">
+    <div class="tg-welcome-shell">
+        <nav class="tg-welcome-nav">
+            <a class="tg-welcome-nav__brand" href="{{ url('/') }}">time<b>grid</b></a>
+            <div class="tg-welcome-nav__actions">
+                <ul class="nav mb-0">
+                    @include('_navi18n')
+                </ul>
+                <a class="tg-welcome-nav__link" href="{{ url('/login') }}">{{ trans('welcome.jumbotron.btn.login') }}</a>
+                <a class="btn btn-primary btn-sm" href="{{ url('/register') }}" data-nav="get-started">{{ trans('welcome.jumbotron.btn.begin') }}</a>
+            </div>
+        </nav>
 
-    <!-- Jumbotron Header -->
-    <header class="jumbotron hero-spacer">
-        <h1>
-            <img class="d-none d-sm-block d-sm-none d-md-block" src="{{ asset('img/timegrid-logo-white.png') }}" />
-            {{ trans('welcome.jumbotron.title') }}
-        </h1>
-        <p class="d-none d-sm-block" id="inspire">{{ trans('welcome.jumbotron.description') }}</p>
-        <div class="row">
-        	<div class="col-12">
-        		<span class="btn-group">
-                {!! Button::success(trans('welcome.jumbotron.btn.begin'))->asLinkTo( url('/register') )->withAttributes(['data-nav' => 'get-started']) !!}
-                {!! Button::normal(trans('welcome.jumbotron.btn.login'))->asLinkTo( url('/login') ) !!}
-            	</span>
-        	</div>
-        </div>
-    </header>
-
-    <!-- Features -->
-    <div class="row">
-
-        <div class="col-md-3 col-sm-6 hero-feature">
-            <div class="thumbnail panel">
-            	<div class="image-container" style="background-image:url('{{asset('img/jumbo/optimize.png')}}')"></div>
-                <div class="caption">
-                    <h3>{{trans('welcome.feature.1.title')}}</h3>
-                    <p>{{trans('welcome.feature.1.content')}}</p>
+        <section class="tg-welcome-hero">
+            <div class="tg-welcome-hero__inner">
+                <p class="tg-welcome-hero__brand">timegrid</p>
+                <h1 class="tg-welcome-hero__title">{{ trans('welcome.jumbotron.title') }}</h1>
+                <p class="tg-welcome-hero__lede">{{ trans('welcome.jumbotron.description') }}</p>
+                <div class="tg-welcome-hero__cta">
+                    <a class="btn btn-light btn-lg" href="{{ url('/register') }}" data-nav="get-started">{{ trans('welcome.jumbotron.btn.begin') }}</a>
+                    <a class="btn btn-outline-light btn-lg" href="{{ url('/login') }}">{{ trans('welcome.jumbotron.btn.login') }}</a>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="col-md-3 col-sm-6 hero-feature">
-            <div class="thumbnail panel">
-            	<div class="image-container" style="background-image:url('{{asset('img/jumbo/contact.png')}}')"></div>
-                <div class="caption">
-                    <h3>{{trans('welcome.feature.2.title')}}</h3>
-                    <p>{{trans('welcome.feature.2.content')}}</p>
+        <section class="tg-welcome-features">
+            <div class="tg-welcome-features__inner">
+                <h2 class="tg-welcome-features__heading">Built for service professionals</h2>
+                <div class="tg-welcome-features__grid">
+                    <article class="tg-welcome-feature">
+                        <h3>{{ trans('welcome.feature.1.title') }}</h3>
+                        <p>{{ trans('welcome.feature.1.content') }}</p>
+                    </article>
+                    <article class="tg-welcome-feature">
+                        <h3>{{ trans('welcome.feature.2.title') }}</h3>
+                        <p>{{ trans('welcome.feature.2.content') }}</p>
+                    </article>
+                    <article class="tg-welcome-feature">
+                        <h3>{{ trans('welcome.feature.3.title') }}</h3>
+                        <p>{{ trans('welcome.feature.3.content') }}</p>
+                    </article>
+                    <article class="tg-welcome-feature">
+                        <h3>{{ trans('welcome.feature.4.title') }}</h3>
+                        <p>{{ trans('welcome.feature.4.content') }}</p>
+                    </article>
                 </div>
             </div>
-        </div>
+        </section>
+    </div>
 
-        <div class="col-md-3 col-sm-6 hero-feature">
-            <div class="thumbnail panel">
-            	<div class="image-container" style="background-image:url('{{asset('img/jumbo/do.png')}}')"></div>
-                <div class="caption">
-                    <h3>{{trans('welcome.feature.3.title')}}</h3>
-                    <p>{{trans('welcome.feature.3.content')}}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6 hero-feature">
-            <div class="thumbnail panel">
-            	<div class="image-container" style="background-image:url('{{asset('img/jumbo/love.png')}}')"></div>
-                <div class="caption">
-                    <h3>{{trans('welcome.feature.4.title')}}</h3>
-                    <p>{{trans('welcome.feature.4.content')}}</p>
-                </div>
-            </div>
-        </div>
-
-    </div><!-- /.row -->
-</div>
-</body>
-<!-- Scripts -->
-<script src="{{ asset('js/app.min.js') }}"></script>
 <script>
-    $(document).ready(function () {
-
-        document.querySelectorAll('.lang').on('click', function(){
-
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.lang').forEach(function (el) {
+        el.addEventListener('click', function () {
             sessionStorage.language = this.dataset.lang;
         });
-
-        if (typeof(Storage) !== "undefined") {
-            if (sessionStorage.language) {
-                document.getElementById('myModal').modal('hide');
-            } else {
-                document.getElementById('myModal').modal('show');
-            }
-        } else {
-            alert('storage does not work on this browser');
-        }
     });
 
+    var modalEl = document.getElementById('myModal');
+    if (!modalEl || typeof bootstrap === 'undefined') return;
+    var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    if (typeof Storage !== 'undefined') {
+        if (sessionStorage.language) {
+            modal.hide();
+        } else {
+            modal.show();
+        }
+    }
+});
 </script>
 
-<!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-
-        <!-- Modal content-->
+<div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="langModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
-                <h4 class="modal-title text-center">Select a Language</h4>
+                <h4 class="modal-title w-100 text-center" id="langModalTitle">Select a Language</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-
-                <div class="row">
+                <div class="row g-2">
                     @foreach ($availableLanguages as $locale => $language)
-                            <div class="col-md-3 text-center">
-                                {!! link_to_route('lang.switch', $language, $locale, ['class' => 'lang', 'data-lang' => $locale]) !!}
-                            </div>
+                        <div class="col-6 col-md-3 text-center">
+                            {!! link_to_route('lang.switch', $language, $locale, ['class' => 'lang', 'data-lang' => $locale]) !!}
+                        </div>
                     @endforeach
-
                 </div>
             </div>
-            <div class="modal-footer">
-            </div>
         </div>
-
     </div>
 </div>
+</body>
 </html>

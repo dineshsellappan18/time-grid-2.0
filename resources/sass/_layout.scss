@@ -1,5 +1,4 @@
-// Layout + AdminLTE component styles for Bootstrap 5
-// Templates still use AdminLTE class names (sidebar-menu, info-box, etc.).
+// Forge ManagerLayout shell
 
 @import "tokens";
 
@@ -8,501 +7,915 @@ body {
   height: 100%;
 }
 
-body {
+body.tg-app {
   font-family: $tg-font-family-base;
   font-size: $tg-font-size-base;
-  background-color: #ecf0f5;
+  color: $tg-body-color;
+  background-color: $tg-body-bg;
+  margin: 0;
 }
 
-.wrapper {
+.tg-shell {
   min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
-}
-
-// ---------------------------------------------------------------------------
-// Header
-// ---------------------------------------------------------------------------
-.main-header {
-  position: relative;
-  z-index: $tg-zindex-header;
-  max-height: 50px;
-  background-color: $tg-header-bg;
   display: flex;
-  align-items: stretch;
-
-  .logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 230px;
-    width: 230px;
-    height: 50px;
-    color: $tg-white;
-    text-decoration: none;
-    font-size: 1.25rem;
-    font-weight: 300;
-    background-color: #367fa9;
-
-    &:hover {
-      color: $tg-white;
-      background-color: #357ca5;
-    }
-
-    .logo-mini {
-      display: none;
-    }
-
-    b {
-      font-weight: 700;
-    }
-  }
-
-  .navbar {
-    flex: 1 1 auto;
-    margin: 0;
-    min-height: 50px;
-    border: none;
-    border-radius: 0;
-    background-color: $tg-header-bg;
-    padding: 0 0.75rem;
-    display: flex;
-    align-items: center;
-
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      margin: 0;
-      list-style: none;
-      padding: 0;
-    }
-
-    .nav-link,
-    .nav > li > a {
-      color: rgba($tg-white, 0.9);
-      padding: 0.75rem 0.75rem;
-      line-height: 1.2;
-
-      &:hover {
-        color: $tg-white;
-        background-color: rgba(0, 0, 0, 0.1);
-      }
-    }
-
-    .btn-link.sidebar-toggle {
-      color: $tg-white;
-      text-decoration: none;
-      padding: 0.75rem;
-    }
-  }
+  background-color: $tg-body-bg;
 }
 
-.skin-blue .main-header {
-  background-color: $tg-header-bg;
+.tg-brand {
+  color: $tg-white;
+  text-decoration: none;
+  font-size: 1.15rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+
+  b { font-weight: 700; }
+  &:hover { color: $tg-white; }
 }
 
 // ---------------------------------------------------------------------------
-// Sidebar
+// AppSidebar
 // ---------------------------------------------------------------------------
-.main-sidebar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding-top: 50px;
-  min-height: 100%;
-  width: 230px;
-  z-index: $tg-zindex-sidebar;
-  background-color: $tg-sidebar-bg;
+.tg-sidebar {
+  --bs-offcanvas-width: #{$tg-sidebar-width};
+  --bs-offcanvas-bg: #{$tg-sidebar-bg};
+  --bs-offcanvas-color: #{$tg-sidebar-color};
+  background-color: $tg-sidebar-bg !important;
   color: $tg-sidebar-color;
+  border: none;
 
-  .sidebar {
-    padding-bottom: $tg-spacer-3;
+  .offcanvas-body {
+    background-color: $tg-sidebar-bg !important;
+    color: $tg-sidebar-color;
+  }
+
+  .btn-close {
+    filter: invert(1);
   }
 }
 
-.user-panel {
-  position: relative;
-  width: 100%;
-  padding: 10px;
-  overflow: hidden;
+.tg-sidebar__brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  min-height: 64px;
+  padding: 0 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
 
-  .image {
-    flex: 0 0 auto;
+.tg-sidebar__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 1rem 0 1.5rem;
+}
 
-    img {
-      width: 45px;
-      height: 45px;
-    }
-  }
-
-  .info {
-    flex: 1 1 auto;
-    line-height: 1.2;
-
-    p {
-      margin: 0;
-      color: $tg-white;
-      font-weight: 600;
-    }
+@media (min-width: 992px) {
+  .tg-sidebar.offcanvas-lg {
+    position: sticky;
+    top: 0;
+    visibility: visible !important;
+    transform: none !important;
+    height: 100vh;
+    width: $tg-sidebar-width;
+    flex: 0 0 $tg-sidebar-width;
+    display: flex;
+    flex-direction: column;
+    z-index: $tg-zindex-sidebar;
+    background-color: $tg-sidebar-bg !important;
   }
 }
 
-.sidebar-form {
-  margin: 10px;
+.tg-business-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 1rem 1rem;
+  padding: 0.75rem;
+  border-radius: $tg-border-radius;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
 
-  .input-group {
-    border-radius: 2px;
-    overflow: hidden;
-  }
+.tg-business-switcher__avatar {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+}
 
-  input[type="text"] {
-    background-color: #374850;
-    border: 1px solid transparent;
-    color: #fff;
+.tg-business-switcher__name {
+  color: $tg-white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.tg-business-switcher__user {
+  color: $tg-sidebar-color;
+  font-size: 0.75rem;
+}
+
+.tg-sidebar-search {
+  margin: 0 1rem 1rem;
+
+  .form-control {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: $tg-white;
+
+    &::placeholder { color: rgba(255, 255, 255, 0.45); }
+    &:focus {
+      background: rgba(255, 255, 255, 0.08);
+      color: $tg-white;
+      border-color: rgba(52, 152, 219, 0.6);
+      box-shadow: none;
+    }
   }
 
   .btn {
-    background-color: #374850;
-    border: none;
-    color: #999;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: $tg-sidebar-color;
+    background: rgba(255, 255, 255, 0.04);
   }
 }
 
-.sidebar-menu {
-  list-style: none;
+.tg-nav__section {
+  margin-bottom: 1.25rem;
+}
+
+.tg-nav__label {
+  padding: 0.35rem 1.25rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.8);
+}
+
+.tg-nav__item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0.65rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: $tg-border-radius-sm;
+  color: $tg-sidebar-color;
+  text-decoration: none;
+  font-weight: 500;
+
+  > .fa {
+    width: 1.1rem;
+    text-align: center;
+    opacity: 0.9;
+  }
+
+  &:hover {
+    color: $tg-white;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &.is-active {
+    color: $tg-white;
+    background: rgba(52, 152, 219, 0.22);
+    box-shadow: inset 3px 0 0 $tg-info;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TopBar (Forge: breadcrumbs, search, timezone, user)
+// ---------------------------------------------------------------------------
+.tg-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.tg-topbar {
+  position: sticky;
+  top: 0;
+  z-index: $tg-zindex-header;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 64px;
+  padding: 0.65rem 1.25rem;
+  background: $tg-header-bg;
+  border-bottom: 1px solid $tg-header-border;
+  color: $tg-body-color;
+
+  .nav-link {
+    color: $tg-secondary;
+    text-decoration: none;
+    padding: 0.4rem 0.65rem;
+    border-radius: $tg-border-radius-sm;
+    font-weight: 500;
+
+    &:hover {
+      color: $tg-primary;
+      background: $tg-light;
+    }
+  }
+}
+
+.tg-topbar__toggle {
+  color: $tg-primary !important;
+  text-decoration: none !important;
+  font-size: 1.2rem;
+  padding: 0.25rem 0.4rem;
+}
+
+.tg-topbar__crumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tg-topbar__crumb {
+  color: $tg-secondary;
+
+  &--current {
+    color: $tg-primary;
+    font-weight: 600;
+  }
+}
+
+.tg-topbar__sep { color: #cbd5e1; }
+
+.tg-topbar__search {
+  flex: 1 1 220px;
+  max-width: 320px;
+
+  .input-group-text {
+    background: $tg-light;
+    border-color: $tg-border-color;
+    color: $tg-secondary;
+  }
+
+  .form-control {
+    border-color: $tg-border-color;
+    background: $tg-light;
+  }
+}
+
+.tg-topbar__chip {
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: $tg-light;
+  color: $tg-secondary;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tg-topbar__actions {
+  margin-left: auto;
+
+  .nav-link {
+    color: $tg-secondary;
+    font-weight: 500;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus {
+      color: $tg-primary;
+    }
+  }
+}
+
+.tg-user-menu {
+  min-width: 240px;
+  padding: 0.35rem 0;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius-lg;
+  box-shadow: $tg-shadow;
+
+  .dropdown-item {
+    padding: 0.55rem 1rem;
+    font-weight: 500;
+    color: $tg-body-color;
+
+    &:hover,
+    &:focus {
+      background: $tg-light;
+      color: $tg-primary;
+    }
+
+    &.text-danger:hover,
+    &.text-danger:focus {
+      color: $tg-danger;
+      background: rgba($tg-danger, 0.06);
+    }
+  }
+}
+
+.tg-user-menu__header {
+  max-width: 240px;
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+.tg-page {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.tg-page__header {
+  padding: 1.5rem 1.5rem 0;
+}
+
+.tg-page__title {
   margin: 0;
-  padding: 0;
-
-  > li {
-    position: relative;
-    margin: 0;
-    padding: 0;
-
-    &.header {
-      padding: 10px 15px 10px 15px;
-      font-size: 12px;
-      color: #4b646f;
-      background: #1a2226;
-      word-break: break-all;
-    }
-
-    > a {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 12px 15px;
-      color: $tg-sidebar-color;
-      text-decoration: none;
-      border-left: 3px solid transparent;
-
-      > .fa {
-        width: 1.25rem;
-        text-align: center;
-      }
-
-      > span {
-        flex: 1 1 auto;
-      }
-
-      > .float-end {
-        margin-left: auto;
-      }
-    }
-
-    &:hover > a,
-    &.active > a {
-      color: $tg-white;
-      background: #1e282c;
-      border-left-color: $tg-header-bg;
-    }
-  }
-
-  .treeview-menu {
-    display: block; // keep open without AdminLTE JS
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    background: #2c3b41;
-
-    > li > a {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 8px 15px 8px 28px;
-      color: $tg-sidebar-color;
-      text-decoration: none;
-      font-size: 0.8125rem;
-
-      &:hover {
-        color: $tg-white;
-      }
-
-      > .fa {
-        width: 1.1rem;
-        text-align: center;
-      }
-    }
-  }
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: $tg-primary;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.55rem;
 }
 
-// ---------------------------------------------------------------------------
-// Content
-// ---------------------------------------------------------------------------
-.content-wrapper {
-  margin-left: 230px;
-  min-height: calc(100vh - 50px);
-  background-color: #ecf0f5;
-  z-index: 800;
+.tg-page__subtitle {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: $tg-secondary;
 }
 
-.content-header {
-  padding: 15px 15px 0;
-
-  h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: $tg-headings-font-weight;
-
-    small {
-      font-size: $tg-font-size-sm;
-      color: $tg-secondary;
-      display: inline-block;
-      padding-left: 0.5rem;
-      font-weight: 300;
-    }
-  }
-}
-
-.content {
-  padding: 15px;
-  min-height: 250px;
+.tg-page__body {
+  padding: 1.15rem 1.5rem 1.75rem;
+  flex: 1 1 auto;
 }
 
 .main-footer {
-  margin-left: 230px;
-  background: $tg-white;
-  padding: 15px;
-  color: #444;
-  border-top: 1px solid #d2d6de;
+  background: transparent;
+  padding: 0.85rem 1.5rem 1.25rem;
+  color: $tg-secondary;
+  border-top: none;
+  margin: 0;
 }
 
-// Bare / public layouts set margin-left: 0 inline on content-wrapper.
-
 // ---------------------------------------------------------------------------
-// Info boxes (dashboard stats)
+// KPI cards
 // ---------------------------------------------------------------------------
-.info-box {
+a.info-box-link {
+  text-decoration: none !important;
+  color: inherit;
   display: block;
-  min-height: 90px;
+}
+
+.info-box {
+  display: flex;
+  min-height: 96px;
   background: $tg-white;
   width: 100%;
   box-shadow: $tg-shadow-sm;
-  border-radius: $tg-border-radius;
-  margin-bottom: 15px;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius-lg;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    box-shadow: $tg-shadow;
+    transform: translateY(-1px);
+  }
 
   .info-box-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    float: left;
-    height: 90px;
-    width: 90px;
-    text-align: center;
-    font-size: 45px;
+    flex: 0 0 88px;
+    width: 88px;
+    font-size: 1.75rem;
     color: $tg-white;
-    border-radius: $tg-border-radius 0 0 $tg-border-radius;
-
-    > i {
-      line-height: 1;
-    }
   }
 
   .info-box-content {
-    padding: 5px 10px;
-    margin-left: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.85rem 1rem;
+    min-width: 0;
+    flex: 1 1 auto;
   }
 
   .info-box-text {
     display: block;
-    font-size: 0.875rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: $tg-secondary;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-transform: uppercase;
+    text-decoration: none !important;
   }
 
   .info-box-number {
     display: block;
     font-weight: 700;
-    font-size: 1.125rem;
+    font-size: 1.5rem;
+    color: $tg-primary;
+    text-decoration: none !important;
+    line-height: 1.2;
   }
 }
 
 .bg-aqua,
-.bg-teal {
-  background-color: #00c0ef !important;
-  color: $tg-white !important;
-}
-
-.bg-green {
-  background-color: $tg-success !important;
-  color: $tg-white !important;
-}
-
-.bg-yellow {
-  background-color: $tg-warning !important;
-  color: $tg-white !important;
-}
-
-.bg-red {
-  background-color: $tg-danger !important;
-  color: $tg-white !important;
-}
-
-.bg-blue {
-  background-color: $tg-info !important;
-  color: $tg-white !important;
-}
-
-.bg-navy {
-  background-color: #001f3f !important;
-  color: $tg-white !important;
-}
-
-.bg-maroon {
-  background-color: #d81b60 !important;
-  color: $tg-white !important;
-}
-
-.bg-purple {
-  background-color: #605ca8 !important;
-  color: $tg-white !important;
-}
-
-.bg-orange {
-  background-color: #ff851b !important;
-  color: $tg-white !important;
-}
+.bg-teal { background-color: #00c0ef !important; color: $tg-white !important; }
+.bg-green { background-color: $tg-success !important; color: $tg-white !important; }
+.bg-yellow { background-color: $tg-warning !important; color: $tg-white !important; }
+.bg-red { background-color: $tg-danger !important; color: $tg-white !important; }
+.bg-blue { background-color: $tg-info !important; color: $tg-white !important; }
+.bg-navy { background-color: #001f3f !important; color: $tg-white !important; }
+.bg-maroon { background-color: #d81b60 !important; color: $tg-white !important; }
+.bg-purple { background-color: #605ca8 !important; color: $tg-white !important; }
+.bg-orange { background-color: #ff851b !important; color: $tg-white !important; }
 
 // ---------------------------------------------------------------------------
-// Login / register boxes
+// Auth shell (login / register / password)
 // ---------------------------------------------------------------------------
-.login-box,
-.register-box {
-  width: 360px;
-  margin: 7% auto;
+body.tg-auth {
+  font-family: $tg-font-family-base;
+  font-size: $tg-font-size-base;
+  color: $tg-body-color;
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(52, 152, 219, 0.22), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(24, 188, 156, 0.14), transparent 50%),
+    linear-gradient(160deg, #eef2f7 0%, $tg-body-bg 45%, #e8eef5 100%);
+}
 
-  .login-logo,
-  .register-logo {
-    font-size: 2.1rem;
-    font-weight: 300;
-    margin-bottom: 1.5rem;
-    text-align: center;
+.tg-auth-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-    a {
-      color: #444;
-      text-decoration: none;
+.tg-auth-brandbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+}
 
-      b {
-        font-weight: 700;
-      }
+.tg-auth-brand {
+  color: $tg-primary;
+  text-decoration: none;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+
+  b { font-weight: 700; }
+  &:hover { color: $tg-primary; }
+}
+
+.tg-auth-brandbar__lang {
+  .nav-link {
+    color: $tg-secondary;
+    font-weight: 500;
+  }
+}
+
+.tg-auth-main {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1.25rem 2.5rem;
+  overflow-y: auto;
+}
+
+.tg-auth-card {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  background: $tg-white;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius-lg;
+  box-shadow: $tg-shadow;
+  padding: 2rem 1.75rem 1.75rem;
+  animation: tg-auth-rise 420ms ease-out;
+}
+
+.tg-auth-card__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: $tg-primary;
+  letter-spacing: -0.02em;
+}
+
+.tg-auth-card__subtitle {
+  margin: 0 0 1.5rem;
+  color: $tg-secondary;
+  font-size: $tg-font-size-sm;
+  line-height: 1.45;
+}
+
+.tg-auth-form {
+  .form-label {
+    font-weight: 500;
+    color: $tg-primary;
+    margin-bottom: 0.35rem;
+  }
+
+  .form-control {
+    border-color: $tg-border-color;
+    border-radius: $tg-border-radius;
+
+    &:focus {
+      border-color: $tg-info;
+      box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.2);
     }
   }
+}
 
-  .login-box-body,
-  .register-box-body {
-    background: $tg-white;
-    padding: 20px;
-    border-top: 0;
-    color: #666;
-    box-shadow: $tg-shadow-sm;
-    border-radius: $tg-border-radius;
+.tg-auth-link {
+  color: $tg-info;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover { color: darken($tg-info, 8%); text-decoration: underline; }
+}
+
+.tg-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.35rem 0 1rem;
+  color: $tg-secondary;
+  font-size: $tg-font-size-sm;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background: $tg-border-color;
+  }
+
+  span { text-align: center; max-width: 14rem; line-height: 1.35; }
+}
+
+.tg-auth-social {
+  display: grid;
+  gap: 0.55rem;
+  margin-bottom: 1.25rem;
+}
+
+.tg-auth-social__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: $tg-border-radius;
+  font-weight: 500;
+}
+
+.tg-auth-switch {
+  margin-top: 0.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid $tg-border-color;
+}
+
+.tg-auth-footer {
+  text-align: center;
+  padding: 0.75rem 1rem 1.25rem;
+  color: $tg-secondary;
+  font-size: $tg-font-size-sm;
+
+  a {
+    color: $tg-secondary;
+    text-decoration: none;
+    &:hover { color: $tg-primary; }
   }
 }
 
+@keyframes tg-auth-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 // ---------------------------------------------------------------------------
-// Boxes / cards leftover classes
+// Welcome / marketing home
 // ---------------------------------------------------------------------------
-.box {
-  position: relative;
+body.tg-welcome {
+  font-family: $tg-font-family-base;
+  color: $tg-body-color;
   background: $tg-white;
-  border-radius: $tg-border-radius;
-  margin-bottom: 20px;
-  width: 100%;
+  margin: 0;
+}
+
+.tg-welcome-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.tg-welcome-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $tg-zindex-header;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+}
+
+.tg-welcome-nav__brand {
+  color: $tg-white;
+  text-decoration: none;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+
+  b { font-weight: 700; }
+  &:hover { color: $tg-white; }
+}
+
+.tg-welcome-nav__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+
+  .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+  }
+
+  .btn-primary {
+    background: $tg-white;
+    border-color: $tg-white;
+    color: $tg-primary;
+    font-weight: 600;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(255, 255, 255, 0.9);
+      color: $tg-primary;
+    }
+  }
+}
+
+.tg-welcome-nav__link {
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.35rem 0.5rem;
+
+  &:hover { color: $tg-white; }
+}
+
+.tg-welcome-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  color: $tg-white;
+  background:
+    linear-gradient(125deg, rgba(15, 23, 42, 0.92) 0%, rgba(44, 62, 80, 0.88) 48%, rgba(52, 152, 219, 0.75) 100%),
+    radial-gradient(circle at 80% 20%, rgba(24, 188, 156, 0.35), transparent 42%),
+    linear-gradient(160deg, $tg-dark 0%, $tg-primary 55%, #1a5276 100%);
+  overflow: hidden;
+}
+
+.tg-welcome-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -10% -20% 40%;
+  height: 70%;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.12), transparent 65%);
+  pointer-events: none;
+  animation: tg-welcome-glow 8s ease-in-out infinite alternate;
+}
+
+.tg-welcome-hero__inner {
+  position: relative;
+  z-index: 1;
+  width: min(720px, 100%);
+  padding: 6.5rem 1.5rem 4rem;
+  animation: tg-auth-rise 500ms ease-out;
+}
+
+.tg-welcome-hero__brand {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2.5rem, 8vw, 4.25rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.tg-welcome-hero__title {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+.tg-welcome-hero__lede {
+  margin: 0 0 1.75rem;
+  max-width: 34rem;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  opacity: 0.9;
+}
+
+.tg-welcome-hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tg-welcome-features {
+  background: $tg-body-bg;
+  border-top: 1px solid $tg-border-color;
+  padding: 3.5rem 1.5rem 4rem;
+}
+
+.tg-welcome-features__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.tg-welcome-features__heading {
+  margin: 0 0 1.75rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: $tg-primary;
+}
+
+.tg-welcome-features__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.tg-welcome-feature {
+  h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: $tg-primary;
+  }
+
+  p {
+    margin: 0;
+    color: $tg-secondary;
+    line-height: 1.5;
+  }
+}
+
+@keyframes tg-welcome-glow {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.7; }
+  to { transform: translate3d(-4%, -3%, 0) scale(1.08); opacity: 1; }
+}
+
+@media (max-width: 991.98px) {
+  .tg-welcome-features__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 575.98px) {
+  .tg-welcome-nav__link { display: none; }
+  .tg-welcome-features__grid { grid-template-columns: 1fr; }
+  .tg-welcome-hero__inner { padding-top: 5.5rem; }
+}
+
+.box {
+  background: $tg-white;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius-lg;
+  margin-bottom: 1.25rem;
   box-shadow: $tg-shadow-sm;
 
   .box-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 15px;
+    padding: 0.85rem 1rem;
     border-bottom: 1px solid $tg-border-color;
-
-    .box-title {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 500;
-    }
   }
 
-  .box-body {
-    padding: 15px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
-
+  .box-body { padding: 1rem; }
   .box-footer {
-    padding: 10px 15px;
+    padding: 0.75rem 1rem;
     border-top: 1px solid $tg-border-color;
-    background-color: #fafafa;
+    background: #fafafa;
   }
 }
 
+@media (max-width: 575.98px) {
+  .tg-auth-card {
+    padding: 1.5rem 1.15rem 1.25rem;
+  }
+}
+
+.wrapper { min-height: 100vh; }
+.content-wrapper { background-color: $tg-body-bg; }
+.content-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $tg-primary;
+}
+
 // ---------------------------------------------------------------------------
-// Responsive
+// Public / user shell (Forge PublicLayout-adjacent)
 // ---------------------------------------------------------------------------
-@media (max-width: 767.98px) {
-  .main-header {
-    flex-wrap: wrap;
-    max-height: none;
+body.tg-public {
+  font-family: $tg-font-family-base;
+  font-size: $tg-font-size-base;
+  color: $tg-body-color;
+  background: $tg-body-bg;
+  margin: 0;
+}
 
-    .logo {
-      flex-basis: 100%;
-      width: 100%;
+.tg-public-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-      .logo-mini {
-        display: inline;
-      }
+.tg-public-topbar {
+  position: sticky;
+  top: 0;
+  z-index: $tg-zindex-header;
+  background: $tg-white;
+  border-bottom: 1px solid $tg-border-color;
+  box-shadow: $tg-shadow-sm;
+}
 
-      .logo-lg {
-        display: none;
-      }
+.tg-public-topbar__inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 64px;
+  flex-wrap: wrap;
+}
+
+.tg-public-brand {
+  color: $tg-primary;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-right: 0.5rem;
+
+  b { font-weight: 700; }
+  &:hover { color: $tg-primary; }
+}
+
+.tg-public-nav {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  gap: 0.75rem;
+
+  .nav-link {
+    color: $tg-secondary;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.4rem 0.65rem;
+    border-radius: $tg-border-radius-sm;
+
+    &:hover {
+      color: $tg-primary;
+      background: $tg-light;
     }
   }
+}
 
-  .main-sidebar {
-    position: fixed;
-    transform: translateX(-100%);
-    padding-top: 100px;
+.tg-public-topbar .navbar-toggler {
+  border: none;
+  color: $tg-primary;
+  margin-left: auto;
+}
 
-    &.show,
-    &.sidebar-open {
-      transform: translateX(0);
-    }
-  }
+.tg-public-main {
+  flex: 1 1 auto;
+  padding: 1.25rem 0 2rem;
+}
 
-  .content-wrapper,
-  .main-footer {
-    margin-left: 0;
-  }
+.tg-public-content {
+  padding-top: 0.5rem;
+}
 
-  .login-box,
-  .register-box {
-    width: 90%;
-    margin-top: 20px;
-  }
+.tg-public-shell .main-footer {
+  border-top: 1px solid $tg-border-color;
+  background: $tg-white;
+  margin-top: auto;
 }

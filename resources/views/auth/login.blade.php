@@ -1,99 +1,51 @@
-@extends('layouts.bare')
-
-@section('css')
-@parent
-<link rel="stylesheet" href="{{ asset('css/iCheck/icheck.min.css') }}">
-@endsection
+@extends('layouts.auth')
 
 @section('content')
-<div class="login-box">
-    <div class="login-logo">
-        <a href="{{ url('/') }}">time<b>grid</b></a>
+<div class="tg-auth-card">
+    <h1 class="tg-auth-card__title">{{ trans('auth.login.title') }}</h1>
+    <p class="tg-auth-card__subtitle">{{ trans('app.name') }}</p>
+
+    @if (count($errors) > 0)
+    <div class="alert alert-danger">
+        <strong>{{ trans('auth.login.alert.whoops') }}</strong> {{ trans('auth.login.alert.message') }}
+        <ul class="mb-0 mt-2">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
-    <!-- /.login-logo -->
-    <div class="login-box-body">
-        <p class="login-box-msg">{{ trans('auth.login.title') }}</p>
+    <a class="btn btn-success w-100 mb-3" href="{{ url('/register') }}">{{ trans('auth.btn.not_registered') }}</a>
+    @endif
 
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>{{ trans('auth.login.alert.whoops') }}</strong> {{ trans('auth.login.alert.message') }}<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+    <form method="POST" action="{{ url('/login') }}" class="tg-auth-form">
+        {{ csrf_field() }}
+
+        <div class="mb-3">
+            <label class="form-label" for="email">{{ trans('auth.login.email') }}</label>
+            <input id="email" type="email" name="email" class="form-control form-control-lg" value="{{ old('email') }}" required autofocus>
         </div>
 
-        {!! Button::success(trans('auth.btn.not_registered'))->block()->asLinkTo(url('/register')) !!}<p>&nbsp;</p>
-        @endif
-
-        <form role="form" method="POST" action="{{ url('/login') }}">
-            {{ csrf_field() }}
-            <div class="form-group has-feedback">
-                <input type="email" name="email" class="form-control" placeholder="{{ trans('auth.login.email') }}" required>
-                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-            </div>
-            <div class="form-group has-feedback">
-                <input type="password" name="password" class="form-control" placeholder="{{ trans('auth.login.password') }}" required>
-                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-            </div>
-            <div class="row">
-                <div class="col-8">
-
-                    <div class="checkbox icheck">
-                        <label>
-                            <input type="checkbox" name="remember"> {{ trans('auth.login.remember_me') }}
-                        </label>
-                    </div>
-
-                </div>
-                <!-- /.col -->
-                <div class="col-4">
-                    <button type="submit" class="btn btn-primary btn-block btn-flat">{{ trans('auth.login.login') }}</button>
-                </div>
-                <!-- /.col -->
-            </div>
-        </form>
-
-        <div class="social-auth-links text-center">
-            <p>- {{ trans('auth.label.oauth_direct_access') }} -</p>
-            @include('auth/social')
-        </div>
-        <!-- /.social-auth-links -->
-
-        <a class="btn btn-link" href="{{ url('/password/reset') }}">{{ trans('auth.login.forgot') }}</a><br>
-
-        <div id="notRegisteredLink" class="row hidden" style="margin-top: 20px;">
-            <div class="col-md-12">
-                {!! Button::success(trans('auth.btn.not_registered'))->withAttributes(['id' => 'btnNotRegistered', 'class' => ''])->block()->asLinkTo(url('/register')) !!}
-            </div>
+        <div class="mb-3">
+            <label class="form-label" for="password">{{ trans('auth.login.password') }}</label>
+            <input id="password" type="password" name="password" class="form-control form-control-lg" required>
         </div>
 
-    </div>
-    <!-- /.login-box-body -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="remember" id="remember" value="1">
+                <label class="form-check-label" for="remember">{{ trans('auth.login.remember_me') }}</label>
+            </div>
+            <a class="tg-auth-link" href="{{ url('/password/reset') }}">{{ trans('auth.login.forgot') }}</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg w-100">{{ trans('auth.login.login') }}</button>
+    </form>
+
+    <div class="tg-auth-divider"><span>{{ trans('auth.label.oauth_direct_access') }}</span></div>
+    @include('auth/social')
+
+    <p class="tg-auth-switch text-center mb-0">
+        <a class="tg-auth-link" href="{{ url('/register') }}">{{ trans('auth.btn.not_registered') }}</a>
+    </p>
 </div>
-<!-- /.login-box -->
 @endsection
-
-@push('footer_scripts')
-<script src="{{ asset('js/iCheck/icheck.min.js') }}"></script>
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-
-        document.getElementById('notRegisteredLink').hide();
-        var timer;
-        clearTimeout(timer);
-        timer = setTimeout(function (event) {
-            console.log('Search keypress');
-            document.getElementById('notRegisteredLink').removeClass('hidden').show('slow');
-        }, 10000);
-
-        document.querySelectorAll('input').iCheck({
-            checkboxClass: 'icheckbox_square-blue',
-            radioClass: 'iradio_square-blue',
-            increaseArea: '20%' // optional
-        });
-
-    });
-</script>
-@endpush

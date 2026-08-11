@@ -1,31 +1,36 @@
-<!-- User Account Menu -->
+{{-- UserMenu — Forge topbar account dropdown --}}
 <li class="nav-item dropdown" data-nav="user-menu">
-    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-        <img src="{{ $gravatarURL }}" class="rounded-circle" width="25" height="25" alt="{{ $user->name }}">
+    <a href="#" class="nav-link dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="{{ $gravatarURL }}" class="rounded-circle" width="28" height="28" alt="{{ $user->name }}">
         <span class="d-none d-sm-inline">{{ $user->name }}</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end">
-        <li class="px-3 py-2 text-center">
-            <img src="{{ $gravatarURL }}" class="rounded-circle mb-2" width="80" height="80" alt="{{ $user->name }}">
-            <p class="mb-0" title="{{ $timezone }}">{{ $user->name }}</p>
-            <p class="text-muted small">{{ $user->email }}</p>
+    <ul class="dropdown-menu dropdown-menu-end tg-user-menu">
+        <li class="tg-user-menu__header px-3 py-3 text-center">
+            <img src="{{ $gravatarURL }}" class="rounded-circle mb-2" width="64" height="64" alt="{{ $user->name }}">
+            <div class="fw-semibold text-truncate" title="{{ $user->name }}">{{ $user->name }}</div>
+            <div class="text-muted small text-truncate" title="{{ $user->email }}">{{ $user->email }}</div>
         </li>
-        <li><hr class="dropdown-divider"></li>
+        <li><hr class="dropdown-divider my-0"></li>
         <li>
-            <div class="row px-3">
-                <div class="col-4 text-center">
-                    <a class="dropdown-item" href="{{ route('manager.business.index') }}">{{ trans('app.nav.manager.business.menu') }}</a>
-                </div>
-                <div class="col-4 text-center"></div>
-                <div class="col-4 text-center">
-                    <a class="dropdown-item" href="{{ docs_url(Session::get('language')) }}" target="_blank">{{ trans('app.nav.manual') }}</a>
-                </div>
-            </div>
+            <a class="dropdown-item" href="{{ route('manager.business.index') }}">
+                {{ trans('app.nav.manager.business.menu') }}
+            </a>
         </li>
-        <li><hr class="dropdown-divider"></li>
-        <li class="px-3 d-flex justify-content-between">
-            <a href="{{ route('user.preferences') }}" class="btn btn-outline-secondary btn-sm">{{ trans('app.nav.preferences') }}</a>
-            <a href="{{ url('/logout') }}" class="btn btn-outline-secondary btn-sm">{{ trans('app.nav.logout') }}</a>
+        <li>
+            <a class="dropdown-item" href="{{ docs_url(Session::get('language')) }}" target="_blank" rel="noopener">
+                {{ trans('app.nav.manual') }}
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{{ route('user.preferences') }}">
+                {{ trans('app.nav.preferences') }}
+            </a>
+        </li>
+        <li><hr class="dropdown-divider my-0"></li>
+        <li>
+            <a class="dropdown-item text-danger" href="{{ url('/logout') }}">
+                {{ trans('app.nav.logout') }}
+            </a>
         </li>
     </ul>
 </li>
