@@ -4,9 +4,23 @@ namespace App\Listeners;
 
 use App\Events\NewSoftAppointmentWasBooked;
 use App\TG\TransMail;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
-class SendSoftAppointmentValidationRequest
+class SendSoftAppointmentValidationRequest implements ShouldQueue
 {
+    use InteractsWithQueue, Queueable, SerializesModels;
+
+    public int $tries = 3;
+
+    public array $backoff = [10, 60, 300];
+
+    public string $queue = 'notifications';
+
     public function __construct(
         private readonly TransMail $transmail,
     ) {
@@ -14,26 +28,38 @@ class SendSoftAppointmentValidationRequest
 
     public function handle(NewSoftAppointmentWasBooked $event): void
     {
-        logger()->info(__METHOD__);
+        try {
+            $appointment = $event->appointment;
+            $appointment->loadMissing(['business', 'contact']);
+        } catch (ModelNotFoundException $e) {
+            Log::warning('SendSoftAppointmentValidationRequest: model deleted before processing', [
+                'exception' => $e->getMessage(),
+            ]);
+            $this->delete();
+            return;
+        }
 
-        $timezone = $event->appointment->business->timezone;
-        $businessName = $event->appointment->business->name;
-        $businessSlug = $event->appointment->business->slug;
-        $locale = $event->appointment->business->locale;
-        $email = $event->appointment->contact->email;
-        $code = $event->appointment->code;
+        $timezone = $appointment->business->timezone;
+        $businessName = $appointment->business->name;
+        $businessSlug = $appointment->business->slug;
+        $locale = $appointment->business->locale;
+        $email = $appointment->contact->email;
+        $code = $appointment->code;
 
-        if ($event->appointment->business->pref('disable_outbound_mailing')) {
+        if ($appointment->business->pref('disable_outbound_mailing')) {
+            Log::info('SendSoftAppointmentValidationRequest: skipped, outbound mailing disabled', [
+                'business_id' => $appointment->business->id,
+            ]);
             return;
         }
 
         $params = [
-            'appointment'  => $event->appointment,
+            'appointment'  => $appointment,
             'link'         => $this->generateLink($businessSlug, $code, $email),
             'businessName' => $businessName,
         ];
         $header = [
-            'name'  => $event->appointment->contact->firstname,
+            'name'  => $appointment->contact->firstname,
             'email' => $email,
         ];
 
@@ -43,6 +69,13 @@ class SendSoftAppointmentValidationRequest
                     ->template('guest.appointment-validation.validation')
                     ->subject('guest.appointment-validation.subject', compact('businessName'))
                     ->send($header, $params);
+    }
+
+    public function failed(\Throwable $exception): void
+    {
+        Log::error('SendSoftAppointmentValidationRequest: job failed permanently', [
+            'exception' => $exception->getMessage(),
+        ]);
     }
 
     protected function generateLink(string $business, string $code, string $email): string

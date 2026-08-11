@@ -2,8 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\TG\Availability\ICalSyncService;
+use App\Jobs\FetchICalFile;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Timegridio\Concierge\Models\Business;
 
@@ -11,11 +12,10 @@ class SyncICal extends Command
 {
     protected $signature = 'ical:sync {business?}';
 
-    protected $description = 'Sync ICal';
+    protected $description = 'Dispatch iCal fetch jobs for businesses with calendar links';
 
-    public function __construct(
-        protected ICalSyncService $icalsync,
-    ) {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -24,16 +24,15 @@ class SyncICal extends Command
         $businessId = $this->argument('business');
 
         if ($businessId === null) {
-            $this->info('Syncing ICal for all businesses');
+            $this->info('Dispatching iCal sync jobs for all businesses');
             $this->scanBusinesses();
 
             return 0;
         }
 
-        $this->info("Syncing ICal for {$businessId}");
+        $this->info("Dispatching iCal sync jobs for business {$businessId}");
 
         $business = Business::findOrFail($businessId);
-
         $this->processBusiness($business);
 
         return 0;
@@ -41,27 +40,30 @@ class SyncICal extends Command
 
     protected function scanBusinesses(): void
     {
-        $businesses = Business::all();
-        foreach ($businesses as $business) {
-            $this->processBusiness($business);
-        }
+        Business::chunk(50, function ($businesses) {
+            foreach ($businesses as $business) {
+                $this->processBusiness($business);
+            }
+        });
     }
 
     protected function processBusiness(Business $business): void
     {
         $humanresources = $business->humanresources()->whereNotNull('calendar_link')->get();
 
-        if ($humanresources) {
+        if ($humanresources->isNotEmpty()) {
             Storage::delete("business/{$business->id}/ical/ical-exclusion.compiled");
         }
 
-        $this->processHumanresources($humanresources);
-    }
-
-    protected function processHumanresources($humanresources): void
-    {
         foreach ($humanresources as $humanresource) {
-            $this->icalsync->humanresource($humanresource)->sync();
+            FetchICalFile::dispatch($humanresource)->onQueue('ical-sync');
+
+            Log::info('ical:sync dispatched FetchICalFile', [
+                'business_id'      => $business->id,
+                'humanresource_id' => $humanresource->id,
+            ]);
         }
+
+        $this->info("  Dispatched {$humanresources->count()} job(s) for business {$business->id}");
     }
 }
