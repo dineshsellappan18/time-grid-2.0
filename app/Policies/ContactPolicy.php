@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\TG\AuditLogger;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Contact;
 use App\Models\User;
@@ -11,31 +12,26 @@ class ContactPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
+    private AuditLogger $audit;
+
     public function __construct()
     {
-        //
+        $this->audit = app(AuditLogger::class);
     }
 
-    /**
-     * Determine if the given contact can be managed by the profile owner user.
-     *
-     * @param User     $user
-     * @param Business $business
-     * @param Business $contact
-     *
-     * @return bool
-     */
-    public function manage(User $user, Contact $contact)
+    public function manage(User $user, Contact $contact): bool
     {
         if (!$contact->user) {
+            $this->audit->denied('contact.manage', 'contact', $contact->id);
             return false;
         }
 
-        return $user->id == $contact->user->id;
+        $allowed = $user->id == $contact->user->id;
+
+        if (!$allowed) {
+            $this->audit->denied('contact.manage', 'contact', $contact->id);
+        }
+
+        return $allowed;
     }
 }

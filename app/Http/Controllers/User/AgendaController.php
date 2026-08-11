@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Events\NewAppointmentWasBooked;
 use App\Events\NewSoftAppointmentWasBooked;
 use App\Http\Controllers\Controller;
+use App\TG\AuditLogger;
 use Carbon\Carbon;
 use Event;
 use Illuminate\Contracts\View\View;
@@ -23,6 +24,7 @@ class AgendaController extends Controller
 {
     public function __construct(
         private readonly Concierge $concierge,
+        private readonly AuditLogger $audit,
     ) {
         parent::__construct();
     }
@@ -171,6 +173,13 @@ class AgendaController extends Controller
 
             return redirect()->back();
         }
+
+        $this->audit->append(
+            action: 'appointment.create',
+            resourceType: 'appointment',
+            resourceId: $appointment->id,
+            changes: ['business_id' => $business->id, 'service_id' => $service?->id, 'date' => $date],
+        );
 
         flash()->success(trans('user.booking.msg.store.success', ['code' => $appointment->code]));
 

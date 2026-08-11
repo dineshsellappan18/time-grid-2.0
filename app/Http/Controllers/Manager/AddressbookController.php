@@ -5,12 +5,18 @@ namespace App\Http\Controllers\Manager;
 use App\Events\NewContactWasRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ContactFormRequest;
+use App\TG\AuditLogger;
 use Illuminate\Support\Facades\Log;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Contact;
 
 class AddressbookController extends Controller
 {
+    public function __construct(
+        private readonly AuditLogger $audit,
+    ) {
+        parent::__construct();
+    }
     public function index(Business $business)
     {
         Log::info('addressbook.index', [
@@ -67,6 +73,13 @@ class AddressbookController extends Controller
 
             return redirect()->route('manager.addressbook.show', [$business, $contact]);
         }
+
+        $this->audit->append(
+            action: 'contact.create',
+            resourceType: 'contact',
+            resourceId: $contact->id,
+            changes: ['business_id' => $business->id],
+        );
 
         event(new NewContactWasRegistered($contact));
 
@@ -134,6 +147,13 @@ class AddressbookController extends Controller
 
         $contact = $business->addressbook()->update($contact, $data, $request->get('notes'));
 
+        $this->audit->append(
+            action: 'contact.update',
+            resourceType: 'contact',
+            resourceId: $contact->id,
+            changes: array_keys($data),
+        );
+
         flash()->success(trans('manager.contacts.msg.update.success'));
 
         return redirect()->route('manager.addressbook.show', [$business, $contact]);
@@ -150,7 +170,15 @@ class AddressbookController extends Controller
 
         $this->authorize('manageContacts', $business);
 
+        $contactId = $contact->id;
         $contact = $business->addressbook()->remove($contact);
+
+        $this->audit->append(
+            action: 'contact.delete',
+            resourceType: 'contact',
+            resourceId: $contactId,
+            changes: ['business_id' => $business->id],
+        );
 
         flash()->success(trans('manager.contacts.msg.destroy.success'));
 

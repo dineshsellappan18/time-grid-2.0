@@ -41,6 +41,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $subscribe = [
         \App\Listeners\UserEventListener::class,
+        \App\Listeners\AuditAuthEvents::class,
     ];
 
     /**

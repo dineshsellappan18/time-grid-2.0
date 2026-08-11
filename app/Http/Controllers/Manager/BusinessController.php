@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Manager;
 use App\Exceptions\BusinessAlreadyRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BusinessFormRequest;
+use App\TG\AuditLogger;
 use App\TG\Business\Dashboard;
 use App\TG\BusinessService;
 use Carbon\Carbon;
@@ -25,6 +26,7 @@ class BusinessController extends Controller
     public function __construct(
         private readonly BusinessService $businessService,
         private readonly Carbon $time,
+        private readonly AuditLogger $audit,
     ) {
         parent::__construct();
     }
@@ -96,6 +98,13 @@ class BusinessController extends Controller
 
             return redirect()->back()->withInput(request()->all());
         }
+
+        $this->audit->append(
+            action: 'business.create',
+            resourceType: 'business',
+            resourceId: $business->id,
+            changes: ['name' => $business->name],
+        );
 
         $businessName = $business->name;
         Notifynder::category('user.registeredBusiness')
@@ -184,6 +193,13 @@ class BusinessController extends Controller
 
         $this->businessService->setCategory($business, $category);
 
+        $this->audit->append(
+            action: 'business.update',
+            resourceType: 'business',
+            resourceId: $business->id,
+            changes: array_keys($data),
+        );
+
         flash()->success(trans('manager.businesses.msg.update.success'));
 
         return redirect()->route('manager.business.show', compact('business'));
@@ -201,6 +217,12 @@ class BusinessController extends Controller
         $this->authorize('destroy', $business);
 
         $this->businessService->deactivate($business);
+
+        $this->audit->append(
+            action: 'business.deactivate',
+            resourceType: 'business',
+            resourceId: $business->id,
+        );
 
         flash()->success(trans('manager.businesses.msg.destroy.success'));
 
