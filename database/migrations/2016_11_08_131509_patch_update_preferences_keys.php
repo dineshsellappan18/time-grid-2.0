@@ -1,39 +1,17 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
 
 class PatchUpdatePreferencesKeys extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    public function up(): void
     {
-        DB::table('preferences')
-                    ->where('key', 'appointment_annulation_pre_hs')
-                    ->update(['key' => 'appointment_cancellation_pre_hs']);
-
-        DB::table('preferences')
-                    ->where('key', 'annulation_policy_advice')
-                    ->update(['key' => 'cancellation_policy_advice']);
+        // Data work moved to: php artisan preferences:remap-keys (WO-037)
+        // This migration is intentionally a no-op; the schema is unchanged.
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
-        DB::table('preferences')
-                    ->where('key', 'appointment_cancellation_pre_hs')
-                    ->update(['key' => 'appointment_annulation_pre_hs']);
-
-        DB::table('preferences')
-                    ->where('key', 'cancellation_policy_advice')
-                    ->update(['key' => 'annulation_policy_advice']);
+        // No schema change to reverse.
     }
 }
