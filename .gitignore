@@ -18,6 +18,10 @@
 /tests/logs
 /build
 /bower_components
+/public/build
+/public/hot
+/public/css
+/public/js
 .env
 .env.testing
 /public/storage/debugbar
