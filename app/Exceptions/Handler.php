@@ -2,10 +2,10 @@
 
 namespace App\Exceptions;
 
-use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Log;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -36,12 +36,8 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception via the application logger only.
      * Third-party reporters (Rollbar) are intentionally not invoked (WO-009).
-     *
-     * @param  \Exception  $exception
-     *
-     * @return void
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception): void
     {
         if ($this->shouldReport($exception)) {
             Log::error($exception->getMessage(), [
@@ -58,12 +54,8 @@ class Handler extends ExceptionHandler
 
     /**
      * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
-     * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         if (app()->environment('production') || app()->environment('demo')) {
             if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
@@ -74,7 +66,7 @@ class Handler extends ExceptionHandler
                 return redirect(route('user.directory.list'))->withErrors(trans('app.msg.invalid_url'));
             }
 
-            if (!app()->isDownForMaintenance() && $exception instanceof Exception && $request->user()) {
+            if (!app()->isDownForMaintenance() && $request->user()) {
                 return redirect(route('whoops'))->withErrors(trans('app.msg.general_exception'));
             }
         }
@@ -84,10 +76,6 @@ class Handler extends ExceptionHandler
 
     /**
      * Convert an authentication exception into an unauthenticated response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
-     * @return \Illuminate\Http\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {

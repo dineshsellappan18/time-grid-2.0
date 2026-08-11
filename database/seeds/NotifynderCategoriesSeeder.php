@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Fenos\Notifynder\Facades\Notifynder;
 use Illuminate\Database\Seeder;
 

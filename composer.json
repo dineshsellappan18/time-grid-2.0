@@ -84,7 +84,7 @@
         "guzzlehttp/guzzle": "~6.0",
         "intervention/image": "^2.2",
         "laracasts/flash": "~2.0",
-        "laravel/framework": "5.8.38",
+        "laravel/framework": "8.83.27",
         "laravel/socialite": "~2.0",
         "laravelcollective/html": "~5.2",
         "pid/speakingurl": "^0.11.0",
@@ -123,6 +123,8 @@
         ],
         "psr-4": {
             "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeds/",
             "Seanstewart\\PlanConfig\\": "app/Support/PlanConfig/",
             "Bootstrapper\\": "app/Support/Bootstrapper/",
             "McCool\\LaravelAutoPresenter\\": "app/Support/AutoPresenter/",
