@@ -24,8 +24,13 @@ Route::group(
     ],
     function () {
         Route::get('dashboard', [
-            'as'   => 'dashboard',
+            'as'   => 'root.dashboard',
             'uses' => 'RootController@getIndex',
+        ]);
+
+        Route::get('console', [
+            'as'   => 'root.console',
+            'uses' => 'RootController@getConsole',
         ]);
 
         Route::get('sudo/{userId}', [

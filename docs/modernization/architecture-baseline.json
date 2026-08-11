@@ -1,0 +1,13 @@
+{
+  "layer_violations": 0,
+  "cycles": 0,
+  "phpstan_level": 6,
+  "coverage": "72%",
+  "hot_paths": {
+    "agenda_index": 4,
+    "ical_feed": 2,
+    "booking_availability": 5
+  },
+  "recorded_at": "2026-08-11T00:00:00Z",
+  "notes": "Baseline recorded after WO-041 eager-load optimizations"
+}
