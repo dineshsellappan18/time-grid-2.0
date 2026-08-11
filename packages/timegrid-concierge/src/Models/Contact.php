@@ -4,6 +4,7 @@ namespace Timegridio\Concierge\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Support\Facades\Crypt;
 use McCool\LaravelAutoPresenter\HasPresenter;
 use Timegridio\Concierge\Presenters\ContactPresenter;
 use Timegridio\Concierge\Traits\Presentable;
@@ -21,6 +22,8 @@ use Timegridio\Concierge\Traits\Presentable;
  * @property string $occupation
  * @property string $martial_status
  * @property string $postal_address
+ * @property string|null $nin_hash
+ * @property string|null $mobile_hash
  * @property Illuminate\Support\Collection $businesses
  * @property Illuminate\Support\Collection $appointments
  * @property mixed $user
@@ -50,11 +53,30 @@ class Contact extends EloquentModel implements HasPresenter
         ];
 
     /**
+     * The attributes that should be hidden for arrays/JSON.
+     *
+     * @var array
+     */
+    protected $hidden = ['nin_hash', 'mobile_hash', 'pii_backfilled_at'];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = ['birthdate'];
+
+    public static function computeBlindIndex(?string $value): ?string
+    {
+        if ($value === null || trim($value) === '') {
+            return null;
+        }
+
+        $normalized = preg_replace('/[^a-zA-Z0-9]/', '', $value);
+        $normalized = strtolower($normalized);
+
+        return hash_hmac('sha256', $normalized, config('app.key'));
+    }
 
     //////////////////
     // Relationship //
@@ -156,15 +178,20 @@ class Contact extends EloquentModel implements HasPresenter
     //////////////
 
     /**
-     * set Mobile.
-     *
-     * Expected phone number is international format numeric only
-     *
-     * @param string $mobile Mobile phone number
+     * set Mobile — encrypts and updates blind index.
      */
     public function setMobileAttribute($mobile)
     {
-        return $this->attributes['mobile'] = trim($mobile) ?: null;
+        $plaintext = trim($mobile) ?: null;
+        $this->attributes['mobile_hash'] = self::computeBlindIndex($plaintext);
+
+        if ($plaintext === null) {
+            $this->attributes['mobile'] = null;
+            return null;
+        }
+
+        $this->attributes['mobile'] = Crypt::encryptString($plaintext);
+        return $this->attributes['mobile'];
     }
 
     /**
@@ -178,17 +205,17 @@ class Contact extends EloquentModel implements HasPresenter
     }
 
     /**
-     * set Birthdate.
-     *
-     * @param Carbon $birthdate Carbon parseable birth date
+     * set Birthdate — encrypts.
      */
     public function setBirthdateAttribute(Carbon $birthdate = null)
     {
         if ($birthdate === null) {
-            return $this->attributes['birthdate'] = null;
+            $this->attributes['birthdate'] = null;
+            return null;
         }
 
-        return $this->attributes['birthdate'] = $birthdate;
+        $this->attributes['birthdate'] = Crypt::encryptString($birthdate->toDateString());
+        return $this->attributes['birthdate'];
     }
 
     /**
@@ -202,25 +229,76 @@ class Contact extends EloquentModel implements HasPresenter
     }
 
     /**
-     * TODO: Check if possible to handle in a more structured way
-     *       NIN record is currently too flexible.
-     *
-     * set NIN: National Identity Number
-     *
-     * @param string $nin The national identification number in any format
+     * set NIN — encrypts and updates blind index.
      */
     public function setNinAttribute($nin)
     {
-        return $this->attributes['nin'] = empty(trim($nin)) ? null : $nin;
+        $plaintext = empty(trim($nin)) ? null : $nin;
+        $this->attributes['nin_hash'] = self::computeBlindIndex($plaintext);
+
+        if ($plaintext === null) {
+            $this->attributes['nin'] = null;
+            return null;
+        }
+
+        $this->attributes['nin'] = Crypt::encryptString($plaintext);
+        return $this->attributes['nin'];
     }
 
     ///////////////
     // ACCESSORS //
     ///////////////
 
+    public function getNinAttribute()
+    {
+        $value = $this->attributes['nin'] ?? null;
+        if ($value === null) {
+            return null;
+        }
+
+        try {
+            return Crypt::decryptString($value);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            return $value;
+        }
+    }
+
+    public function getMobileAttribute()
+    {
+        $value = $this->attributes['mobile'] ?? null;
+        if ($value === null) {
+            return null;
+        }
+
+        try {
+            return Crypt::decryptString($value);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            return $value;
+        }
+    }
+
+    public function getBirthdateAttribute()
+    {
+        $value = $this->attributes['birthdate'] ?? null;
+        if ($value === null) {
+            return null;
+        }
+
+        try {
+            $decrypted = Crypt::decryptString($value);
+            return Carbon::parse($decrypted);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            try {
+                return Carbon::parse($value);
+            } catch (\Exception $e2) {
+                return null;
+            }
+        }
+    }
+
     public function getEmailAttribute()
     {
-        if ($email = array_get($this->attributes, 'email')) {
+        if ($email = ($this->attributes['email'] ?? null)) {
             return $email;
         }
 
@@ -228,7 +306,7 @@ class Contact extends EloquentModel implements HasPresenter
             return $this->user->email;
         }
 
-        return;
+        return null;
     }
 
     /////////////////////

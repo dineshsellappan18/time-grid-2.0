@@ -4,6 +4,7 @@ namespace App\TG;
 
 use Timegridio\Concierge\Models\Appointment;
 use Timegridio\Concierge\Models\Business;
+use Timegridio\Concierge\Models\Contact;
 use Timegridio\Concierge\Models\Service;
 
 class SearchEngine
@@ -59,13 +60,18 @@ class SearchEngine
 
     private function getContacts(string $expression): void
     {
+        $blindIndex = Contact::computeBlindIndex($expression);
+
         $businesses = Business::whereIn('id', $this->scope['businessesIds'])->get();
         foreach ($businesses as $business) {
-            $collection = $business->contacts()->where(function ($query) use ($expression) {
+            $collection = $business->contacts()->where(function ($query) use ($expression, $blindIndex) {
                 $query->where('lastname', 'like', $expression . '%')
-                ->orWhere('firstname', 'like', $expression . '%')
-                ->orWhere('nin', $expression)
-                ->orWhere('mobile', 'like', '%' . $expression);
+                    ->orWhere('firstname', 'like', $expression . '%');
+
+                if ($blindIndex !== null) {
+                    $query->orWhere('nin_hash', $blindIndex)
+                        ->orWhere('mobile_hash', $blindIndex);
+                }
             })->get();
 
             $this->results['contacts'] = $collection;

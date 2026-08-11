@@ -63,6 +63,18 @@
 - **Evidence**: `docs/modernization/ical-guard-cutover-evidence.md`
 - **Monitoring**: `php artisan ical:divergence-report --days=14`
 
+### D-007: Contact PII Encryption Key Rotation
+- **Decision**: APP_KEY-based encryption with documented dual-key window for rotation
+- **Rationale**: Uses Laravel's native Crypt facade; blind indexes (HMAC-SHA256) enable exact-match search without plaintext; no external KMS dependency
+- **Trade-off**: Key rotation requires a dual-key window where both old and new APP_KEY are attempted for decryption; partial-match (LIKE) search on NIN/mobile is deliberately removed
+- **Rotation Procedure**:
+  1. Set `APP_KEY_PREVIOUS` env var to current APP_KEY
+  2. Generate new APP_KEY
+  3. Deploy — accessor fallback attempts decryption with both keys
+  4. Run `contacts:encrypt-pii` again to re-encrypt all rows with new key (resets pii_backfilled_at)
+  5. After full re-encryption, remove `APP_KEY_PREVIOUS`
+- **Impact**: Partial-match search (`LIKE '%mobile%'`) no longer works; documented as intentional privacy control
+
 ## Risk Register Closure
 
 | Risk ID | Description | Status | Resolution |
