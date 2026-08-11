@@ -5,22 +5,20 @@ namespace App\Http\Controllers\Manager;
 use App\Events\NewContactWasRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ContactFormRequest;
+use Illuminate\Support\Facades\Log;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Contact;
 
 class AddressbookController extends Controller
 {
-    /**
-     * index of Contacts for Business.
-     *
-     * @param Business $business Business that holds the Contacts
-     *
-     * @return Response Rendered view of Contact addressbook
-     */
     public function index(Business $business)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s', $business->id));
+        Log::info('addressbook.index', [
+            'actor'     => auth()->id(),
+            'resource'  => 'contacts',
+            'operation' => 'list',
+            'context'   => ['business_id' => $business->id],
+        ]);
 
         $this->authorize('manageContacts', $business);
 
@@ -29,17 +27,14 @@ class AddressbookController extends Controller
         return view('manager.contacts.index', compact('business', 'contacts'));
     }
 
-    /**
-     * create Contact.
-     *
-     * @param Business           $business Business that will hold the Contact
-     *
-     * @return Response Rendered form for Contact creation
-     */
     public function create(Business $business)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s', $business->id));
+        Log::info('addressbook.create_form', [
+            'actor'     => auth()->id(),
+            'resource'  => 'contact',
+            'operation' => 'create_form',
+            'context'   => ['business_id' => $business->id],
+        ]);
 
         if ($business->contacts()->count() > plan('limits.contacts', $business->plan)) {
             flash()->warning(trans('app.saas.plan_limit_reached'));
@@ -49,29 +44,21 @@ class AddressbookController extends Controller
 
         $this->authorize('manageContacts', $business);
 
-        // BEGIN //
-
-        $contact = new Contact(); // For Form Model Binding
+        $contact = new Contact();
 
         return view('manager.contacts.create', compact('business', 'contact'));
     }
 
-    /**
-     * store Contact.
-     *
-     * @param Business           $business Business that will hold the Contact
-     * @param ContactFormRequest $request  Contact form Request
-     *
-     * @return Response Rendered view or Redirect
-     */
     public function store(Business $business, ContactFormRequest $request)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s', $business->id));
+        Log::info('addressbook.store', [
+            'actor'     => auth()->id(),
+            'resource'  => 'contact',
+            'operation' => 'create',
+            'context'   => ['business_id' => $business->id],
+        ]);
 
         $this->authorize('manageContacts', $business);
-
-        // BEGIN //
 
         $contact = $business->addressbook()->register($request->all());
 
@@ -88,44 +75,32 @@ class AddressbookController extends Controller
         return redirect()->route('manager.addressbook.show', [$business, $contact]);
     }
 
-    /**
-     * show Contact.
-     *
-     * @param Business           $business Business holding the Contact
-     * @param Contact            $contact  Contact to show
-     * @param ContactFormRequest $request  Contact form Request
-     *
-     * @return Response Rendered view of Contact show
-     */
     public function show(Business $business, Contact $contact)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s contactId:%s', $business->id, $contact->id));
+        Log::info('addressbook.show', [
+            'actor'     => auth()->id(),
+            'resource'  => 'contact',
+            'operation' => 'view',
+            'context'   => ['business_id' => $business->id, 'contact_id' => $contact->id],
+        ]);
 
         $this->authorize('manageContacts', $business);
 
-        // BEGIN //
         $contact = $business->addressbook()->find($contact);
 
         return view('manager.contacts.show', compact('business', 'contact'));
     }
 
-    /**
-     * edit Contact.
-     *
-     * @param Business $business Business holding the Contact
-     * @param Contact  $contact  Contact to edit
-     *
-     * @return Response Rendered view of edit form
-     */
     public function edit(Business $business, Contact $contact)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s contactId:%s', $business->id, $contact->id));
+        Log::info('addressbook.edit', [
+            'actor'     => auth()->id(),
+            'resource'  => 'contact',
+            'operation' => 'edit_form',
+            'context'   => ['business_id' => $business->id, 'contact_id' => $contact->id],
+        ]);
 
         $this->authorize('manageContacts', $business);
-
-        // BEGIN //
 
         $contact = $business->addressbook()->find($contact);
 
@@ -134,23 +109,16 @@ class AddressbookController extends Controller
         return view('manager.contacts.edit', compact('business', 'contact', 'notes'));
     }
 
-    /**
-     * update Contact.
-     *
-     * @param Business           $business Business holding the Contact
-     * @param Contact            $contact  Contact to update
-     * @param ContactFormRequest $request  Contact form Request
-     *
-     * @return Response Redirect to updated Contact show
-     */
     public function update(Business $business, Contact $contact, ContactFormRequest $request)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s contactId:%s', $business->id, $contact->id));
+        Log::info('addressbook.update', [
+            'actor'     => auth()->id(),
+            'resource'  => 'contact',
+            'operation' => 'update',
+            'context'   => ['business_id' => $business->id, 'contact_id' => $contact->id],
+        ]);
 
         $this->authorize('manageContacts', $business);
-
-        // BEGIN //
 
         $data = $request->only([
             'firstname',
@@ -166,33 +134,23 @@ class AddressbookController extends Controller
 
         $contact = $business->addressbook()->update($contact, $data, $request->get('notes'));
 
-        // FEATURE: If email was updated, user linking should be triggered (if contact is not owned)
-
         flash()->success(trans('manager.contacts.msg.update.success'));
 
         return redirect()->route('manager.addressbook.show', [$business, $contact]);
     }
 
-    /**
-     * destroy Contact.
-     *
-     * @param Business $business Business holding the Contact
-     * @param Contact  $contact  Contact to destroy
-     *
-     * @return Response Redirect back to Business dashboard
-     */
     public function destroy(Business $business, Contact $contact)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s contactId:%s', $business->id, $contact->id));
+        Log::info('addressbook.destroy', [
+            'actor'     => auth()->id(),
+            'resource'  => 'contact',
+            'operation' => 'delete',
+            'context'   => ['business_id' => $business->id, 'contact_id' => $contact->id],
+        ]);
 
         $this->authorize('manageContacts', $business);
 
-        // BEGIN //
-
         $contact = $business->addressbook()->remove($contact);
-
-        // FEATURE: If user is linked to contact, inform removal
 
         flash()->success(trans('manager.contacts.msg.destroy.success'));
 

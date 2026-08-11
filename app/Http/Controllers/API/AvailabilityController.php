@@ -21,8 +21,12 @@ class AvailabilityController extends Controller
 
     public function getDates(int $businessId, int $serviceId): JsonResponse
     {
-        logger()->info(__METHOD__);
-        logger()->info(serialize(compact('businessId', 'serviceId')));
+        Log::info('availability.dates', [
+            'actor'     => auth()->id(),
+            'resource'  => 'business',
+            'operation' => 'get_dates',
+            'context'   => ['business_id' => $businessId, 'service_id' => $serviceId],
+        ]);
 
         $business = Business::findOrFail($businessId);
         $service = $business->services()->findOrFail($serviceId);
@@ -39,8 +43,6 @@ class AvailabilityController extends Controller
 
         $disabledDates = $this->getDisabledDates($baseDate, $endDate, $dates);
 
-        logger()->debug('Disabled Dates:'.serialize($disabledDates));
-
         return response()->json([
             'business' => $business->id,
             'service'  => [
@@ -56,15 +58,17 @@ class AvailabilityController extends Controller
 
     public function getTimes(int $businessId, int $serviceId, string $date, string|false $preferredTimezone = false): JsonResponse
     {
-        logger()->info(__METHOD__);
-        logger()->info(serialize(compact('businessId', 'serviceId', 'date', 'preferredTimezone')));
+        Log::info('availability.times', [
+            'actor'     => auth()->id(),
+            'resource'  => 'business',
+            'operation' => 'get_times',
+            'context'   => ['business_id' => $businessId, 'service_id' => $serviceId, 'date' => $date],
+        ]);
 
         $business = Business::findOrFail($businessId);
         $service = $business->services()->findOrFail($serviceId);
 
         $timezone = $this->decideTimezone($preferredTimezone, $business->timezone);
-
-        logger()->info("Using Timezone: {$timezone}");
 
         $times = $this->availability->timezone($timezone)->getTimes($business, $service, Carbon::parse($date));
 
@@ -113,15 +117,14 @@ class AvailabilityController extends Controller
         $excluded = Storage::get($filepath);
 
         if ($excluded === null || $excluded === '') {
-            Log::warning('AvailabilityController: exclusion file exists but is empty or unreadable', [
-                'business_id' => $businessId,
-                'filepath'    => $filepath,
+            Log::warning('availability.exclusion_empty', [
+                'resource'  => 'ical_exclusion',
+                'operation' => 'read',
+                'context'   => ['business_id' => $businessId, 'filepath' => $filepath],
             ]);
 
             return;
         }
-
-        logger()->debug('ICal Exclude Dates:'.serialize($excluded));
 
         $this->availability->excludeDates(explode("\n", $excluded));
     }

@@ -4,24 +4,15 @@ namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\TG\Business\Token as BusinessToken;
+use Illuminate\Support\Facades\Log;
 use JavaScript;
 use Timegridio\Concierge\Concierge;
 use Timegridio\Concierge\Models\Business;
 
 class BusinessAgendaController extends Controller
 {
-    /**
-     * Concierge service implementation.
-     *
-     * @var Timegridio\Concierge\Concierge
-     */
-    private $concierge;
+    private Concierge $concierge;
 
-    /**
-     * Create controller.
-     *
-     * @param Timegridio\Concierge\Concierge
-     */
     public function __construct(Concierge $concierge)
     {
         $this->concierge = $concierge;
@@ -29,17 +20,14 @@ class BusinessAgendaController extends Controller
         parent::__construct();
     }
 
-    /**
-     * get Index.
-     *
-     * @param Business $business Business to get agenda
-     *
-     * @return Response Rendered view of Business agenda
-     */
     public function getIndex(Business $business)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s', $business->id));
+        Log::info('agenda.index', [
+            'actor'     => auth()->id(),
+            'resource'  => 'business',
+            'operation' => 'view_agenda',
+            'context'   => ['business_id' => $business->id],
+        ]);
 
         $this->authorize('manage', $business);
 
@@ -56,8 +44,12 @@ class BusinessAgendaController extends Controller
 
     public function getCalendar(Business $business)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s', $business->id));
+        Log::info('agenda.calendar', [
+            'actor'     => auth()->id(),
+            'resource'  => 'business',
+            'operation' => 'view_calendar',
+            'context'   => ['business_id' => $business->id],
+        ]);
 
         $this->authorize('manage', $business);
 

@@ -29,8 +29,12 @@ class OAuthController extends Controller implements AuthenticateUserListener
      */
     public function redirectToProvider($provider)
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('provider:%s', $provider));
+        \Illuminate\Support\Facades\Log::info('oauth.redirect', [
+            'actor'     => auth()->id(),
+            'resource'  => 'oauth',
+            'operation' => 'redirect',
+            'context'   => ['provider' => $provider],
+        ]);
 
         return Socialite::driver($provider)->redirect();
     }

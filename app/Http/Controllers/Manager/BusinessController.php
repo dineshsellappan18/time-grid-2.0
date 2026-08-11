@@ -13,6 +13,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Category;
@@ -30,13 +31,15 @@ class BusinessController extends Controller
 
     public function index(): View|RedirectResponse
     {
-        logger()->info(__METHOD__);
+        Log::info('business.index', [
+            'actor'     => auth()->id(),
+            'resource'  => 'businesses',
+            'operation' => 'list',
+        ]);
 
         $businesses = auth()->user()->businesses;
 
         if ($businesses->count() == 1) {
-            logger()->info('Only one business to show');
-
             flash()->success(trans('manager.businesses.msg.index.only_one_found'));
 
             return redirect()->route('manager.business.show', $businesses->first());
@@ -49,8 +52,12 @@ class BusinessController extends Controller
 
     public function create(string $plan = 'free'): View
     {
-        logger()->info(__METHOD__);
-        logger()->info("plan:$plan");
+        Log::info('business.create_form', [
+            'actor'     => auth()->id(),
+            'resource'  => 'business',
+            'operation' => 'create_form',
+            'context'   => ['plan' => $plan],
+        ]);
 
         $timezone = $this->guessTimezone(null);
 
@@ -74,7 +81,11 @@ class BusinessController extends Controller
 
     public function store(BusinessFormRequest $request): RedirectResponse
     {
-        logger()->info(__METHOD__);
+        Log::info('business.store', [
+            'actor'     => auth()->id(),
+            'resource'  => 'business',
+            'operation' => 'create',
+        ]);
 
         try {
             $business = $this->businessService->register(auth()->user(), $request->all(), $request->get('category'));
@@ -101,8 +112,12 @@ class BusinessController extends Controller
 
     public function show(Business $business): View
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s', $business->id));
+        Log::info('business.show', [
+            'actor'     => auth()->id(),
+            'resource'  => 'business',
+            'operation' => 'view_dashboard',
+            'context'   => ['business_id' => $business->id],
+        ]);
 
         $this->authorize('manage', $business);
 
@@ -125,8 +140,12 @@ class BusinessController extends Controller
 
     public function edit(Business $business): View
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s', $business->id));
+        Log::info('business.edit', [
+            'actor'     => auth()->id(),
+            'resource'  => 'business',
+            'operation' => 'edit_form',
+            'context'   => ['business_id' => $business->id],
+        ]);
 
         $this->authorize('update', $business);
 
@@ -136,15 +155,17 @@ class BusinessController extends Controller
 
         $category = $business->category_id;
 
-        logger()->info(sprintf('businessId:%s timezone:%s category:%s', $business->id, $timezone, $category));
-
         return view('manager.businesses.edit', compact('business', 'category', 'categories', 'timezone'));
     }
 
     public function update(Business $business, BusinessFormRequest $request): RedirectResponse
     {
-        logger()->info(__METHOD__);
-        logger()->info(sprintf('businessId:%s', $business->id));
+        Log::info('business.update', [
+            'actor'     => auth()->id(),
+            'resource'  => 'business',
+            'operation' => 'update',
+            'context'   => ['business_id' => $business->id],
+        ]);
 
         $this->authorize('update', $business);
 
@@ -170,11 +191,14 @@ class BusinessController extends Controller
 
     public function destroy(Business $business): RedirectResponse
     {
-        logger()->info(__METHOD__);
+        Log::info('business.destroy', [
+            'actor'     => auth()->id(),
+            'resource'  => 'business',
+            'operation' => 'deactivate',
+            'context'   => ['business_id' => $business->id],
+        ]);
 
         $this->authorize('destroy', $business);
-
-        logger()->info(sprintf('Deactivating: businessId:%s', $business->id));
 
         $this->businessService->deactivate($business);
 
@@ -198,8 +222,6 @@ class BusinessController extends Controller
 
         $this->getLocation();
 
-        logger()->info(sprintf('TIMEZONE FALLBACK="%s" GUESSED="%s"', $timezone, $this->location['timezone']));
-
         $identifiers = timezone_identifiers_list();
 
         return in_array($this->location['timezone'], $identifiers) ? $this->location['timezone'] : $timezone;
@@ -215,13 +237,8 @@ class BusinessController extends Controller
     protected function getLocation(): array
     {
         if ($this->location === null) {
-            logger()->info('Getting location');
-
             $geoip = app('geoip');
-
             $this->location = $geoip->getLocation();
-
-            logger()->info(serialize($this->location));
         }
 
         return $this->location;

@@ -11,6 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->use([
+            \App\Http\Middleware\CorrelationId::class,
             \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
             \Illuminate\Foundation\Http\Middleware\VerifyPostSize::class,
             \App\Http\Middleware\TrimStrings::class,

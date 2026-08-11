@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Eluceo\iCal\Component\Calendar;
 use Eluceo\iCal\Component\Event;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Timegridio\Concierge\Models\Business;
 use Validator;
 
@@ -14,7 +15,12 @@ class ICalController extends Controller
 {
     public function download(Business $business, $token)
     {
-        logger()->info(__METHOD__);
+        Log::info('ical.download', [
+            'actor'     => null,
+            'resource'  => 'business',
+            'operation' => 'ical_download',
+            'context'   => ['business_id' => $business->id],
+        ]);
 
         $validToken = with(new BusinessToken($business))->generate();
 
@@ -26,7 +32,6 @@ class ICalController extends Controller
             abort(403);
         }
 
-        // BEGIN
         $vCalendar = new Calendar($business->slug);
 
         $vCalendar->setPublishedTTL('PT1H');
@@ -87,10 +92,6 @@ class ICalController extends Controller
         return $events;
     }
 
-    /**
-     * Map Timegridio\Concierge\Models\Appointment status into
-     * Eluceo\iCal\Component\Event for ICal status compatibility
-     */
     protected function mapStatus($status)
     {
         $mapping = [

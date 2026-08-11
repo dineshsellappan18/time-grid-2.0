@@ -10,6 +10,7 @@ use Event;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use JavaScript;
 use Notifynder;
 use Timegridio\Concierge\Concierge;
@@ -28,7 +29,11 @@ class AgendaController extends Controller
 
     public function getIndex(): View
     {
-        logger()->info(__METHOD__);
+        Log::info('agenda.list', [
+            'actor'     => auth()->id(),
+            'resource'  => 'appointments',
+            'operation' => 'list',
+        ]);
 
         $appointments = auth()->user()->appointments()->orderBy('start_at')->unarchived()->get();
 
@@ -37,7 +42,12 @@ class AgendaController extends Controller
 
     public function getAvailability(Business $business, Request $request): View|RedirectResponse
     {
-        logger()->info(__METHOD__);
+        Log::info('agenda.availability', [
+            'actor'     => auth()->id(),
+            'resource'  => 'business',
+            'operation' => 'check_availability',
+            'context'   => ['business_id' => $business->id],
+        ]);
 
         if (auth()->user()) {
             if ($behalofOfId = $request->input('behalfOfId')) {
@@ -46,8 +56,6 @@ class AgendaController extends Controller
                 $contact = $business->contacts()->find($behalofOfId);
             } else {
                 if (!$contact = auth()->user()->getContactSubscribedTo($business->id)) {
-                    logger()->info('  [ADVICE] User not subscribed to Business');
-
                     flash()->warning(trans('user.booking.msg.you_are_not_subscribed_to_business'));
 
                     return redirect()->route('user.businesses.home', compact('business'));
@@ -95,9 +103,15 @@ class AgendaController extends Controller
 
     public function postStore(Request $request): View|RedirectResponse
     {
-        logger()->info(__METHOD__);
-
         $business = Business::findOrFail($request->input('businessId'));
+
+        Log::info('agenda.book', [
+            'actor'     => auth()->id(),
+            'resource'  => 'appointment',
+            'operation' => 'create',
+            'context'   => ['business_id' => $business->id],
+        ]);
+
         $email = $request->input('email');
         $contactId = $request->input('contact_id');
         $isOwner = false;
@@ -111,8 +125,6 @@ class AgendaController extends Controller
             $contact = $this->getContact($business, $email);
 
             if (!$contact) {
-                logger()->info('[ADVICE] Not subscribed');
-
                 flash()->warning(trans('user.booking.msg.store.not-registered'));
 
                 return redirect()->back();
@@ -133,14 +145,17 @@ class AgendaController extends Controller
 
         $reservation = compact('issuer', 'contact', 'service', 'date', 'time', 'timezone', 'comments');
 
-        logger()->info('Reservation:'.print_r($reservation, true));
-
         try {
             $appointment = $this->concierge->business($business)->takeReservation($reservation);
         } catch (DuplicatedAppointmentException $e) {
             $code = $this->concierge->appointment()->code;
 
-            logger()->info("DUPLICATED Appointment with CODE:{$code}");
+            Log::notice('agenda.duplicate', [
+                'actor'     => auth()->id(),
+                'resource'  => 'appointment',
+                'operation' => 'create',
+                'context'   => ['business_id' => $business->id, 'code' => $code],
+            ]);
 
             flash()->warning(trans('user.booking.msg.store.sorry_duplicated', compact('code')));
 
@@ -152,14 +167,10 @@ class AgendaController extends Controller
         }
 
         if (false === $appointment) {
-            logger()->info('[ADVICE] Unable to book');
-
             flash()->warning(trans('user.booking.msg.store.error'));
 
             return redirect()->back();
         }
-
-        logger()->info('Appointment saved successfully');
 
         flash()->success(trans('user.booking.msg.store.success', ['code' => $appointment->code]));
 
@@ -245,7 +256,12 @@ class AgendaController extends Controller
         try {
             $date = Carbon::parse($dateString);
         } catch (\Exception) {
-            logger()->warning('Unexpected date string: '.$dateString);
+            Log::warning('agenda.invalid_date', [
+                'actor'     => auth()->id(),
+                'resource'  => 'date',
+                'operation' => 'parse',
+                'context'   => ['input' => $dateString],
+            ]);
             $date = Carbon::now();
         }
 

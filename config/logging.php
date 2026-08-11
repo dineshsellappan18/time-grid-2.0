@@ -1,65 +1,76 @@
 <?php
 
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogHandler;
+use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Default Log Channel
-    |--------------------------------------------------------------------------
-    |
-    | This option defines the default log channel that gets used when writing
-    | messages to the logs. The name specified in this option should match
-    | one of the channels defined in the "channels" configuration array.
-    |
-    */
+    'default' => env('LOG_CHANNEL', 'stack'),
 
-    'default' => env('LOG_CHANNEL', 'syslog'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Log Channels
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure the log channels for your application. Out of
-    | the box, Laravel uses the Monolog PHP logging library. This gives
-    | you a variety of powerful log handlers / formatters to utilize.
-    |
-    | Available Drivers: "single", "daily", "slack", "syslog",
-    |                    "errorlog", "monolog", "custom", "stack"
-    |
-    */
+    'deprecations' => [
+        'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
+        'trace'   => false,
+    ],
 
     'channels' => [
         'stack' => [
-            'driver' => 'stack',
-            'channels' => ['syslog'],
-        ],
-
-        'single' => [
-            'driver' => 'single',
-            'path' => storage_path('logs/laravel.log'),
-            'level' => 'debug',
+            'driver'            => 'stack',
+            'channels'          => ['daily'],
+            'ignore_exceptions' => false,
         ],
 
         'daily' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/laravel.log'),
-            'level' => 'debug',
-            'days' => 7,
+            'path'   => storage_path('logs/laravel.log'),
+            'level'  => env('LOG_LEVEL', 'debug'),
+            'days'   => 14,
+            'tap'    => [App\Logging\JsonFormatter::class],
+        ],
+
+        'security' => [
+            'driver' => 'daily',
+            'path'   => storage_path('logs/security.log'),
+            'level'  => 'info',
+            'days'   => 14,
+            'tap'    => [App\Logging\JsonFormatter::class],
+        ],
+
+        'single' => [
+            'driver'         => 'single',
+            'path'           => storage_path('logs/laravel.log'),
+            'level'          => env('LOG_LEVEL', 'debug'),
+            'tap'            => [App\Logging\JsonFormatter::class],
+            'replace_placeholders' => true,
         ],
 
         'syslog' => [
-            'driver' => 'syslog',
-            'level' => 'debug',
+            'driver'   => 'syslog',
+            'level'    => env('LOG_LEVEL', 'debug'),
             'facility' => LOG_USER,
-            'tag' => config('root.app.name', 'dev.timegrid'),
+            'tag'      => env('SYSLOG_APPNAME', 'timegrid'),
+            'tap'      => [App\Logging\JsonFormatter::class],
         ],
 
         'errorlog' => [
             'driver' => 'errorlog',
-            'level' => 'debug',
+            'level'  => env('LOG_LEVEL', 'debug'),
+        ],
+
+        'null' => [
+            'driver'  => 'monolog',
+            'handler' => NullHandler::class,
+        ],
+
+        'stderr' => [
+            'driver'  => 'monolog',
+            'level'   => env('LOG_LEVEL', 'debug'),
+            'handler' => StreamHandler::class,
+            'with'    => [
+                'stream' => 'php://stderr',
+            ],
+            'tap' => [App\Logging\JsonFormatter::class],
         ],
     ],
 
