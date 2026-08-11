@@ -6,12 +6,62 @@ on:
   pull_request:
 
 jobs:
+  constraint-lint:
+    name: Supply-chain constraint lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint branch constraints + lock presence
+        run: bash bin/lint-constraints.sh
+
+  architecture:
+    name: Architecture coupling metrics
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ripgrep
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+      - name: Publish coupling report
+        run: bash bin/lint-architecture.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: architecture-coupling
+          path: storage/architecture/coupling-report.txt
+
+  phpstan:
+    name: PHPStan level 3
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer:v2
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --ignore-platform-reqs
+      - name: Analyse
+        run: |
+          echo "PHPStan level=3"
+          vendor/bin/phpstan analyse --memory-limit=1G --error-format=table | tee phpstan-output.txt
+          ERRORS=$(grep -E '\[ERROR\]' phpstan-output.txt | wc -l | tr -d ' ')
+          echo "phpstan_error_count=${ERRORS}"
+          test "${ERRORS}" = "0"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phpstan-output
+          path: phpstan-output.txt
+
   phpunit-transitional:
     name: PHPUnit (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        # Transitional oracle on highest PHP that boots Laravel 5.3.
+        # PHP 8.3/8.4 matrix without --ignore-platform-reqs lands with WO-015.
         php: ['7.1']
     services:
       mysql:
@@ -28,15 +78,29 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=10
     steps:
       - uses: actions/checkout@v4
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring, pdo_mysql, tokenizer, xml, gd
+          extensions: mbstring, pdo_mysql, tokenizer, xml, gd, redis
           coverage: none
           tools: composer:v2.2
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction --ignore-platform-reqs
       - name: Prepare env
@@ -52,7 +116,7 @@ jobs:
           TEST_DB_USERNAME: testing_timegrid
           TEST_DB_PASSWORD: testing_timegrid
         run: php artisan migrate --force --database=testing
-      - name: Run unit + contract suites
+      - name: Unit suite
         env:
           APP_ENV: testing
           DB_CONNECTION: testing
@@ -60,17 +124,69 @@ jobs:
           TEST_DB_DATABASE: testing_timegrid
           TEST_DB_USERNAME: testing_timegrid
           TEST_DB_PASSWORD: testing_timegrid
-        run: vendor/bin/phpunit --testsuite Unit,Contracts
+        run: vendor/bin/phpunit --testsuite Unit
+      - name: Contracts suite
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: testing
+          TEST_DB_HOST: 127.0.0.1
+          TEST_DB_DATABASE: testing_timegrid
+          TEST_DB_USERNAME: testing_timegrid
+          TEST_DB_PASSWORD: testing_timegrid
+        run: vendor/bin/phpunit --testsuite Contracts
+      - name: Characterization suite
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: testing
+          TEST_DB_HOST: 127.0.0.1
+          TEST_DB_DATABASE: testing_timegrid
+          TEST_DB_USERNAME: testing_timegrid
+          TEST_DB_PASSWORD: testing_timegrid
+        run: vendor/bin/phpunit --testsuite Characterization
+      - name: Integration suite
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: testing
+          TEST_DB_HOST: 127.0.0.1
+          TEST_DB_DATABASE: testing_timegrid
+          TEST_DB_USERNAME: testing_timegrid
+          TEST_DB_PASSWORD: testing_timegrid
+        run: vendor/bin/phpunit --testsuite Integration
 
-  constraint-lint:
-    name: No branch constraints
+  dusk-deferred:
+    name: Dusk (deferred until Laravel ≥5.4)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fail on dev-master / VCS branch pins
+      - name: Document deferred Dusk gate
         run: |
-          if grep -E '"dev-master|"dev-[^"]+"|"[^"]*#|"branch"' composer.json; then
-            echo "Branch/dev constraints remain in composer.json"
+          echo "laravel/dusk requires Laravel ≥5.4; see docs/modernization/dusk-retirement.md"
+          if [ "${RUN_DUSK:-0}" = "1" ]; then
+            echo "RUN_DUSK=1 set but Dusk is not installable on Laravel 5.3"
             exit 1
           fi
-          echo "No branch constraints found."
+          echo "Dusk job deferred (WO-006 transitional)."
+
+  php84-install-probe:
+    name: PHP 8.4 install probe (expect ignore until WO-015)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+      - name: Probe install without ignore-platform-reqs
+        run: |
+          set +e
+          composer install --prefer-dist --no-interaction --no-scripts
+          CODE=$?
+          set -e
+          if [ "$CODE" -eq 0 ]; then
+            echo "Unexpected: install succeeded without ignore — review WO-015 residuals"
+          else
+            echo "Expected failure until WO-015 raises PHP floor (exit=$CODE)"
+          fi

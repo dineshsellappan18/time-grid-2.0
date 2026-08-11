@@ -25,3 +25,6 @@
 .cursor/hooks.json
 .cursor/hooks/
 .cursor/rules/forge-workflow.mdc
+
+/storage/architecture/
+/storage/architecture/**

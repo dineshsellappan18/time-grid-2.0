@@ -1,10 +1,36 @@
+# WO-014 — Compose topology: app (php-fpm), nginx, mysql, redis, queue worker.
 services:
   app:
-    build: .
+    build:
+      context: .
+      target: app
     volumes:
       - .:/var/www/html
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      APP_ENV: local
+      DB_HOST: mysql
+      DB_DATABASE: timegrid
+      DB_USERNAME: timegrid
+      DB_PASSWORD: timegrid
+      REDIS_HOST: redis
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      QUEUE_DRIVER: redis
+
+  queue:
+    build:
+      context: .
+      target: app
+    command: ["php", "artisan", "queue:work", "--sleep=1", "--tries=3"]
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - app
       - redis
     environment:
       DB_HOST: mysql
@@ -12,6 +38,7 @@ services:
       DB_USERNAME: timegrid
       DB_PASSWORD: timegrid
       REDIS_HOST: redis
+      QUEUE_DRIVER: redis
 
   nginx:
     image: nginx:1.27-alpine
@@ -34,11 +61,21 @@ services:
       - "3306:3306"
     volumes:
       - timegrid_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
   timegrid_mysql:

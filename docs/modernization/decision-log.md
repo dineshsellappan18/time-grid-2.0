@@ -201,6 +201,24 @@ Policy note from the same page: bug fixes ~18 months; security fixes ~2 years pe
 
 ---
 
+## D-010 — Transitional Phase-1 completion on Laravel 5.3
+
+**Decision:** Accept **transitional** completion of WO-003…WO-014 against the highest PHP that boots Laravel 5.3 (**PHP 7.1** oracle), with residuals explicitly tracked, rather than leaving Phase 1 indefinitely blocked by D-007.
+
+| Story | Transitional done means | Residual until WO-015 / hops |
+| --- | --- | --- |
+| WO-003 | fakerphp, MailHijacker, TEST_DB_*, class factory wrappers, deterministic seeder; unit/contracts green on 7.1 | PHPUnit current major, Mail::fake, native L8 factories, green on 8.3/8.4 |
+| WO-004 / WO-005 | Characterization + Concierge contracts green on 7.1 with committed fixtures | Re-run unchanged on 8.3/8.4 matrix |
+| WO-006 | Selenium retired; Dusk page-object scaffolds; CI deferred job | Install `laravel/dusk` after Laravel ≥5.4 |
+| WO-007 | PHPStan **1.10.67** at level 3, zero errors, **no baseline**, scoped to Commands + factories; InputArgument fixed | Expand paths to full `app/`, `database/`, `routes/` |
+| WO-011…014 | GHA CI with MySQL+Redis, suite steps, audits, architecture report, multi-stage Compose | Matrix 8.3/8.4 without `--ignore-platform-reqs`; Forge Shipping as sole engine |
+| WO-015 | **Not** transitionally completable | Constraint `^8.3\|^8.4` + green suites without ignore |
+
+**Owner:** Platform Maintainer + Release Engineer  
+**Status:** Accepted (2026-08-11)
+
+---
+
 ## Change control
 
 | Date | Change | Author |
@@ -210,3 +228,4 @@ Policy note from the same page: bug fixes ~18 months; security fixes ~2 years pe
 | 2026-08-10 | D-007 Sequencing gate: WO-003…WO-020 cannot complete on Laravel 5.3 | Programme continuity |
 | 2026-08-11 | D-008 Branch constraints replaced with tags/path/inline; Code Climate removed | WO-008 implementation |
 | 2026-08-11 | D-009 Rollbar/Debugbar/abandoned package removals; Bootstrapper vendored | WO-009 implementation |
+| 2026-08-11 | D-010 Transitional Phase-1 completion policy for WO-003…WO-014 | Programme continuity |

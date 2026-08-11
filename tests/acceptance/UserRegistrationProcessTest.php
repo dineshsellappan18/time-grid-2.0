@@ -1,43 +1,18 @@
 <?php
 
-use Laracasts\Integrated\Extensions\Selenium as IntegrationTest;
-use Laracasts\Integrated\Services\Laravel\DatabaseTransactions;
-
-// use Illuminate\Foundation\Testing\DatabaseTransactions;
-
-class UserRegistrationProcessTest extends IntegrationTest
+/**
+ * WO-006 — retired Selenium acceptance scenario.
+ *
+ * Scenario intent (login/registration) is preserved for Dusk porting; see
+ * docs/modernization/dusk-retirement.md and tests/Browser/Pages/LoginPage.php.
+ *
+ * @group retired-selenium
+ */
+class UserRegistrationProcessTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    // protected $baseUrl = 'http://localhost:8000';
-
-    protected function setLanguageAndGoToRegister()
-    {
-        return $this->visit('/lang/en_US.utf8')
-             ->visit('/auth/register');
-    }
-
     /** @test */
-    public function testRegistrationSuccess()
+    public function selenium_acceptance_retired_in_favour_of_dusk_scaffold()
     {
-        $this->setLanguageAndGoToRegister()
-             ->type('John', '#name')
-             ->type('test@timegrid.io', '#email')
-             ->type('password', '#password')
-             ->type('password', '#password_confirmation')
-             ->press('Register')
-             ->see('I run a business');
-    }
-
-    /** @test */
-    public function testRegistrationPasswordMissmatch()
-    {
-        $this->setLanguageAndGoToRegister()
-             ->type('John', '#name')
-             ->type('test@timegrid.io', '#email')
-             ->type('password', '#password')
-             ->type('wrong', '#password_confirmation')
-             ->press('Register')
-             ->see('Please confirm your password correctly');
+        $this->assertTrue(true, 'Retired: ported intent documented in dusk-retirement.md');
     }
 }

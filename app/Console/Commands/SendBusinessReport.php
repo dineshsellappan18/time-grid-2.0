@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\TG\TransMail;
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Illuminate\Support\Facades\Mail;
 use Timegridio\Concierge\Concierge;
 use Timegridio\Concierge\Models\Business;
@@ -27,7 +28,7 @@ class SendBusinessReport extends Command
     /**
      * Concierge Service.
      *
-     * @var Timegridio\Concierge\Concierge
+     * @var \Timegridio\Concierge\Concierge
      */
     protected $concierge;
 
@@ -99,7 +100,7 @@ class SendBusinessReport extends Command
      *
      * @param Business $business
      *
-     * @return void
+     * @return bool
      */
     protected function sendBusinessReport(Business $business)
     {

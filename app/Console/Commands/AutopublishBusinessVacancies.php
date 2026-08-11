@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\TG\TransMail;
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Timegridio\Concierge\Concierge;

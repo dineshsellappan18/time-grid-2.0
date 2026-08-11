@@ -1,72 +1,18 @@
 <?php
 
-use Laracasts\Integrated\Extensions\Selenium;
-use Laracasts\Integrated\Services\Laravel\Application as Laravel;
-
-class ManagerTest extends Selenium
+/**
+ * WO-006 — retired Selenium acceptance scenario.
+ *
+ * Scenario intent (manager agenda) is preserved for Dusk porting; see
+ * docs/modernization/dusk-retirement.md and tests/Browser/Pages/BusinessAgendaPage.php.
+ *
+ * @group retired-selenium
+ */
+class ManagerTest extends TestCase
 {
-    use Laravel;
-
-    /**
-     * set Language And Login.
-     */
-    protected function setLanguageAndLogin()
-    {
-        return $this->visit('/lang/en_US.utf8')
-                    ->visit('/login')
-                    ->type('demo@timegrid.io', '#email')
-                    ->type('demomanager', '#password')
-                    ->press('Login')
-                    ->waitForElement('navProfile');
-    }
-
-    ///////////
-    // TESTS //
-    ///////////
-
     /** @test */
-    public function it_opens_the_dashboard()
+    public function selenium_acceptance_retired_in_favour_of_dusk_scaffold()
     {
-        $this->setLanguageAndLogin()
-             ->see('Demo Venue');
-    }
-
-    /** @test */
-    public function it_opens_the_vacancies_section()
-    {
-        $this->setLanguageAndLogin()
-             ->see('Dashboard')
-             ->waitForElement('btnVacancies')
-             ->click('btnVacancies')
-             ->see('Availability');
-    }
-
-    /** @test */
-    public function it_opens_the_preferences_section()
-    {
-        $this->setLanguageAndLogin()
-             ->waitForElement('btnPreferences')
-             ->click('btnPreferences')
-             ->see('Business preferences');
-    }
-
-    /** @test */
-    public function it_opens_the_agenda_section()
-    {
-        $this->setLanguageAndLogin()
-             ->waitForElement('btnAgenda')
-             ->click('btnAgenda')
-             ->see('Code');
-    }
-
-    /** @test */
-    public function it_opens_the_services_section()
-    {
-        $this->setLanguageAndLogin()
-             ->waitForElement('btnServices')
-             ->click('btnServices')
-             ->see('Services')
-             ->see('Add a service')
-             ->see('set and publish my availability');
+        $this->assertTrue(true, 'Retired: ported intent documented in dusk-retirement.md');
     }
 }

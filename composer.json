@@ -85,7 +85,8 @@
         "potsky/laravel-localization-helpers": "2.4.*",
         "symfony/css-selector": "~3.0",
         "symfony/dom-crawler": "~3.0",
-        "mockery/mockery": "^0.9.9"
+        "mockery/mockery": "^0.9.9",
+        "phpstan/phpstan": "1.10.67"
     },
     "autoload": {
         "classmap": [
@@ -95,7 +96,8 @@
             "App\\": "app/",
             "Seanstewart\\PlanConfig\\": "app/Support/PlanConfig/",
             "Bootstrapper\\": "app/Support/Bootstrapper/",
-            "McCool\\LaravelAutoPresenter\\": "app/Support/AutoPresenter/"
+            "McCool\\LaravelAutoPresenter\\": "app/Support/AutoPresenter/",
+            "App\\Factories\\": "app/Factories/"
         },
         "files": [
             "app/helpers.php",
@@ -105,7 +107,8 @@
     "autoload-dev": {
         "classmap": [
             "tests/TestCase.php",
-            "tests/helpers/"
+            "tests/helpers/",
+            "tests/characterization/Support/"
         ]
     },
     "scripts": {
@@ -120,7 +123,13 @@
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate"
-        ]
+        ],
+        "test:unit": "vendor/bin/phpunit --testsuite Unit",
+        "test:contracts": "vendor/bin/phpunit --testsuite Contracts",
+        "test:characterization": "vendor/bin/phpunit --testsuite Characterization",
+        "phpstan": "vendor/bin/phpstan analyse --memory-limit=1G",
+        "lint:constraints": "bash bin/lint-constraints.sh",
+        "lint:architecture": "bash bin/lint-architecture.sh"
     },
     "config": {
         "preferred-install": "dist",
