@@ -68,6 +68,7 @@
                                     <label class="control-label">
                                         {{ trans('manager.contacts.label.email') }}
                                     </label>
+                                    <span class="badge bg-warning text-dark" title="Confidential">C</span>
                                 </td>
                                 <td>{{ $contact->email }}</td>
                             </tr>
@@ -78,6 +79,7 @@
                                     <label class="control-label">
                                         {{ trans('manager.contacts.label.nin') }}
                                     </label>
+                                    <span class="badge bg-danger" title="Restricted PII">R</span>
                                 </td>
                                 <td>{{ $contact->nin }}</td>
                             </tr>
@@ -88,6 +90,7 @@
                                     <label class="control-label">
                                         {{ trans('manager.contacts.label.birthdate') }}
                                     </label>
+                                    <span class="badge bg-danger" title="Restricted PII">R</span>
                                 </td>
                                 <td>{{ $contact->birthdate->formatLocalized('%d %B %Y') }}</td>
                             </tr>
@@ -98,6 +101,7 @@
                                     <label class="control-label">
                                         {{ trans('manager.contacts.label.mobile') }}
                                     </label>
+                                    <span class="badge bg-danger" title="Restricted PII">R</span>
                                 </td>
                                 <td>{{ (trim($contact->mobile) != '') ? phone_format($contact->mobile, $contact->mobile_country) : '' }}</td>
                             </tr>
@@ -108,6 +112,7 @@
                                     <label class="control-label">
                                         {{ trans('manager.contacts.label.postal_address') }}
                                     </label>
+                                    <span class="badge bg-warning text-dark" title="Confidential">C</span>
                                 </td>
                                 <td>{{ $contact->postal_address }}</td>
                             </tr>
@@ -165,6 +170,38 @@
                 !!}
             </span>
         </div>
+
+        {{-- Data Subject Rights --}}
+        @if(auth()->user()->isOwnerOf($business->id))
+        <div class="card-footer bg-light">
+            <small class="text-muted d-block mb-2"><i class="fa fa-shield"></i> Data Subject Rights (GDPR)</small>
+            <div class="btn-group btn-group-sm" role="group">
+                <a href="{{ route('manager.addressbook.export', [$business, $contact]) }}"
+                   class="btn btn-outline-primary"
+                   data-action="export"
+                   data-bs-toggle="tooltip"
+                   title="Export contact data (portability)">
+                    <i class="fa fa-download"></i> Export
+                </a>
+                <a href="{{ route('manager.addressbook.edit', [$business, $contact]) }}"
+                   class="btn btn-outline-secondary"
+                   data-action="rectify"
+                   data-bs-toggle="tooltip"
+                   title="Rectify contact data (correction)">
+                    <i class="fa fa-pencil"></i> Rectify
+                </a>
+                <form method="POST" action="{{ route('manager.addressbook.erase', [$business, $contact]) }}" class="d-inline" data-action="erase">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-danger"
+                            data-bs-toggle="tooltip"
+                            title="Erase restricted PII (right to erasure)"
+                            onclick="return confirm('This will permanently erase all restricted personal data for this contact. This action cannot be undone. Continue?')">
+                        <i class="fa fa-eraser"></i> Erase
+                    </button>
+                </form>
+            </div>
+        </div>
+        @endif
             
         </div>
 

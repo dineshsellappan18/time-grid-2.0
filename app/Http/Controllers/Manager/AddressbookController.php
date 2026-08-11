@@ -6,6 +6,8 @@ use App\Events\NewContactWasRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ContactFormRequest;
 use App\TG\AuditLogger;
+use App\TG\ContactExportAssembler;
+use App\TG\ContactEraser;
 use Illuminate\Support\Facades\Log;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Contact;
@@ -14,6 +16,8 @@ class AddressbookController extends Controller
 {
     public function __construct(
         private readonly AuditLogger $audit,
+        private readonly ContactExportAssembler $exporter,
+        private readonly ContactEraser $eraser,
     ) {
         parent::__construct();
     }
@@ -148,7 +152,7 @@ class AddressbookController extends Controller
         $contact = $business->addressbook()->update($contact, $data, $request->get('notes'));
 
         $this->audit->append(
-            action: 'contact.update',
+            action: 'contact.rectify',
             resourceType: 'contact',
             resourceId: $contact->id,
             changes: array_keys($data),
@@ -181,6 +185,54 @@ class AddressbookController extends Controller
         );
 
         flash()->success(trans('manager.contacts.msg.destroy.success'));
+
+        return redirect()->route('manager.addressbook.index', $business);
+    }
+
+    public function export(Business $business, Contact $contact)
+    {
+        $this->authorize('export', [$contact, $business]);
+
+        $data = $this->exporter->assemble($contact, $business);
+
+        $this->audit->append(
+            action: 'contact.export',
+            resourceType: 'contact',
+            resourceId: $contact->id,
+            changes: ['business_id' => $business->id],
+        );
+
+        $filename = "contact-{$contact->id}-export-" . now()->format('Ymd') . '.json';
+
+        return response()->json($data)
+            ->header('Content-Disposition', "attachment; filename=\"{$filename}\"")
+            ->header('Content-Type', 'application/json');
+    }
+
+    public function erase(Business $business, Contact $contact)
+    {
+        $this->authorize('erase', [$contact, $business]);
+
+        $result = $this->eraser->erase($contact, $business);
+
+        $this->audit->append(
+            action: 'contact.erase',
+            resourceType: 'contact',
+            resourceId: $contact->id,
+            outcome: 'success',
+            changes: [
+                'erased_fields' => $result['erased_fields'],
+                'fully_deleted' => $result['fully_deleted'],
+                'limitations' => $result['limitations'],
+                'business_id' => $business->id,
+            ],
+        );
+
+        if (!empty($result['limitations'])) {
+            flash()->warning(implode(' ', $result['limitations']));
+        } else {
+            flash()->success(trans('manager.contacts.msg.erase.success'));
+        }
 
         return redirect()->route('manager.addressbook.index', $business);
     }

@@ -34,4 +34,40 @@ class ContactPolicy
 
         return $allowed;
     }
+
+    public function export(User $user, Contact $contact, Business $business): bool
+    {
+        $allowed = $user->isOwnerOf($business->id)
+            && $business->contacts()->where('contacts.id', $contact->id)->exists();
+
+        if (!$allowed) {
+            $this->audit->denied('contact.export', 'contact', $contact->id);
+        }
+
+        return $allowed;
+    }
+
+    public function erase(User $user, Contact $contact, Business $business): bool
+    {
+        $allowed = $user->isOwnerOf($business->id)
+            && $business->contacts()->where('contacts.id', $contact->id)->exists();
+
+        if (!$allowed) {
+            $this->audit->denied('contact.erase', 'contact', $contact->id);
+        }
+
+        return $allowed;
+    }
+
+    public function rectify(User $user, Contact $contact, Business $business): bool
+    {
+        $allowed = $user->isOwnerOf($business->id)
+            && $business->contacts()->where('contacts.id', $contact->id)->exists();
+
+        if (!$allowed) {
+            $this->audit->denied('contact.rectify', 'contact', $contact->id);
+        }
+
+        return $allowed;
+    }
 }

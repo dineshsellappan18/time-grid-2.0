@@ -344,6 +344,14 @@ Route::group(['prefix' => '{business}'], function ($business) {
                 'as'   => 'manager.addressbook.destroy',
                 'uses' => 'AddressbookController@destroy',
             ]);
+            Route::get('{contact}/export', [
+                'as'   => 'manager.addressbook.export',
+                'uses' => 'AddressbookController@export',
+            ]);
+            Route::post('{contact}/erase', [
+                'as'   => 'manager.addressbook.erase',
+                'uses' => 'AddressbookController@erase',
+            ]);
         });
 
         // HUMAN RESOURCE
