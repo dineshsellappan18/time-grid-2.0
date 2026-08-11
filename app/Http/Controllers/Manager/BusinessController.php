@@ -259,8 +259,7 @@ class BusinessController extends Controller
     protected function getLocation(): array
     {
         if ($this->location === null) {
-            $geoip = app('geoip');
-            $this->location = $geoip->getLocation();
+            $this->location = app('geoip')->getLocation()->toArray();
         }
 
         return $this->location;

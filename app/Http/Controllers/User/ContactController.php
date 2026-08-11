@@ -13,6 +13,26 @@ use Timegridio\Concierge\Models\Contact;
 class ContactController extends Controller
 {
     /**
+     * Resolve the authenticated user's contact for this business.
+     *
+     * @param Business $business Business that holds the addressbook
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function index(Business $business)
+    {
+        logger()->info(__METHOD__);
+
+        $contact = $business->addressbook()->getRegisteredUserId(auth()->id());
+
+        if ($contact) {
+            return redirect()->route('user.business.contact.show', [$business, $contact]);
+        }
+
+        return redirect()->route('user.business.contact.create', $business);
+    }
+
+    /**
      * create Contact.
      *
      * @param Business $business Business that holds the addressbook
