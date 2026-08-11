@@ -10,6 +10,7 @@ use App\Events\NewSoftAppointmentWasBooked;
 use App\Events\NewUserWasRegistered;
 use App\Listeners\AuditAuthEvents;
 use App\Listeners\AutoConfigureUserPreferences;
+use App\Listeners\InvalidateAvailabilityCache;
 use App\Listeners\LinkContactToExistingUser;
 use App\Listeners\SendAppointmentCancellationNotification;
 use App\Listeners\SendAppointmentConfirmationNotification;
@@ -28,6 +29,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         NewAppointmentWasBooked::class => [
             SendBookingNotification::class,
+            InvalidateAvailabilityCache::class,
         ],
         NewContactWasRegistered::class => [
             LinkContactToExistingUser::class,
@@ -37,9 +39,11 @@ class EventServiceProvider extends ServiceProvider
         ],
         AppointmentWasCanceled::class => [
             SendAppointmentCancellationNotification::class,
+            InvalidateAvailabilityCache::class,
         ],
         NewSoftAppointmentWasBooked::class => [
             SendSoftAppointmentValidationRequest::class,
+            InvalidateAvailabilityCache::class,
         ],
     ];
 

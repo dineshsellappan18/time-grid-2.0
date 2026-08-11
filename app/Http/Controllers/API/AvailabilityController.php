@@ -9,7 +9,6 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Timegridio\Concierge\Concierge;
 use Timegridio\Concierge\Models\Business;
 
 class AvailabilityController extends Controller
@@ -55,7 +54,7 @@ class AvailabilityController extends Controller
             'startDate'     => $baseDate->toDateString(),
             'endDate'       => $endDate->toDateString(),
             'timezone'      => $business->timezone,
-        ], 200);
+        ], 200)->header('Cache-Control', 'private, max-age=60');
     }
 
     public function getTimes(AvailabilityQueryRequest $request, int $businessId, int $serviceId, string $date, string|false $preferredTimezone = false): JsonResponse
@@ -88,7 +87,7 @@ class AvailabilityController extends Controller
             'date'     => $date,
             'times'    => $times,
             'timezone' => $timezone,
-        ], 200);
+        ], 200)->header('Cache-Control', 'private, max-age=60');
     }
 
     protected function decideTimezone(string|false $preferredTimezone, string $fallbackTimezone): string

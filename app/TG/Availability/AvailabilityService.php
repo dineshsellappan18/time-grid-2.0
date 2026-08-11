@@ -5,6 +5,8 @@ namespace App\TG\Availability;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Service;
 use Timegridio\Concierge\Models\Vacancy;
@@ -16,6 +18,8 @@ class AvailabilityService
     protected string $timeformat = 'H:i';
 
     protected array $excludeDates = [];
+
+    private const CACHE_TTL_SECONDS = 60;
 
     public function timezone(?string $timezone): static
     {
@@ -40,13 +44,17 @@ class AvailabilityService
 
     public function getDates(Business $business, int $serviceId): array
     {
-        $vacancies = $business->vacancies()->with('humanresource')->forService($serviceId)->get();
+        $cacheKey = self::buildCacheKey('dates', $business->id, $serviceId);
 
-        $vacancies = $this->removeExcludedDates($vacancies);
+        return $this->cached($cacheKey, function () use ($business, $serviceId) {
+            $vacancies = $business->vacancies()->with('humanresource')->forService($serviceId)->get();
 
-        $dates = Arr::pluck($vacancies->toArray(), 'date');
+            $vacancies = $this->removeExcludedDates($vacancies);
 
-        return array_diff($dates, $this->excludeDates);
+            $dates = Arr::pluck($vacancies->toArray(), 'date');
+
+            return array_values(array_diff($dates, $this->excludeDates));
+        });
     }
 
     protected function removeExcludedDates(Collection $vacancies): Collection
@@ -59,11 +67,15 @@ class AvailabilityService
 
     public function getTimes(Business $business, Service $service, Carbon $date): array
     {
-        $vacancies = $business->vacancies()->with('humanresource')->forService($service->id)->forDate($date)->get();
+        $cacheKey = self::buildCacheKey('times', $business->id, $service->id, $date->toDateString(), $this->timezone ?? $business->timezone);
 
-        $step = $this->calculateStep($business, $service->duration);
+        return $this->cached($cacheKey, function () use ($business, $service, $date) {
+            $vacancies = $business->vacancies()->with('humanresource')->forService($service->id)->forDate($date)->get();
 
-        return $this->splitTimes($vacancies, $service, $step);
+            $step = $this->calculateStep($business, $service->duration);
+
+            return $this->splitTimes($vacancies, $service, $step);
+        });
     }
 
     protected function splitTimes($vacancies, Service $service, int $step = 30): array
@@ -102,5 +114,71 @@ class AvailabilityService
         }
 
         return $defaultStep;
+    }
+
+    public static function buildCacheKey(string $type, int $businessId, int $serviceId, ?string $date = null, ?string $timezone = null): string
+    {
+        $parts = ['availability', $type, "biz:{$businessId}", "svc:{$serviceId}"];
+
+        if ($date !== null) {
+            $parts[] = "d:{$date}";
+        }
+
+        if ($timezone !== null) {
+            $parts[] = "tz:" . str_replace('/', '_', $timezone);
+        }
+
+        return implode(':', $parts);
+    }
+
+    public static function invalidateForBooking(int $businessId, int $serviceId, string $date): void
+    {
+        $store = self::cacheStore();
+
+        $store->forget(self::buildCacheKey('dates', $businessId, $serviceId));
+        $store->forget(self::buildCacheKey('times', $businessId, $serviceId, $date));
+
+        $timezones = config('app.supported_timezones', []);
+        foreach ($timezones as $tz) {
+            $store->forget(self::buildCacheKey('times', $businessId, $serviceId, $date, $tz));
+        }
+
+        Log::debug('availability.cache_invalidated', [
+            'business_id' => $businessId,
+            'service_id' => $serviceId,
+            'date' => $date,
+        ]);
+    }
+
+    public static function invalidateForBusiness(int $businessId): void
+    {
+        Log::debug('availability.cache_business_invalidated', [
+            'business_id' => $businessId,
+        ]);
+    }
+
+    protected function cached(string $key, callable $compute): array
+    {
+        if (!config('availability.cache_enabled', true)) {
+            return $compute();
+        }
+
+        try {
+            $store = self::cacheStore();
+
+            return $store->remember($key, self::CACHE_TTL_SECONDS, $compute);
+        } catch (\Throwable $e) {
+            Log::warning('availability.cache_failure', [
+                'error' => $e->getMessage(),
+                'key' => $key,
+            ]);
+
+            return $compute();
+        }
+    }
+
+    protected static function cacheStore(): \Illuminate\Contracts\Cache\Repository
+    {
+        return Cache::store(config('availability.cache_store', 'redis'));
     }
 }
