@@ -3,44 +3,41 @@
 namespace App\Listeners;
 
 use App\Events\NewContactWasRegistered;
-use App\Models\User;
+use App\TG\Contracts\UserRegistrarInterface;
+use Illuminate\Support\Facades\Log;
 use Timegridio\Concierge\Models\Contact;
 
 class LinkContactToExistingUser
 {
-    /**
-     * Handle the event.
-     *
-     * @param NewUserWasRegistered $event
-     *
-     * @return void
-     */
-    public function handle(NewContactWasRegistered $event)
+    public function __construct(
+        private readonly UserRegistrarInterface $registrar,
+    ) {
+    }
+
+    public function handle(NewContactWasRegistered $event): void
     {
-        logger()->info(__METHOD__);
-        logger()->info("Linking <{$event->contact->email}> to user");
+        Log::info('LinkContactToExistingUser: linking contact', [
+            'contact_id' => $event->contact->id,
+        ]);
 
         $this->linkContactToUser($event->contact);
     }
 
-    protected function linkContactToUser(Contact $contact)
+    protected function linkContactToUser(Contact $contact): void
     {
         if ($contact->email === null) {
-            return $this;
+            return;
         }
 
-        $user = User::where(['email' => $contact->email])->first();
+        $user = $this->registrar->linkExisting($contact->email);
 
         if ($user === null) {
             $contact->user()->dissociate();
             $contact->save();
-
-            return $this;
+            return;
         }
 
         $contact->user()->associate($user);
         $contact->save();
-
-        return $this;
     }
 }

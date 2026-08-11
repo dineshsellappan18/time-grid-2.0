@@ -2,63 +2,32 @@
 
 namespace App\TG;
 
-use App\Exceptions\BusinessAlreadyRegistered;
 use App\Models\User;
-use App\TG\Business\Setup\SetupStaff;
-use Illuminate\Support\Str;
+use App\TG\Contracts\BusinessProvisionerInterface;
 use Timegridio\Concierge\Models\Business;
-use Timegridio\Concierge\Models\Category;
 
 class BusinessService
 {
-    private string $setupStaffClass = SetupStaff::class;
+    public function __construct(
+        private readonly BusinessProvisionerInterface $provisioner,
+    ) {
+    }
 
     public function register(User $user, array $data, int $category): Business
     {
-        $slug = Str::slug($data['name']);
-
-        if ($business = self::getExisting($user, $slug)) {
-            return $business;
-        }
-
-        $business = new Business($data);
-
-        $category = Category::find($category);
-        $business->strategy = $category->strategy;
-        $business->category()->associate($category);
-
-        $business->save();
-
-        auth()->user()->businesses()->attach($business);
-
-        return $business;
+        return $this->provisioner->provision($user, $data, $category);
     }
 
     public function getExisting(User $user, string $slug): Business|false
     {
-        $business = Business::withTrashed()->where(['slug' => $slug])->first();
+        $business = $this->provisioner->restore($user, $slug);
 
-        if ($business === null) {
-            return false;
-        }
-
-        logger()->info("Found existing businessId:{$business->id}");
-
-        if (!$user->isOwnerOf($business->id)) {
-            logger()->info("Already taken businessId:{$business->id}");
-            throw new BusinessAlreadyRegistered();
-        }
-
-        logger()->info("Restoring owned businessId:{$business->id}");
-
-        $business->restore();
-
-        return $business;
+        return $business ?? false;
     }
 
     public function deactivate(Business $business): ?bool
     {
-        return $business->delete();
+        return $this->provisioner->deactivate($business);
     }
 
     public function update(Business $business, array $data): Business
@@ -70,17 +39,11 @@ class BusinessService
 
     public function setCategory(Business $business, int $category): Business
     {
-        $category = Category::find($category);
-        $business->category()->associate($category);
-        $business->save();
-
-        return $business;
+        return $this->provisioner->setCategory($business, $category);
     }
 
     public function setup(Business $business): void
     {
-        $setupStaff = $this->setupStaffClass;
-
-        $setupStaff::createStaffMember($business);
+        $this->provisioner->setup($business);
     }
 }

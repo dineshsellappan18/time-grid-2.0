@@ -3,20 +3,17 @@
 namespace App\TG\Repositories;
 
 use App\Models\User;
+use App\TG\Contracts\UserRegistrarInterface;
 
 class UserRepository
 {
+    public function __construct(
+        private readonly UserRegistrarInterface $registrar,
+    ) {
+    }
+
     public function findOrCreate(object $userData): User
     {
-        $user = User::where('email', '=', $userData->email)->orWhere('username', '=', $userData->nickname)->first();
-        if ($user !== null) {
-            return $user;
-        }
-
-        return User::create([
-            'username' => $userData->nickname,
-            'name'     => $userData->nickname,
-            'email'    => $userData->email,
-        ]);
+        return $this->registrar->findOrCreateFromOAuth($userData);
     }
 }

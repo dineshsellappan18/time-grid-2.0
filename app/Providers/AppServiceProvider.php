@@ -32,6 +32,16 @@ class AppServiceProvider extends ServiceProvider
             \App\TG\Registrar::class
         );
 
+        $this->app->bind(
+            \App\TG\Contracts\UserRegistrarInterface::class,
+            \App\TG\UserRegistrar::class
+        );
+
+        $this->app->bind(
+            \App\TG\Contracts\BusinessProvisionerInterface::class,
+            \App\TG\BusinessProvisioner::class
+        );
+
         // Local-only generators / localization-helpers removed for PHP 8.3+ install (WO-015).
 
         // ROLLBAR_TOKEN in .env is ignored — Rollbar provider intentionally not registered (WO-009).
