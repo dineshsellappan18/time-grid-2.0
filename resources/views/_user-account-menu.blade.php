@@ -12,6 +12,11 @@
         </li>
         <li><hr class="dropdown-divider my-0"></li>
         <li>
+            <a class="dropdown-item" href="{{ route('user.profile') }}">
+                <i class="fa fa-user-circle-o"></i>&nbsp; {{ trans('app.nav.profile', ['default' => 'My Profile']) }}
+            </a>
+        </li>
+        <li>
             <a class="dropdown-item" href="{{ route('manager.business.index') }}">
                 {{ trans('app.nav.manager.business.menu') }}
             </a>

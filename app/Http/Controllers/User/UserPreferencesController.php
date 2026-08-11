@@ -4,15 +4,66 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class UserPreferencesController extends Controller
 {
+    public function getProfile(): View
+    {
+        Log::info('user.profile', [
+            'actor'     => auth()->id(),
+            'resource'  => 'profile',
+            'operation' => 'view',
+        ]);
+
+        $user = auth()->user();
+
+        return view('user.profile', compact('user'));
+    }
+
+    public function postProfile(Request $request): RedirectResponse
+    {
+        Log::info('user.profile.update', [
+            'actor'     => auth()->id(),
+            'resource'  => 'profile',
+            'operation' => 'update',
+        ]);
+
+        $user = auth()->user();
+
+        $validated = $request->validate([
+            'name'     => ['required', 'string', 'min:3', 'max:255'],
+            'email'    => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'username' => ['nullable', 'string', 'min:3', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'password' => ['nullable', 'string', 'min:6', 'confirmed'],
+        ]);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+
+        if (!empty($validated['username'])) {
+            $user->username = $validated['username'];
+        }
+
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+
+        $user->save();
+
+        flash()->success(trans('user.msg.profile.success', ['default' => 'Profile updated successfully.']));
+
+        return redirect()->route('user.profile');
+    }
+
     public function getPreferences()
     {
         logger()->info(__METHOD__);
-
-        // BEGIN
 
         $parameters = config()->get('preferences.App\Models\User');
         $preferences = auth()->user()->preferences;
@@ -24,8 +75,6 @@ class UserPreferencesController extends Controller
     {
         logger()->info(__METHOD__);
 
-        // BEGIN
-
         $this->setUserPreferences($request->all());
 
         flash()->success(trans('user.msg.preferences.success'));
@@ -33,19 +82,12 @@ class UserPreferencesController extends Controller
         return redirect()->back();
     }
 
-    /////////////
-    // HELPERS //
-    /////////////
-
     protected function setUserPreferences($preferences)
     {
-        // Get parameters from app configuration
         $parameters = config()->get('preferences.App\Models\User');
 
-        // Get the keys of the parameters
         $parametersKeys = array_flip(array_keys($parameters));
 
-        // Merge the user input with the parameter keys
         $mergedPreferences = array_intersect_key($preferences, $parametersKeys);
 
         foreach ($mergedPreferences as $key => $value) {

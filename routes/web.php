@@ -113,6 +113,16 @@ Route::group([], function () {
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth']], function () {
 
+    // USER PROFILE
+    Route::get('profile', [
+        'as'   => 'user.profile',
+        'uses' => 'User\UserPreferencesController@getProfile',
+    ]);
+    Route::post('profile', [
+        'as'   => 'user.profile.update',
+        'uses' => 'User\UserPreferencesController@postProfile',
+    ]);
+
     // USER PREFERENCES
     Route::get('preferences', [
         'as'   => 'user.preferences',
