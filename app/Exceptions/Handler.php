@@ -3,14 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Foundation\Validation\ValidationException;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Redirect;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Log;
 
 class Handler extends ExceptionHandler
@@ -30,9 +24,8 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Report or log an exception.
-     *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
+     * Report or log an exception via the application logger only.
+     * Third-party reporters (Rollbar) are intentionally not invoked (WO-009).
      *
      * @param  \Exception  $exception
      *
@@ -40,9 +33,17 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
-        Log::error($exception);
-
-        return parent::report($exception);
+        if ($this->shouldReport($exception)) {
+            Log::error($exception->getMessage(), [
+                'exception'      => get_class($exception),
+                'file'           => $exception->getFile(),
+                'line'           => $exception->getLine(),
+                'correlation_id' => (string) request()->header('X-Request-Id', uniqid('req_', true)),
+                'user_id'        => \Auth::id(),
+                'url'            => request()->fullUrl(),
+                'method'         => request()->method(),
+            ]);
+        }
     }
 
     /**
@@ -55,7 +56,6 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if (app()->environment('production') || app()->environment('demo')) {
-            // Catch TokenMismatchException to show a friendly error message
             if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
                 return redirect($request->fullUrl())->withErrors(trans('app.msg.invalid_token'));
             }
@@ -63,13 +63,12 @@ class Handler extends ExceptionHandler
             if ($exception instanceof \Illuminate\Http\Exception\HttpResponseException) {
                 return redirect(route('user.directory.list'))->withErrors(trans('app.msg.invalid_url'));
             }
-            // Catch General exceptios to show a friendly error message
+
             if (!app()->isDownForMaintenance() && $exception instanceof Exception && $request->user()) {
                 return redirect(route('whoops'))->withErrors(trans('app.msg.general_exception'));
             }
         }
 
-        // Handle any other case
         return parent::render($request, $exception);
     }
 

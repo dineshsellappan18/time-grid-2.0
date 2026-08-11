@@ -2,7 +2,16 @@
     "name": "timegridio/timegrid",
     "description": "Free, open-source, self-hosted online appointment platform based on the Laravel PHP Framework.",
     "homepage": "http://www.timegrid.io",
-    "keywords": ["appointments", "reservations", "booking", "agenda", "marketplace", "time", "date", "calendar"],
+    "keywords": [
+        "appointments",
+        "reservations",
+        "booking",
+        "agenda",
+        "marketplace",
+        "time",
+        "date",
+        "calendar"
+    ],
     "license": "AGPL",
     "authors": [
         {
@@ -24,12 +33,16 @@
         {
             "type": "path",
             "url": "packages/timegrid-concierge",
-            "options": { "symlink": true }
+            "options": {
+                "symlink": true
+            }
         },
         {
             "type": "path",
             "url": "packages/timegrid-icalreader",
-            "options": { "symlink": true }
+            "options": {
+                "symlink": true
+            }
         }
     ],
     "require": {
@@ -42,14 +55,10 @@
         "graham-campbell/markdown": "^6.0",
         "guzzlehttp/guzzle": "~6.0",
         "intervention/image": "^2.2",
-        "intervention/imagecache": "^2.2",
-        "ipunkt/laravel-analytics": "~1.1",
         "laracasts/flash": "~2.0",
         "laravel/framework": "5.3.*",
         "laravel/socialite": "~2.0",
         "laravelcollective/html": "~5.2",
-        "mccool/laravel-auto-presenter": "^4.0",
-        "patricktalmadge/bootstrapper": "~5",
         "pid/speakingurl": "^0.11.0",
         "propaganistas/laravel-phone": "~2.0",
         "sorich87/bootstrap-tour": "^0.10.2",
@@ -60,7 +69,6 @@
         "laracasts/utilities": "^2.1",
         "alariva/tidiochat": "^2.0",
         "dineshsellappan18/timegrid-concierge": "1.0.0",
-        "jenssegers/rollbar": "^1.5",
         "eluceo/ical": "^0.11",
         "snowfire/beautymail": "v1.1.9",
         "dineshsellappan18/timegrid-icalreader": "1.0.0",
@@ -71,12 +79,10 @@
         "jackiedo/timezonelist": "^5.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^2.0",
-        "caouecs/laravel-lang": "~3.0",
         "fakerphp/faker": "1.9.2",
         "laracasts/generators": "^1.1",
         "phpunit/phpunit": "~5.7",
-        "potsky/laravel-localization-helpers" : "2.4.*",
+        "potsky/laravel-localization-helpers": "2.4.*",
         "symfony/css-selector": "~3.0",
         "symfony/dom-crawler": "~3.0",
         "mockery/mockery": "^0.9.9"
@@ -87,7 +93,9 @@
         ],
         "psr-4": {
             "App\\": "app/",
-            "Seanstewart\\PlanConfig\\": "app/Support/PlanConfig/"
+            "Seanstewart\\PlanConfig\\": "app/Support/PlanConfig/",
+            "Bootstrapper\\": "app/Support/Bootstrapper/",
+            "McCool\\LaravelAutoPresenter\\": "app/Support/AutoPresenter/"
         },
         "files": [
             "app/helpers.php",
@@ -108,12 +116,10 @@
             "php artisan key:generate"
         ],
         "post-install-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "php artisan optimize"
+            "Illuminate\\Foundation\\ComposerScripts::postInstall"
         ],
         "post-update-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize"
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate"
         ]
     },
     "config": {

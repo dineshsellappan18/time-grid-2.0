@@ -182,6 +182,25 @@ Policy note from the same page: bug fixes ~18 months; security fixes ~2 years pe
 
 ---
 
+## D-009 — Rollbar / Debugbar / abandoned package removals
+
+**Decision:** Remove third-party error SaaS and abandoned UI/analytics packages; keep Bootstrap 3 markup via first-party vendored `Bootstrapper` under `app/Support/Bootstrapper`.
+
+| Removed | Replacement |
+| --- | --- |
+| `jenssegers/rollbar` | Application `Log::error` with structured context in `Handler` |
+| `barryvdh/laravel-debugbar` | None (local-only tooling deleted) |
+| `codeclimate/php-test-reporter` / `.codeclimate.yml` | Pipeline Clover only (already removed in WO-008) |
+| `ipunkt/laravel-analytics` | `App\Support\Analytics` + optional `ANALYTICS_SNIPPET` |
+| `mccool/laravel-auto-presenter` | Minimal stubs in `app/Support/AutoPresenter` (`HasPresenter`, `BasePresenter`) |
+| `intervention/imagecache` | Keep `intervention/image` only |
+| `patricktalmadge/bootstrapper` | Vendored MIT sources in `app/Support/Bootstrapper` |
+
+**Owner:** Security Reviewer + Platform Maintainer  
+**Status:** Accepted (WO-009)
+
+---
+
 ## Change control
 
 | Date | Change | Author |
@@ -190,3 +209,4 @@ Policy note from the same page: bug fixes ~18 months; security fixes ~2 years pe
 | 2026-08-10 | D-006 Concierge fork v1.0.0 + AGPL review + reservation contract | WO-002 implementation |
 | 2026-08-10 | D-007 Sequencing gate: WO-003…WO-020 cannot complete on Laravel 5.3 | Programme continuity |
 | 2026-08-11 | D-008 Branch constraints replaced with tags/path/inline; Code Climate removed | WO-008 implementation |
+| 2026-08-11 | D-009 Rollbar/Debugbar/abandoned package removals; Bootstrapper vendored | WO-009 implementation |

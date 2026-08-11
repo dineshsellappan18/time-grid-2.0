@@ -52,9 +52,4 @@ return [
         'redirect'      => env('APP_URL').'/social/login/google',
     ],
 
-    'rollbar' => [
-        'access_token' => env('ROLLBAR_TOKEN', false),
-        'level'        => env('ROLLBAR_LEVEL', 'error'),
-    ],
-
 ];

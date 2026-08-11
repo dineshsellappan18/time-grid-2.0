@@ -13,7 +13,9 @@
 .env
 .env.testing
 /public/storage/debugbar
+/public/storage/debugbar/**
 /storage/debugbar
+/storage/debugbar/**
 *.sublime-workspace
 .wakatime-project
 .DS_Store
