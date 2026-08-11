@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property string $key
@@ -11,33 +12,20 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
  */
 class Preference extends EloquentModel
 {
-
+    /** @var list<string> */
     protected $fillable = ['key', 'value', 'type'];
 
-    public function preferenceable()
+    public function preferenceable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    /**
-     * [__toString description].
-     *
-     * @return string $value
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->attributes['value'];
     }
 
-    /**
-     * Get default value.
-     *
-     * @param string $model
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public static function getDefault($model, $key)
+    public static function getDefault(object $model, string $key): self
     {
         $class = get_class($model);
         $value = config("preferences.{$class}.{$key}.value");
@@ -52,63 +40,29 @@ class Preference extends EloquentModel
             ]);
     }
 
-    /**
-     * [question description].
-     *
-     * @return string
-     */
-    public function question()
+    public function question(): string
     {
         return trans("preferences.{$this->preferenceable_type}.question.{$this->key}");
     }
 
-    /**
-     * [help description].
-     *
-     * @return string
-     */
-    public function help()
+    public function help(): string
     {
         return trans("preferences.{$this->preferenceable_type}.help.{$this->key}");
     }
 
-    /**
-     * [scopeForKey description].
-     *
-     * @param [type] $query [description]
-     * @param [type] $key   [description]
-     *
-     * @return [type] [description]
-     */
-    public function scopeForKey($query, $key)
+    public function scopeForKey($query, string $key)
     {
         return $query->where('key', $key);
     }
 
-    /**
-     * Get casted value.
-     *
-     * @return mixed
-     */
-    public function value()
+    public function value(): mixed
     {
-        switch ($this->type) {
-            case 'string':
-                return (string) $this->value;
-                break;
-            case 'bool':
-                return (bool) $this->value;
-                break;
-            case 'int':
-                return (int) $this->value;
-                break;
-            case 'float':
-                return (float) $this->value;
-                break;
-            default:
-                break;
-        }
-
-        return $this->value;
+        return match ($this->type) {
+            'string' => (string) $this->value,
+            'bool' => (bool) $this->value,
+            'int' => (int) $this->value,
+            'float' => (float) $this->value,
+            default => $this->value,
+        };
     }
 }

@@ -6,14 +6,12 @@ use Timegridio\Concierge\Models\Business;
 
 class Token
 {
-    private $business;
-
-    public function __construct(Business $business)
-    {
-        $this->business = $business;
+    public function __construct(
+        private readonly Business $business,
+    ) {
     }
 
-    public function generate()
+    public function generate(): string
     {
         return md5($this->business->slug.'>'.$this->business->created_at->timestamp);
     }

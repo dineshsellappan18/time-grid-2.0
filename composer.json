@@ -113,7 +113,9 @@
         "symfony/css-selector": "^6.4|^7.0",
         "symfony/dom-crawler": "^6.4|^7.0",
         "mockery/mockery": "^1.6",
-        "phpstan/phpstan": "1.10.67"
+        "phpstan/phpstan": "1.10.67",
+        "rector/rector": "^1.2",
+        "driftingly/rector-laravel": "^2.0"
     },
     "autoload": {
         "classmap": [

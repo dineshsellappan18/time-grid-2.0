@@ -8,24 +8,11 @@ use App\TG\Business\Setup\SetupStaff;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Category;
 
-/*******************************************************************************
- * Business Service Layer
- *     High level business manager
- ******************************************************************************/
 class BusinessService
 {
-    private $setupStaffClass = SetupStaff::class;
+    private string $setupStaffClass = SetupStaff::class;
 
-    /**
-     * register Business.
-     *
-     * @param User  $user
-     * @param array $data
-     * @param int   $category
-     *
-     * @return Timegridio\Concierge\Models\Business
-     */
-    public function register(User $user, $data, $category)
+    public function register(User $user, array $data, int $category): Business
     {
         $slug = str_slug($data['name']);
 
@@ -46,17 +33,7 @@ class BusinessService
         return $business;
     }
 
-    /**
-     * get existing registered business.
-     *
-     * @param User   $user User who attempts to register the business
-     * @param string $slug Desired slug for business
-     *
-     * @throws BusinessAlreadyExists When Business exists and is not owned by User
-     *
-     * @return Business|false Business if found or false otherwise
-     */
-    public function getExisting(User $user, $slug)
+    public function getExisting(User $user, string $slug): Business|false
     {
         $business = Business::withTrashed()->where(['slug' => $slug])->first();
 
@@ -78,44 +55,19 @@ class BusinessService
         return $business;
     }
 
-    /**
-     * Soft delete the business.
-     *
-     * @param Business $business
-     *
-     * @throws \Exception
-     *
-     * @return bool|null
-     */
-    public function deactivate(Business $business)
+    public function deactivate(Business $business): ?bool
     {
         return $business->delete();
     }
 
-    /**
-     * Update business attirbutes.
-     *
-     * @param Business $business
-     * @param array    $data
-     *
-     * @return Timegridio\Concierge\Models\Business
-     */
-    public function update(Business $business, $data)
+    public function update(Business $business, array $data): Business
     {
         $business->where(['id' => $business->id])->update($data);
 
         return $business;
     }
 
-    /**
-     * Set category to a Business and save.
-     *
-     * @param Business $business
-     * @param int      $category
-     *
-     * @return Timegridio\Concierge\Models\Business
-     */
-    public function setCategory(Business $business, $category)
+    public function setCategory(Business $business, int $category): Business
     {
         $category = Category::find($category);
         $business->category()->associate($category);
@@ -124,7 +76,7 @@ class BusinessService
         return $business;
     }
 
-    public function setup(Business $business)
+    public function setup(Business $business): void
     {
         $setupStaff = $this->setupStaffClass;
 

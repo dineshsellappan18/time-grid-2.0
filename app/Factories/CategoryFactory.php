@@ -6,7 +6,7 @@ use Faker\Generator as Faker;
 
 class CategoryFactory
 {
-    public static function definition(Faker $faker)
+    public static function definition(Faker $faker): array
     {
         return [
             'name'        => $faker->sentence(3),

@@ -6,12 +6,7 @@ use App\Models\User;
 
 class UserRepository
 {
-    /**
-     * @param $userData
-     *
-     * @return static
-     */
-    public function findOrCreate($userData)
+    public function findOrCreate(object $userData): User
     {
         $user = User::where('email', '=', $userData->email)->orWhere('username', '=', $userData->nickname)->first();
         if ($user !== null) {

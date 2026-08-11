@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 
 class ContactFactory
 {
-    public static function definition(Faker $faker)
+    public static function definition(Faker $faker): array
     {
         return [
             'firstname'      => str_pad($faker->firstName, 3, '_'),

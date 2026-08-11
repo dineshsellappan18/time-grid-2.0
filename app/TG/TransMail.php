@@ -6,102 +6,45 @@ use Snowfire\Beautymail\Beautymail;
 
 class TransMail
 {
-    /**
-     * @var Mail
-     */
-    protected $mail = null;
+    protected ?Beautymail $mail = null;
 
-    /**
-     * @var string
-     */
-    protected $locale = 'en_US';
+    protected string $locale = 'en_US';
 
-    /**
-     * Locale Switch Function name.
-     *
-     * @var string
-     */
-    protected $localeSwitchFunction = 'setGlobalLocale';
+    protected string $localeSwitchFunction = 'setGlobalLocale';
 
-    /**
-     * @var string
-     */
-    protected $revertLocale = 'en_US';
+    protected string $revertLocale = 'en_US';
 
-    /**
-     * @var string
-     */
-    protected $timezone = null;
+    protected ?string $timezone = null;
 
-    /**
-     * @var string
-     */
-    protected $revertTimezone = null;
+    protected ?string $revertTimezone = null;
 
-    /**
-     * @var string
-     */
-    protected $subjectKey = '';
+    protected string $subjectKey = '';
 
-    /**
-     * @var array
-     */
-    protected $subjectParams = [];
+    protected array $subjectParams = [];
 
-    /**
-     * @var string
-     */
-    protected $viewBase = 'emails';
+    protected string $viewBase = 'emails';
 
-    /**
-     * @var string
-     */
-    protected $viewPath = '';
+    protected string $viewPath = '';
 
-    /**
-     * @var string
-     */
-    protected $subject = '';
+    protected string $subject = '';
 
-    /**
-     * @var  bool Post sent success status indicator.
-     */
-    protected $success = false;
+    protected bool $success = false;
 
-    /**
-     * Construct the class.
-     *
-     * @param Mail|null $mail
-     */
-    public function __construct($mail = null)
+    public function __construct(?Beautymail $mail = null)
     {
         $this->mail = $mail ?: app()->make(Beautymail::class);
 
         $this->locale();
     }
 
-    /**
-     * Use switch locale function name.
-     *
-     * @param string $functionName
-     *
-     * @return $this
-     */
-    public function useFunction($functionName)
+    public function useFunction(string $functionName): static
     {
         $this->localeSwitchFunction = $functionName;
 
         return $this;
     }
 
-    /**
-     * Set the locale.
-     *
-     * @param string $posixLocale
-     *
-     * @return $this
-     */
-    public function locale($posixLocale = null)
+    public function locale(?string $posixLocale = null): static
     {
         $this->revertLocale = app()->getLocale();
 
@@ -114,7 +57,7 @@ class TransMail
         return $this;
     }
 
-    public function timezone($timezone)
+    public function timezone(?string $timezone): static
     {
         $this->revertTimezone = session()->get('timezone');
 
@@ -123,9 +66,9 @@ class TransMail
         return $this;
     }
 
-    public function switchTimezone($timezone)
+    public function switchTimezone(?string $timezone): static
     {
-        if ($timezone !== null && $timezone != '') {
+        if ($timezone !== null && $timezone !== '') {
             $this->revertTimezone = session()->get('timezone');
 
             session()->set('timezone', $timezone);
@@ -135,29 +78,14 @@ class TransMail
         return $this;
     }
 
-    /**
-     * Set the template view path key.
-     *
-     * @param string $template
-     *
-     * @return $this
-     */
-    public function template($template)
+    public function template(string $template): static
     {
         $this->viewPath = $template;
 
         return $this;
     }
 
-    /**
-     * Set the subject trans key and parameters.
-     *
-     * @param string $key
-     * @param array  $params
-     *
-     * @return $this
-     */
-    public function subject($key, $params = [])
+    public function subject(string $key, array $params = []): static
     {
         $this->subjectKey = $key;
 
@@ -166,15 +94,7 @@ class TransMail
         return $this;
     }
 
-    /**
-     * Switch application wide locale, send message, and restore locale.
-     *
-     * @param array $header
-     * @param array $params
-     *
-     * @return void
-     */
-    public function send(array $header, array $params)
+    public function send(array $header, array $params): bool
     {
         $this->switchLocale($this->locale);
         $this->switchTimezone($this->timezone);
@@ -193,23 +113,12 @@ class TransMail
         return $this->success();
     }
 
-    public function success()
+    public function success(): bool
     {
         return $this->success;
     }
 
-    /////////////
-    // Helpers //
-    /////////////
-
-    /**
-     * Switch Locale.
-     *
-     * @param string $posixLocale
-     *
-     * @return $this
-     */
-    protected function switchLocale($posixLocale)
+    protected function switchLocale(string $posixLocale): static
     {
         if (function_exists($this->localeSwitchFunction)) {
             call_user_func($this->localeSwitchFunction, $posixLocale);
@@ -218,14 +127,7 @@ class TransMail
         return $this;
     }
 
-    /**
-     * Build and get the view path key.
-     *
-     * @throws Exception 'Email view does not exist'
-     *
-     * @return string
-     */
-    protected function getViewKey()
+    protected function getViewKey(): string
     {
         $key = $this->viewBase.'.'.$this->viewPath;
 
@@ -236,12 +138,7 @@ class TransMail
         return $key;
     }
 
-    /**
-     * Build and get the localized subject string.
-     *
-     * @return string
-     */
-    protected function getSubject()
+    protected function getSubject(): string
     {
         return $this->subject = trans('emails.'.$this->subjectKey, $this->subjectParams);
     }

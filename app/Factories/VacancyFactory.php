@@ -8,7 +8,7 @@ use Timegridio\Concierge\Models\Service;
 
 class VacancyFactory
 {
-    public static function definition(Faker $faker)
+    public static function definition(Faker $faker): array
     {
         $date = $faker->dateTimeBetween('today', 'today +7 days')->format('Y-m-d');
 

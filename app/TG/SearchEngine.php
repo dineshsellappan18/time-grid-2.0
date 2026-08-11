@@ -9,34 +9,29 @@ use Illuminate\Support\Facades\Auth;
 
 class SearchEngine
 {
-    /**
-     * TODO: Check if there is a suitable package for seaching among Models.
-     */
-    protected $results = [];
+    protected array $results = [];
 
-    protected $scope = [];
+    protected array $scope = [];
 
-    protected $criteria = '';
+    protected string $criteria;
 
-    public function __construct($criteria)
+    public function __construct(string $criteria)
     {
         $this->scope['businessesIds'] = auth()->user()->businesses->transform(
-            function ($item) {
-                return $item->id;
-            }
+            fn ($item) => $item->id
         );
 
         $this->criteria = $criteria;
     }
 
-    public function setBusinessScope(array $scope)
+    public function setBusinessScope(array $scope): static
     {
         $this->scope['businessesIds'] = $scope;
 
         return $this;
     }
 
-    public function run()
+    public function run(): static|false
     {
         if (strlen($this->criteria) < 3) {
             return false;
@@ -49,24 +44,24 @@ class SearchEngine
         return $this;
     }
 
-    public function results()
+    public function results(): array
     {
         return $this->results;
     }
 
-    private function getServices($expression)
+    private function getServices(string $expression): void
     {
         $this->results['services'] = Service::whereIn('business_id', $this->scope['businessesIds'])
             ->where('name', 'like', $expression.'%')->get();
     }
 
-    private function getAppointments($expression)
+    private function getAppointments(string $expression): void
     {
         $this->results['appointments'] = Appointment::whereIn('business_id', $this->scope['businessesIds'])
             ->where('hash', 'like', $expression.'%')->get();
     }
 
-    private function getContacts($expression)
+    private function getContacts(string $expression): void
     {
         $businesses = Business::whereIn('id', $this->scope['businessesIds'])->get();
         foreach ($businesses as $business) {

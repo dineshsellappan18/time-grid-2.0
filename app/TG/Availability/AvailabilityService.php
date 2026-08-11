@@ -3,40 +3,41 @@
 namespace App\TG\Availability;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Service;
 use Timegridio\Concierge\Models\Vacancy;
 
 class AvailabilityService
 {
-    protected $timezone;
+    protected ?string $timezone = null;
 
-    protected $timeformat = 'H:i';
+    protected string $timeformat = 'H:i';
 
-    protected $excludeDates = [];
+    protected array $excludeDates = [];
 
-    public function timezone($timezone)
+    public function timezone(?string $timezone): static
     {
         $this->timezone = $timezone;
 
         return $this;
     }
 
-    public function timeformat($timeformat)
+    public function timeformat(string $timeformat): static
     {
         $this->timeformat = $timeformat;
 
         return $this;
     }
 
-    public function excludeDates($dates)
+    public function excludeDates(array $dates): static
     {
         $this->excludeDates = $dates;
 
         return $this;
     }
 
-    public function getDates(Business $business, $serviceId)
+    public function getDates(Business $business, int $serviceId): array
     {
         $vacancies = $business->vacancies()->with('humanresource')->forService($serviceId)->get();
 
@@ -47,18 +48,15 @@ class AvailabilityService
         return array_diff($dates, $this->excludeDates);
     }
 
-    protected function removeExcludedDates($vacancies)
+    protected function removeExcludedDates(Collection $vacancies): Collection
     {
         $excludedDates = collect($this->excludeDates);
 
-        return $vacancies->reject(function ($vacancy) use ($excludedDates) {
-
-            return $excludedDates->contains("{$vacancy->humanresourceSlug()}:{$vacancy->date}") ||
-                   $excludedDates->contains("{$vacancy->date}");
-        });
+        return $vacancies->reject(fn ($vacancy) => $excludedDates->contains("{$vacancy->humanresourceSlug()}:{$vacancy->date}") ||
+                   $excludedDates->contains("{$vacancy->date}"));
     }
 
-    public function getTimes(Business $business, Service $service, Carbon $date)
+    public function getTimes(Business $business, Service $service, Carbon $date): array
     {
         $vacancies = $business->vacancies()->with('humanresource')->forService($service->id)->forDate($date)->get();
 
@@ -67,7 +65,7 @@ class AvailabilityService
         return $this->splitTimes($vacancies, $service, $step);
     }
 
-    protected function splitTimes($vacancies, $service, $step = 30)
+    protected function splitTimes($vacancies, Service $service, int $step = 30): array
     {
         $times = [];
         foreach ($vacancies as $vacancy) {
@@ -81,7 +79,7 @@ class AvailabilityService
         return $times;
     }
 
-    protected function addSlots(array &$times, Vacancy $vacancy, Carbon $beginTime, $duration, $step, $maxNumberOfSlots)
+    protected function addSlots(array &$times, Vacancy $vacancy, Carbon $beginTime, int $duration, int $step, int $maxNumberOfSlots): void
     {
         for ($i = 0; $i <= $maxNumberOfSlots; $i++) {
             $serviceEndTime = $beginTime->copy()->addMinutes($duration);
@@ -94,7 +92,7 @@ class AvailabilityService
         }
     }
 
-    protected function calculateStep(Business $business, $defaultStep = 30)
+    protected function calculateStep(Business $business, int $defaultStep = 30): int
     {
         $step = $business->pref('timeslot_step');
 

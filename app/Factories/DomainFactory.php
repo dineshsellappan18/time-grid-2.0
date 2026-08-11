@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 
 class DomainFactory
 {
-    public static function definition(Faker $faker)
+    public static function definition(Faker $faker): array
     {
         return [
             'slug'     => str_slug($faker->name),

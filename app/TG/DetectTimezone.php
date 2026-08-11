@@ -6,7 +6,7 @@ class DetectTimezone
 {
     private $geoip;
 
-    private $timezone = null;
+    private ?string $timezone = null;
 
     public function __construct()
     {
@@ -15,17 +15,17 @@ class DetectTimezone
         $this->detect();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->get();
+        return $this->get() ?? '';
     }
 
-    public function get()
+    public function get(): ?string
     {
         return $this->timezone;
     }
 
-    protected function detect()
+    protected function detect(): ?string
     {
         $location = $this->geoip->getLocation();
 

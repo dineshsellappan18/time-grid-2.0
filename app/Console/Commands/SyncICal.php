@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-// use App\Jobs\FetchICalFile;
 use App\TG\Availability\ICalSyncService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
@@ -10,43 +9,17 @@ use Timegridio\Concierge\Models\Business;
 
 class SyncICal extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'ical:sync {business?}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Sync ICal';
 
-    /**
-     * @var App\TG\Availability\ICalSyncService
-     */
-    protected $icalsync;
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct(ICalSyncService $icalsync)
-    {
+    public function __construct(
+        protected ICalSyncService $icalsync,
+    ) {
         parent::__construct();
-
-        $this->icalsync = $icalsync;
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): int
     {
         $businessId = $this->argument('business');
 
@@ -62,14 +35,11 @@ class SyncICal extends Command
         $business = Business::findOrFail($businessId);
 
         $this->processBusiness($business);
+
+        return 0;
     }
 
-    /**
-     * scan Businesses.
-     *
-     * @return void
-     */
-    protected function scanBusinesses()
+    protected function scanBusinesses(): void
     {
         $businesses = Business::all();
         foreach ($businesses as $business) {
@@ -77,7 +47,7 @@ class SyncICal extends Command
         }
     }
 
-    protected function processBusiness(Business $business)
+    protected function processBusiness(Business $business): void
     {
         $humanresources = $business->humanresources()->whereNotNull('calendar_link')->get();
 
@@ -88,10 +58,9 @@ class SyncICal extends Command
         $this->processHumanresources($humanresources);
     }
 
-    protected function processHumanresources($humanresources)
+    protected function processHumanresources($humanresources): void
     {
         foreach ($humanresources as $humanresource) {
-            // dispatch(new FetchICalFile($humanresource));
             $this->icalsync->humanresource($humanresource)->sync();
         }
     }

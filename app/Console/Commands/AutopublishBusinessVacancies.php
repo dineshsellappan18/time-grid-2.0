@@ -13,57 +13,19 @@ use Timegridio\Concierge\Vacancy\VacancyParser;
 
 class AutopublishBusinessVacancies extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'business:vacancies {business?}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Autopublish Business Vacancies';
 
-    /**
-     * Concierge Service.
-     *
-     * @var \Timegridio\Concierge\Concierge
-     */
-    protected $concierge;
-
-    /**
-     * @var TransMail
-     */
-    protected $transmail;
-
-    /**
-     * @var VacancyParser
-     */
-    protected $vacancyParser;
-
-    /**
-     * Create a new command instance.
-     */
-    public function __construct(Concierge $concierge, TransMail $transmail, VacancyParser $vacancyParser)
-    {
-        $this->concierge = $concierge;
-
-        $this->transmail = $transmail;
-
-        $this->vacancyParser = $vacancyParser;
-
+    public function __construct(
+        protected Concierge $concierge,
+        protected TransMail $transmail,
+        protected VacancyParser $vacancyParser,
+    ) {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): int
     {
         $businessId = $this->argument('business');
 
@@ -75,26 +37,18 @@ class AutopublishBusinessVacancies extends Command
             $business = Business::findOrFail($businessId);
             $this->publishVacancies($business);
         }
+
+        return 0;
     }
 
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
+    protected function getArguments(): array
     {
         return [
             ['business', InputArgument::OPTIONAL, 'Business to publish vacancies.'],
         ];
     }
 
-    /**
-     * scan Businesses.
-     *
-     * @return void
-     */
-    protected function scanBusinesses()
+    protected function scanBusinesses(): void
     {
         $businesses = Business::all();
         foreach ($businesses as $business) {
@@ -102,14 +56,7 @@ class AutopublishBusinessVacancies extends Command
         }
     }
 
-    /**
-     * send Business Report.
-     *
-     * @param Business $business
-     *
-     * @return void
-     */
-    protected function publishVacancies(Business $business)
+    protected function publishVacancies(Business $business): bool
     {
         $this->info(__METHOD__);
         $this->info("Publishing vacancies for businessId:{$business->id}");
@@ -126,30 +73,18 @@ class AutopublishBusinessVacancies extends Command
             return false;
         }
 
-//        $owner = $business->owners()->first();
-
-        // Mail to User
-//        $header = [
-//            'email' => $owner->email,
-//            'name'  => $owner->name,
-//        ];
-//        $this->transmail->locale($business->locale)
-//                        ->template('appointments.manager._schedule')
-//                        ->subject('manager.business.report.subject', ['date' => date('Y-m-d'), 'business' => $business->name])
-//                        ->send($header, compact('business', 'appointments'));
-
         return true;
     }
 
-    protected function autopublishVacancies(Business $business)
+    protected function autopublishVacancies(Business $business): bool
     {
-        return $business->pref('vacancy_autopublish');
+        return (bool) $business->pref('vacancy_autopublish');
     }
 
-    protected function recallStatements($businessId)
+    protected function recallStatements(int $businessId): ?string
     {
         if (!Storage::exists($this->getStatementsFile($businessId))) {
-            return;
+            return null;
         }
 
         return Storage::get(
@@ -157,7 +92,7 @@ class AutopublishBusinessVacancies extends Command
         );
     }
 
-    protected function getStatementsFile($businessId)
+    protected function getStatementsFile(int $businessId): string
     {
         return 'business'.DIRECTORY_SEPARATOR.$businessId.DIRECTORY_SEPARATOR.'vacancy-statements.txt';
     }

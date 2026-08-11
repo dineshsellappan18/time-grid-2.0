@@ -6,26 +6,20 @@ use Illuminate\Support\Collection;
 
 class Dashboard
 {
-    private $business;
+    protected array $counter = [];
 
-    private $time;
+    protected array $boxes = [];
 
-    protected $counter = [];
-
-    protected $boxes;
-
-    public function __construct($business, $time)
-    {
-        $this->business = $business;
-
-        $this->time = $time;
-
+    public function __construct(
+        private readonly object $business,
+        private readonly object $time,
+    ) {
         $this->init();
 
         $this->loadCounters();
     }
 
-    protected function init()
+    protected function init(): void
     {
         $this->boxes = [
             'appointments_active_today' => [
@@ -67,20 +61,17 @@ class Dashboard
         ];
     }
 
-    protected function loadCounters()
+    protected function loadCounters(): void
     {
-        // Build Dashboard Report
         $this->counter['appointments_active_today'] = $this->business->bookings()->active()->ofDate($this->time->today())->get()->count();
         $this->counter['appointments_canceled_today'] = $this->business->bookings()->canceled()->ofDate($this->time->today())->get()->count();
         $this->counter['appointments_active_tomorrow'] = $this->business->bookings()->active()->ofDate($this->time->tomorrow())->get()->count();
-//        $this->counter['appointments_active_total'] = $this->business->bookings()->active()->get()->count();
-//        $this->counter['appointments_served_total'] = $this->business->bookings()->served()->get()->count();
         $this->counter['appointments_total'] = $this->business->bookings()->get()->count();
         $this->counter['contacts_registered'] = $this->business->contacts()->count();
         $this->counter['contacts_subscribed'] = $this->business->contacts()->whereNotNull('user_id')->count();
     }
 
-    public function getBoxes()
+    public function getBoxes(): Collection
     {
         $bag = new Collection();
 

@@ -3,21 +3,22 @@
 namespace App\TG\Availability;
 
 use App\TG\ICalChecker;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Timegridio\Concierge\Models\Humanresource;
 
 class ICalSyncService
 {
-    protected $humanresource;
+    protected ?Humanresource $humanresource = null;
 
-    public function humanresource(Humanresource $humanresource)
+    public function humanresource(Humanresource $humanresource): static
     {
         $this->humanresource = $humanresource;
 
         return $this;
     }
 
-    public function sync()
+    public function sync(): bool
     {
         if (empty($this->humanresource->calendar_link)) {
             return false;
@@ -31,9 +32,11 @@ class ICalSyncService
         );
 
         $this->compile($this->humanresource->slug, $icalFileContents);
+
+        return true;
     }
 
-    public function compile($slug, &$contents)
+    public function compile(string $slug, string &$contents): void
     {
         $icalchecker = new ICalChecker();
 
@@ -41,33 +44,31 @@ class ICalSyncService
 
         $events = collect($icalchecker->all());
 
-        $events = $events->map(function ($item) use ($slug) {
-            return "{$slug}:{$item->getStart()->toDateString()}";
-        })->unique()->sort();
+        $events = $events->map(fn ($item) => "{$slug}:{$item->getStart()->toDateString()}")->unique()->sort();
 
         $compiled = implode("\n", $events->values()->all());
 
         $this->saveCompiled($compiled);
     }
 
-    protected function saveCompiled($contents)
+    protected function saveCompiled(string $contents): bool
     {
         return Storage::append($this->getFilePath('ical-exclusion.compiled'), $contents);
     }
 
-    public function getLocalContents()
+    public function getLocalContents(): string
     {
         $humanresourceSlug = $this->humanresource->slug;
 
         return Storage::get($this->getFilePath("calendar-{$humanresourceSlug}.ics"));
     }
 
-    public function getRemoteContents()
+    public function getRemoteContents(): string
     {
         return file_get_contents($this->humanresource->calendar_link);
     }
 
-    protected function getFilePath($filename)
+    protected function getFilePath(string $filename): string
     {
         $businessId = $this->humanresource->business->id;
 

@@ -9,57 +9,24 @@ use Illuminate\Support\Facades\Mail;
 
 class SendRootReport extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'root:report';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Send Root Email Report';
 
-    /**
-     * @var App\TG\TransMail
-     */
-    private $transmail;
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct(TransMail $transmail)
-    {
-        $this->transmail = $transmail;
-
+    public function __construct(
+        private TransMail $transmail,
+    ) {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): int
     {
         logger()->info('Generating Root Report');
-
-        //////////////////
-        // FOR REFACTOR //
-        //////////////////
-
-        // Generate Root Report
 
         $registeredUsersCount = DB::table('users')->count();
 
         logger()->info('Users Count: '.$registeredUsersCount);
 
-        // Mail to Root
         $params = [
             'registeredUsersCount' => $registeredUsersCount,
         ];
@@ -72,5 +39,7 @@ class SendRootReport extends Command
                         ->send($header, $params);
 
         $this->info('Root report was sent');
+
+        return 0;
     }
 }

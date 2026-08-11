@@ -7,7 +7,7 @@ use Timegridio\Concierge\Models\Category;
 
 class BusinessFactory
 {
-    public static function definition(Faker $faker)
+    public static function definition(Faker $faker): array
     {
         return [
             'name'            => $faker->sentence(3),

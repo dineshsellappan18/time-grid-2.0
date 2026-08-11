@@ -6,7 +6,7 @@ use Faker\Generator as Faker;
 
 class UserFactory
 {
-    public static function definition(Faker $faker)
+    public static function definition(Faker $faker): array
     {
         return [
             'username' => $faker->unique()->firstName,

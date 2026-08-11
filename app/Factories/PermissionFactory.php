@@ -6,7 +6,7 @@ use Faker\Generator as Faker;
 
 class PermissionFactory
 {
-    public static function definition(Faker $faker)
+    public static function definition(Faker $faker): array
     {
         $name = $faker->word;
 

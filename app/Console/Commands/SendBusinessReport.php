@@ -11,52 +11,18 @@ use Timegridio\Concierge\Models\Business;
 
 class SendBusinessReport extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'business:report {business?}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Send Business report';
 
-    /**
-     * Concierge Service.
-     *
-     * @var \Timegridio\Concierge\Concierge
-     */
-    protected $concierge;
-
-    /**
-     * @var TransMail
-     */
-    protected $transmail;
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct(Concierge $concierge, TransMail $transmail)
-    {
-        $this->concierge = $concierge;
-
-        $this->transmail = $transmail;
-
+    public function __construct(
+        protected Concierge $concierge,
+        protected TransMail $transmail,
+    ) {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): int
     {
         $businessId = $this->argument('business');
 
@@ -68,26 +34,18 @@ class SendBusinessReport extends Command
             $business = Business::findOrFail($businessId);
             $this->sendBusinessReport($business);
         }
+
+        return 0;
     }
 
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
+    protected function getArguments(): array
     {
         return [
             ['business', InputArgument::OPTIONAL, 'Business to generate the report.'],
         ];
     }
 
-    /**
-     * scan Businesses.
-     *
-     * @return void
-     */
-    protected function scanBusinesses()
+    protected function scanBusinesses(): void
     {
         $businesses = Business::all();
         foreach ($businesses as $business) {
@@ -95,14 +53,7 @@ class SendBusinessReport extends Command
         }
     }
 
-    /**
-     * send Business Report.
-     *
-     * @param Business $business
-     *
-     * @return bool
-     */
-    protected function sendBusinessReport(Business $business)
+    protected function sendBusinessReport(Business $business): bool
     {
         $this->info(__METHOD__);
         $this->info("Sending to businessId:{$business->id}");
@@ -117,7 +68,6 @@ class SendBusinessReport extends Command
 
         $owner = $business->owners()->first();
 
-        // Mail to User
         $ownerName = $owner->name;
         $businessName = $business->name;
         $date = date('Y-m-d');
@@ -134,18 +84,18 @@ class SendBusinessReport extends Command
         return true;
     }
 
-    protected function skipReport(Business $business, $appointmentsCount)
+    protected function skipReport(Business $business, int $appointmentsCount): bool
     {
         return !($this->enabledReports($business) && $this->hasAppointments($appointmentsCount));
     }
 
-    protected function enabledReports(Business $business)
+    protected function enabledReports(Business $business): bool
     {
-        return $business->pref('report_daily_schedule');
+        return (bool) $business->pref('report_daily_schedule');
     }
 
-    protected function hasAppointments($appointmentsCount)
+    protected function hasAppointments(int $appointmentsCount): bool
     {
-        return 0 != $appointmentsCount;
+        return 0 !== $appointmentsCount;
     }
 }

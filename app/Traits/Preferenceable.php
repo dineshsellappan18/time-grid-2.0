@@ -3,15 +3,16 @@
 namespace App\Traits;
 
 use App\Models\Preference;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait Preferenceable
 {
-    public function preferences()
+    public function preferences(): MorphMany
     {
-        return $this->morphMany('App\Models\Preference', 'preferenceable');
+        return $this->morphMany(Preference::class, 'preferenceable');
     }
 
-    public function pref($key, $value = null, $type = 'string')
+    public function pref(string $key, mixed $value = null, string $type = 'string'): mixed
     {
         if (isset($value)) {
             $value = $this->cast($value, $type);
@@ -32,26 +33,14 @@ trait Preferenceable
         return  $default->value();
     }
 
-    private function cast($value, $type)
+    private function cast(mixed $value, string $type): mixed
     {
-        switch ($type) {
-            case 'bool':
-                $value = boolval($value);
-                break;
-            case 'int':
-                $value = intval($value);
-                break;
-            case 'float':
-                $value = floatval($value);
-                break;
-            case 'string':
-                $value = (string) $value;
-                break;
-            default:
-                // No changes
-                break;
-        }
-
-        return $value;
+        return match ($type) {
+            'bool' => boolval($value),
+            'int' => intval($value),
+            'float' => floatval($value),
+            'string' => (string) $value,
+            default => $value,
+        };
     }
 }

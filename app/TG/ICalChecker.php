@@ -13,17 +13,17 @@ class ICalChecker
         $this->icalevents = app()->make('ical');
     }
 
-    public function loadString($contents)
+    public function loadString(string $contents): void
     {
         $this->icalevents->loadString($contents);
     }
 
-    public function isBusy(Carbon $atDateTime)
+    public function isBusy(Carbon $atDateTime): bool
     {
         return $this->icalevents->isBusy($atDateTime);
     }
 
-    public function all()
+    public function all(): array
     {
         return $this->icalevents->get()->all();
     }

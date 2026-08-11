@@ -7,7 +7,7 @@ use Timegridio\Concierge\Models\Business;
 
 class ServiceTypeFactory
 {
-    public static function definition(Faker $faker)
+    public static function definition(Faker $faker): array
     {
         return [
             'business_id' => factory(Business::class)->create()->id,
