@@ -5,7 +5,7 @@
 
     {{-- Configuration --}}
     <li class="treeview">
-        <a href="#"><i class="fa fa-home"></i> <span>{{ $business->name }}</span> <i class="fa fa-angle-left pull-right"></i></a>
+        <a href="#"><i class="fa fa-home"></i> <span>{{ $business->name }}</span> <i class="fa fa-angle-left float-end"></i></a>
         <ul class="treeview-menu">
             <li><a href="{{ route('manager.business.preferences', $business) }}"><i class="fa fa-cogs"></i><span>{{ trans('nav.manager.left.preferences') }}</span></a></li>
             <li><a href="{{ route('manager.business.edit', $business) }}"><i class="fa fa-pencil-square-o"></i><span>{{ trans('nav.manager.left.edit') }}</span></a></li>

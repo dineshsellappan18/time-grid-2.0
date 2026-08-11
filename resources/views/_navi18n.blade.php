@@ -1,16 +1,15 @@
 {{-- Language Switcher Dropdown --}}
-<li id="navLang" class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        {{ $availableLanguages[$appLocale] }} <b class="caret"></b>
+<li id="navLang" class="nav-item dropdown">
+    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+        {{ $availableLanguages[$appLocale] }}
     </a>
     <ul class="dropdown-menu">
     @foreach ($availableLanguages as $locale => $language)
         @if ($locale != $appLocale)
         <li>
-            {!! link_to_route('lang.switch', $language, $locale) !!}
+            <a class="dropdown-item" href="{{ route('lang.switch', $locale) }}">{{ $language }}</a>
         </li>
         @endif
     @endforeach
     </ul>
 </li>
-{{-- Language Switcher Dropdown --}} 

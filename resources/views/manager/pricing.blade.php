@@ -121,8 +121,8 @@
 <div class="container-fluid">
 
     <div class="row flat">
-        <div class="col-lg-offset-3 col-md-offset-3 col-xs-offset-1">
-            <div class="col-lg-4 col-md-4 col-xs-6">
+        <div class="col-lg-offset-3 col-md-offset-3 col-offset-1">
+            <div class="col-lg-4 col-md-4 col-6">
                 <ul class="plan plan1 featured" id="plan1">
                     <li class="plan-name noZoom">
                         {{trans('pricing.plan.free.name')}}
@@ -131,7 +131,7 @@
                         {{trans('pricing.plan.free.hint')}}
                     </li>
                     <li class="plan-price">
-                        <span class="label label-success"><strong>{{trans('pricing.free')}}</strong></span>
+                        <span class="label badge bg-success"><strong>{{trans('pricing.free')}}</strong></span>
                     </li>
                     <li id="p1_appointments">
                         {!! trans('pricing.feature.unlimited_appointments') !!}
@@ -154,7 +154,7 @@
                 </ul>
             </div>
 
-            <div class="col-lg-4 col-md-4 col-xs-6">
+            <div class="col-lg-4 col-md-4 col-6">
                 <ul class="plan plan2" id="plan2">
                     <li class="plan-name">
                         {{trans('pricing.plan.premium.name')}}

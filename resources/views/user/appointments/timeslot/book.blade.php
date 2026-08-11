@@ -7,7 +7,7 @@
 
 @section('content')
 <div class="container">
-{!! Form::open(['route' => ['user.booking.store', 'business'], 'class' => 'form', 'id' => 'form', 'data-toggle' => 'validator', 'role' => 'form']) !!}
+{!! Form::open(['route' => ['user.booking.store', 'business'], 'class' => 'form', 'id' => 'form', 'data-bs-toggle' => 'validator', 'role' => 'form']) !!}
 {!! Form::hidden('businessId', $business->id, ['required', 'id' => 'business']) !!}
 {!! Form::hidden('_date', null, ['required', 'id'=>'date', 'min'=> date('Y-m-d')]) !!}
 {!! Form::hidden('_timezone', null, ['id'=>'timezone', 'readonly']) !!}

@@ -56,7 +56,7 @@ $(document).ready(function(){
 .filterable {
     margin-top: 15px;
 }
-.filterable .panel-heading .pull-right {
+.filterable .card-header .float-end {
     margin-top: -20px;
 }
 .filterable .filters input[disabled] {
@@ -84,11 +84,11 @@ $(document).ready(function(){
 
     {!! $contacts->render() !!}
 
-    <div class="panel panel-primary filterable">
-        <div class="panel-heading">
-            <h3 class="panel-title">{{ trans('manager.contacts.title') }}</h3>
-            <div class="pull-right">
-                <button class="btn btn-default btn-xs btn-filter">
+    <div class="card border-primary filterable">
+        <div class="card-header">
+            <h3 class="card-title">{{ trans('manager.contacts.title') }}</h3>
+            <div class="float-end">
+                <button class="btn btn-outline-secondary btn-xs btn-filter">
                     <span class="glyphicon glyphicon-filter"></span>&nbsp;{{ trans('manager.contacts.list.btn.filter') }}
                 </button>
             </div>

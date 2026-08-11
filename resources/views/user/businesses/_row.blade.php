@@ -1,6 +1,6 @@
 <a href="{{ route('user.businesses.home', compact('business')) }}" class="list-group-item">
     <div class="media col-md-3">
-        <figure class="pull-left">
+        <figure class="float-start">
             {!! $business->facebookImg('normal') !!}
         </figure>
     </div>
@@ -18,6 +18,6 @@
     </div>
     <div class="col-md-3 text-center">
         <h2> {{ $business->subscriptionsCount }} <small> {{ trans('user.businesses.subscriptions.title') }} </small></h2>
-        <button type="button" class="btn btn-default btn-lg btn-block"> {{ trans('user.appointments.btn.book') }} </button>
+        <button type="button" class="btn btn-outline-secondary btn-lg btn-block"> {{ trans('user.appointments.btn.book') }} </button>
     </div>
 </a>

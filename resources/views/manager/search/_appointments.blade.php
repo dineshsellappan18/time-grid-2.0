@@ -1,5 +1,5 @@
 @if(count($items))
-<div class="panel panel-default">
+<div class="card">
     <ul class="list-group">
         @each('manager.search._appointment', $items, 'appointment')
     </ul>

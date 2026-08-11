@@ -164,7 +164,8 @@
         "lint:constraints": "bash bin/lint-constraints.sh",
         "lint:architecture": "bash bin/lint-architecture.sh",
         "check:eol": "@php tools/eol-check.php",
-        "lint:no-serialize-logs": "@php tools/lint-no-serialize-in-logs.php"
+        "lint:no-serialize-logs": "@php tools/lint-no-serialize-in-logs.php",
+        "lint:bootstrap5": "@php tools/lint-bootstrap5.php"
     },
     "config": {
         "preferred-install": "dist",

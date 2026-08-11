@@ -118,7 +118,7 @@
 </div>
 
 <div class="row">
-    <div class="form-group col-xs-12">
+    <div class="form-group col-12">
         {!! Button::primary($submitLabel)->block()->submit() !!}
     </div>
 </div>

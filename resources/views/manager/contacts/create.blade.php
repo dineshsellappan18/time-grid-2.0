@@ -5,11 +5,11 @@
 @section('content')
 <div class="container-fluid">
 
-        <div class="panel panel-default">
+        <div class="card">
 
-            <div class="panel-heading">{{ trans('manager.contacts.create.title') }}</div>
+            <div class="card-header">{{ trans('manager.contacts.create.title') }}</div>
 
-            <div class="panel-body">
+            <div class="card-body">
 
                 {!! Form::model($contact, ['route' => ['manager.addressbook.store', $business], 'class' => 'horizontal-form']) !!}
                     @include('manager.contacts._form', ['submitLabel' => trans('manager.contacts.btn.store')])

@@ -1,0 +1,57 @@
+// Design Tokens — Single source of truth for typography, colours, spacing
+// Mapped from the Bootswatch Flatly theme that previously defined the visual identity.
+
+// Colour Palette
+$tg-primary:       #2c3e50;
+$tg-secondary:     #95a5a6;
+$tg-success:       #18bc9c;
+$tg-info:          #3498db;
+$tg-warning:       #f39c12;
+$tg-danger:        #e74c3c;
+$tg-light:         #ecf0f1;
+$tg-dark:          #2c3e50;
+$tg-white:         #ffffff;
+$tg-body-bg:       #ffffff;
+$tg-body-color:    #212529;
+
+// Brand
+$tg-brand-primary: $tg-primary;
+$tg-brand-accent:  $tg-info;
+$tg-sidebar-bg:    #222d32;
+$tg-sidebar-color: #b8c7ce;
+$tg-header-bg:     #3c8dbc;
+
+// Typography
+$tg-font-family-base: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$tg-font-size-base:   0.875rem;   // 14px
+$tg-font-size-lg:     1rem;       // 16px
+$tg-font-size-sm:     0.75rem;    // 12px
+$tg-line-height-base: 1.5;
+$tg-font-weight-normal: 400;
+$tg-font-weight-bold:   700;
+$tg-headings-font-weight: 500;
+
+// Spacing Scale (matches Bootstrap 5 default scale)
+$tg-spacer:    1rem;
+$tg-spacer-0:  0;
+$tg-spacer-1:  $tg-spacer * 0.25;  // 4px
+$tg-spacer-2:  $tg-spacer * 0.5;   // 8px
+$tg-spacer-3:  $tg-spacer;         // 16px
+$tg-spacer-4:  $tg-spacer * 1.5;   // 24px
+$tg-spacer-5:  $tg-spacer * 3;     // 48px
+
+// Border & Radius
+$tg-border-radius:    0.375rem;
+$tg-border-radius-sm: 0.25rem;
+$tg-border-radius-lg: 0.5rem;
+$tg-border-color:     #dee2e6;
+
+// Shadows
+$tg-shadow-sm:  0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+$tg-shadow:     0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+$tg-shadow-lg:  0 1rem 3rem rgba(0, 0, 0, 0.175);
+
+// Z-index layers
+$tg-zindex-sidebar: 1030;
+$tg-zindex-header:  1040;
+$tg-zindex-modal:   1050;

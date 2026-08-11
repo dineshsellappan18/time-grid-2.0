@@ -7,11 +7,11 @@
 <div class="container-fluid">
     <div class="col-md-8 col-md-offset-2">
 
-        <div class="panel panel-default">
+        <div class="card">
 
-            <div class="panel-heading">{{ trans('manager.vacancies.edit.title') }}</div>
+            <div class="card-header">{{ trans('manager.vacancies.edit.title') }}</div>
 
-            <div class="panel-body">
+            <div class="card-body">
                 @if($advanced)
                     {!! Form::open(['method' => 'post', 'route' => ['manager.business.vacancy.storeBatch', $business], 'class' => 'horizontal-form']) !!}
                     @include('manager.businesses.vacancies._form_advanced', ['submitLabel' => trans('manager.businesses.vacancies.btn.update')])

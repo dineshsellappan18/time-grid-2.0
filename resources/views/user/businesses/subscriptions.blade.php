@@ -4,10 +4,10 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            <div class="panel panel-default">
-                <div class="panel-heading">{{ trans('user.businesses.subscriptions.title') }}</div>
+            <div class="card">
+                <div class="card-header">{{ trans('user.businesses.subscriptions.title') }}</div>
 
-                <div class="panel-body">
+                <div class="card-body">
                     @if (!$contacts->isEmpty())
                     <table class="table table-condensed">
 	                    @foreach ($contacts as $contact)

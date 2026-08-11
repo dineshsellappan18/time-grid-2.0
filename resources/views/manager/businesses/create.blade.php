@@ -6,14 +6,14 @@
 @section('content')
 <div class="col-sm-12 col-sm-offset-0 col-md-8 col-md-offset-2">
 
-    <div class="panel panel-default">
+    <div class="card">
 
-        <div class="panel-heading">
+        <div class="card-header">
         {{ trans('manager.businesses.create.title') }}
         </div>
 
-        <div class="panel-body">
-            {!! Form::model($business, ['route' => ['manager.business.store'], 'id' => 'registration', 'data-toggle' => 'validator', 'class' => 'form-horizontal']) !!}
+        <div class="card-body">
+            {!! Form::model($business, ['route' => ['manager.business.store'], 'id' => 'registration', 'data-bs-toggle' => 'validator', 'class' => 'form-horizontal']) !!}
             <fieldset>
             {!! Form::hidden('plan', $plan) !!}
             {!! Form::hidden('country_code', $countryCode) !!}

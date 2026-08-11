@@ -1,0 +1,28 @@
+// Timegrid App Stylesheet
+// Bootstrap 5 with design tokens
+
+@import "tokens";
+
+// Map tokens to Bootstrap 5 variables before importing Bootstrap
+$primary:       $tg-primary;
+$secondary:     $tg-secondary;
+$success:       $tg-success;
+$info:          $tg-info;
+$warning:       $tg-warning;
+$danger:        $tg-danger;
+$light:         $tg-light;
+$dark:          $tg-dark;
+$body-bg:       $tg-body-bg;
+$body-color:    $tg-body-color;
+$font-family-base: $tg-font-family-base;
+$font-size-base:   $tg-font-size-base;
+$line-height-base: $tg-line-height-base;
+$border-radius:    $tg-border-radius;
+$border-radius-sm: $tg-border-radius-sm;
+$border-radius-lg: $tg-border-radius-lg;
+
+// Bootstrap 5
+@import "bootstrap/scss/bootstrap";
+
+// AdminLTE-inspired overrides for sidebar layout
+@import "layout";

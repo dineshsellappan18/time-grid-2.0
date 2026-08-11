@@ -4,9 +4,9 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-default">
+            <div class="card">
 
-                <div class="panel-heading">
+                <div class="card-header">
                     {!! Icon::star() !!}&nbsp;{{ $business->subscriptionsCount }}
                 </div>
 
@@ -24,7 +24,7 @@
                             <div class="row">
                             <div class="col-md-12">
                                 <div class="media">
-                                  <div class="media-left media-top hidden-xs hidden-sm">
+                                  <div class="media-left media-top d-none d-sm-block d-sm-none d-md-block">
                                     <a href="#">{!! $business->facebookImg('normal') !!}</a>
                                   </div>
                                   <div class="media-body">

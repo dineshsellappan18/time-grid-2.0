@@ -3,16 +3,16 @@
 <tr>
     <td>
         @if ($notification['body']['name'] == 'user.booked')
-            <span class="label label-warning">{!! Icon::calendar() !!}</span>
+            <span class="label badge bg-warning text-dark">{!! Icon::calendar() !!}</span>
         @endif
         @if ($notification['body']['name'] == 'appointment.cancel')
-            <span class="label label-danger">{!! Icon::calendar() !!}</span>
+            <span class="label badge bg-danger">{!! Icon::calendar() !!}</span>
         @endif
         @if ($notification['body']['name'] == 'appointment.confirm')
-            <span class="label label-success">{!! Icon::calendar() !!}</span>
+            <span class="label badge bg-success">{!! Icon::calendar() !!}</span>
         @endif
         @if ($notification['body']['name'] == 'appointment.serve')
-            <span class="label label-info">{!! Icon::calendar() !!}</span>
+            <span class="label badge bg-info">{!! Icon::calendar() !!}</span>
         @endif
     </td>
     <td>

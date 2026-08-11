@@ -9,11 +9,11 @@
 
         {!! Alert::info(trans('manager.humanresource.index.instructions')) !!}
 
-        <div class="panel panel-default">
+        <div class="card">
 
-            <div class="panel-heading">{{ trans('manager.humanresource.index.title') }}</div>
+            <div class="card-header">{{ trans('manager.humanresource.index.title') }}</div>
 
-            <div class="panel-body">
+            <div class="card-body">
 
                 @foreach ($business->humanresources as $humanresource)
                 <p>
@@ -30,7 +30,7 @@
                 
             </div>
 
-            <div class="panel-footer">
+            <div class="card-footer">
                 {!! Button::primary(trans('manager.humanresource.btn.create'))
                     ->withIcon(Icon::plus())
                     ->asLinkTo( route('manager.business.humanresource.create', [$business]) )

@@ -39,11 +39,11 @@
     {!! Form::open(['id' => 'postAppointmentStatus', 'method' => 'post', 'route' => ['api.booking.action']]) !!}
 
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2 toppad">
+        <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2 toppad">
 
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{ $contact->fullname }}</h3>
+            <div class="card border-info">
+                <div class="card-header">
+                    <h3 class="card-title">{{ $contact->fullname }}</h3>
                 </div>
 
 {{--
@@ -52,11 +52,11 @@
     trans('app.gender.M')
 --}}
 
-                <div class="panel-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-3 col-lg-3 " align="center">
                             @if($contact->email)
-                            <img alt="{{$contact->fullname}}" src="{{ Gravatar::get($contact->email) }}" class="img-circle" />
+                            <img alt="{{$contact->fullname}}" src="{{ Gravatar::get($contact->email) }}" class="rounded-circle" />
                             @endif
                             <p>&nbsp;</p>
                             <small>{{ trans('app.gender.'.$contact->gender) }} {{ $contact->age or '' }}</small>
@@ -98,7 +98,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-footer">
+                <div class="card-footer">
                     {!! $contact->quality == 100 ? ProgressBar::success($contact->quality)->animated()->striped()->visible() : ProgressBar::normal($contact->quality)->animated()->striped()->visible() !!}
 
                     @if ($contact->user)
@@ -107,7 +107,7 @@
                         {!! Button::warning()->withIcon(Icon::remove_circle()) !!}
                     @endif
 
-                    <span class="pull-right">
+                    <span class="float-end">
                         {!! Button::warning()->withIcon(Icon::edit())->asLinkTo( route('user.business.contact.edit', [$business, $contact]) ) !!}
                     </span>
                 </div>

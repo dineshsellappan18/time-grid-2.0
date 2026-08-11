@@ -3,17 +3,17 @@
 
     @foreach($services as $service => $times)
     
-        <div class="panel panel-default">
+        <div class="card">
 
-            <div class="panel-heading">{!! Icon::calendar() !!}&nbsp;{{ $date }}</div>
+            <div class="card-header">{!! Icon::calendar() !!}&nbsp;{{ $date }}</div>
     
-            <div class="panel-body">
+            <div class="card-body">
                 <p>{!! Icon::tag() !!}&nbsp;{{ $service }}</p>
             </div>
             
             @include('manager.businesses.vacancies._services', ['date' => $date, 'times' => $times])
         
-            <div class="panel-footer">{{ $service }}</div>
+            <div class="card-footer">{{ $service }}</div>
         
         </div>
 

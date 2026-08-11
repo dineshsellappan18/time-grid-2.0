@@ -1,7 +1,7 @@
-<div id="panel" class="panel panel-default">
+<div id="panel" class="card">
     <!-- Default panel contents -->
-    <div class="panel-heading">{{ trans('user.appointments.form.timetable.title') }}</div>
-    <div class="panel-body">
+    <div class="card-header">{{ trans('user.appointments.form.timetable.title') }}</div>
+    <div class="card-body">
         {!! Alert::info(trans('user.appointments.form.timetable.instructions')) !!}
 
         <div class="row">
@@ -44,10 +44,10 @@
                     ->withAttributes(['class' => 'btn-date']) !!}
             </td>
             <td class="serviceslot" >
-                <p class="hidden-xs">
+                <p class="d-none d-sm-block">
                     {!! Icon::remove() !!}&nbsp;&nbsp;{{ trans('user.appointments.form.timetable.msg.no_vacancies') }}
                 </p>
-                <p class="hidden-lg hidden-md hidden-sm">{!! Icon::remove() !!}&nbsp;&nbsp;{{ trans('N/D') }}</p>
+                <p class="d-lg-none d-xl-block d-md-none d-lg-block d-sm-none d-md-block">{!! Icon::remove() !!}&nbsp;&nbsp;{{ trans('N/D') }}</p>
             </td>
         </tr>
         @else

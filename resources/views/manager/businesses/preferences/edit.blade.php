@@ -7,11 +7,11 @@
     {!! Alert::info(trans('manager.businesses.preferences.instructions')) !!}
 
         <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-default">
-                <div class="panel-heading">{{ trans('manager.businesses.preferences.title') }}</div>
+            <div class="card">
+                <div class="card-header">{{ trans('manager.businesses.preferences.title') }}</div>
 
-                <div class="panel-body">
-                {!! Form::open(['route' => ['manager.business.preferences', $business], 'id' => 'preferences', 'data-toggle' => 'validator']) !!}
+                <div class="card-body">
+                {!! Form::open(['route' => ['manager.business.preferences', $business], 'id' => 'preferences', 'data-bs-toggle' => 'validator']) !!}
                 @include('manager.businesses.preferences._form')
                 {!! Form::close() !!}
 

@@ -4,9 +4,9 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">{{ trans('auth.reset.title') }}</div>
-                <div class="panel-body">
+            <div class="card">
+                <div class="card-header">{{ trans('auth.reset.title') }}</div>
+                <div class="card-body">
                     @if (count($errors) > 0)
                         <div class="alert alert-danger">
                             <strong>{{ trans('auth.login.alert.whoops') }}</strong> {{ trans('auth.login.alert.message') }}<br><br>
@@ -18,7 +18,7 @@
                         </div>
                     @endif
 
-                <div class="panel-body">
+                <div class="card-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/password/reset') }}">
                         {{ csrf_field() }}
 

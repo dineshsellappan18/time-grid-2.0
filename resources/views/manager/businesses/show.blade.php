@@ -37,7 +37,7 @@
     @foreach ($boxes->chunk(3) as $chunk)
         <div class="row">
             @foreach ($chunk as $box)
-                <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="col-md-4 col-sm-6 col-12">
                     @include('manager.components.info-box', $box)
                 </div>
             @endforeach

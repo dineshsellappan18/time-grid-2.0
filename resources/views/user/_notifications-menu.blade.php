@@ -1,25 +1,19 @@
 <!-- Notifications Menu -->
-<li class="dropdown notifications-menu">
-    <!-- Menu toggle button -->
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+<li class="nav-item dropdown">
+    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
         <i class="fa fa-calendar-check-o"></i>
-        <span class="label {{ $appointments->count() > 0 ? 'label-warning' : 'label-default' }}">{{ $appointments->count() }}</span>
+        <span class="badge {{ $appointments->count() > 0 ? 'bg-warning text-dark' : 'bg-secondary' }}">{{ $appointments->count() }}</span>
     </a>
 
     @foreach($appointments as $appointment)
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu dropdown-menu-end">
         <li>
-            <!-- Inner Menu: contains the notifications -->
-            <ul class="menu">
-                <li><!-- start notification -->
-                    <a href="{{ route('user.agenda') . '#' . $appointment->code() }}">
-                        <i class="fa fa-calendar-check-o text-aqua"></i> {{ $appointment->service->name }} : {{ $appointment->business->name }}
-                    </a>
-                </li>
-                <!-- end notification -->
-            </ul>
+            <a class="dropdown-item" href="{{ route('user.agenda') . '#' . $appointment->code() }}">
+                <i class="fa fa-calendar-check-o text-info"></i> {{ $appointment->service->name }} : {{ $appointment->business->name }}
+            </a>
         </li>
-        <li class="footer"><a href="{{ route('user.agenda') }}">{{ trans('user.dashboard.card.agenda.button') }}</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li class="px-3 py-1 text-center"><a href="{{ route('user.agenda') }}">{{ trans('user.dashboard.card.agenda.button') }}</a></li>
     </ul>
     @endforeach
 </li>

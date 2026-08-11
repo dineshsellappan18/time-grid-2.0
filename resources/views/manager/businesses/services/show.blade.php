@@ -3,11 +3,11 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
 
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{ $service->name }}</h3>
+            <div class="card border-info">
+                <div class="card-header">
+                    <h3 class="card-title">{{ $service->name }}</h3>
                 </div>
 
                 <ul class="list-group">
@@ -23,17 +23,17 @@
                     </li>
                 </ul>
 
-                <div class="panel-body">
+                <div class="card-body">
                     <p>{{ $service->description }}</p>
                 </div>
 
                 @include('manager.businesses.services._availability', ['service' => $service])
 
-                <div class="panel-footer">
+                <div class="card-footer">
                     {!! Button::danger()->withIcon(Icon::trash())->withAttributes([
                         'type' => 'button',
-                        'data-toggle' => 'tooltip',
-                        'data-original-title' => trans('manager.service.btn.delete'),
+                        'data-bs-toggle' => 'tooltip',
+                        'title' => trans('manager.service.btn.delete'),
                         'data-method' => 'DELETE',
                         'data-confirm' => trans('manager.service.btn.delete').'?']
                     )->asLinkTo( route('manager.business.service.destroy', [$service->business, $service]) ) !!}
@@ -52,7 +52,7 @@
 <script>
 $(document).ready(function() {
 
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-bs-toggle="tooltip"]').tooltip();
 
     var laravel = {
         initialize: function() {

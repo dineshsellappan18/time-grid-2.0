@@ -1,35 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ trans('app.name') }}</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('css/app.min.css') }}">
-    
-    <link rel="manifest" href="/manifest.json">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+
+    <link rel="manifest" href="/manifest.json">
 
 @yield('css')
 
 @yield('headscripts')
 
 </head>
-<!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
-<body class="hold-transition skin-blue layout-top-nav">
+<body class="skin-blue">
 
     {!! Analytics::render() !!}
 
@@ -41,50 +32,39 @@
 
         <header class="main-header">
 
-            <nav class="navbar navbar-static-top">
+            <nav class="navbar navbar-expand-lg">
                 <div class="container">
-                    <div class="navbar-header">
-                        <a href="{{ route('home') }}" class="navbar-brand">time<b>grid</b></a>
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
-                            <i class="fa fa-bars"></i>
-                        </button>
-                    </div>
+                    <a href="{{ route('home') }}" class="navbar-brand">time<b>grid</b></a>
+                    <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse">
+                        <i class="fa fa-bars"></i>
+                    </button>
 
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
-                        <ul class="nav navbar-nav">
+                    <div class="collapse navbar-collapse" id="navbar-collapse">
+                        <ul class="navbar-nav me-auto">
                             @include('_navi18n')
 
                             @if(auth()->check())
                                 @include('user._navmenu')
                             @endif
                         </ul>
-                        <!-- Search input here -->
                     </div>
-                    <!-- /.navbar-collapse -->
-                    <!-- Navbar Right Menu -->
-                    <div class="navbar-custom-menu">
-                        <ul class="nav navbar-nav">
+
+                    <div class="ms-auto">
+                        <ul class="navbar-nav">
 
                             @if(auth()->check())
-                                <!-- Notifications Menu -->
                                 @include('user._notifications-menu')
-
-                                <!-- User Account Menu -->
                                 @include('_user-account-menu')
                             @endif
 
                         </ul>
                     </div>
-                    <!-- /.navbar-custom-menu -->
                 </div>
-                <!-- /.container-fluid -->
             </nav>
         </header>
-        <!-- Full Width Column -->
-        <div class="content-wrapper">
+
+        <div class="content-wrapper" style="margin-left: 0;">
             <div class="container">
-                <!-- Main content -->
                 <section class="content">
 
                     @include('flash::message')
@@ -93,21 +73,15 @@
                     @yield('content')
 
                 </section>
-                <!-- /.content -->
             </div>
-            <!-- /.container -->
         </div>
-        <!-- /.content-wrapper -->
 
         @include('_footer')
-
-        <!-- /.container -->
 
 </div>
 <!-- ./wrapper -->
 
-<!-- Scripts -->
-<script src="{{ asset('js/app.min.js') }}"></script>
+@vite(['resources/js/app.js'])
 
 @stack('footer_scripts')
 

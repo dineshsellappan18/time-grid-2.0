@@ -1,6 +1,6 @@
 {{-- Language Switcher Dropdown --}}
 <li class="treeview">
-    <a href="#"><i class="fa fa-link"></i> <span>{{ $availableLanguages[app()->getLocale()] }}</span> <i class="fa fa-angle-left pull-right"></i></a>
+    <a href="#"><i class="fa fa-link"></i> <span>{{ $availableLanguages[app()->getLocale()] }}</span> <i class="fa fa-angle-left float-end"></i></a>
     <ul class="treeview-menu">
         @foreach ($availableLanguages as $locale => $language)
             @if ($locale != app()->getLocale())

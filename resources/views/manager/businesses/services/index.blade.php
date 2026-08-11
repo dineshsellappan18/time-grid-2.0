@@ -7,9 +7,9 @@
 <div class="container-fluid">
     <div class="col-md-6 col-md-offset-3">
 
-        <div class="panel panel-default">
+        <div class="card">
 
-            <div class="panel-body">
+            <div class="card-body">
 
                 @foreach ($business->services as $service)
                 <p>
@@ -17,8 +17,8 @@
 
                         {!! Button::danger()->withIcon(Icon::trash())->withAttributes([
                             'type' => 'button',
-                            'data-toggle' => 'tooltip',
-                            'data-original-title' => trans('manager.service.btn.delete'),
+                            'data-bs-toggle' => 'tooltip',
+                            'title' => trans('manager.service.btn.delete'),
                             'data-method' => 'DELETE',
                             'data-confirm' => trans('manager.service.btn.delete').'?']
                         )->asLinkTo( route('manager.business.service.destroy', [$service->business, $service]) ) !!}
@@ -39,7 +39,7 @@
                 
             </div>
 
-            <div class="panel-footer">
+            <div class="card-footer">
                 {!! Button::primary(trans('manager.services.btn.create'))
                     ->withIcon(Icon::plus())
                     ->asLinkTo( route('manager.business.service.create', [$business]) )
@@ -67,7 +67,7 @@
 <script>
 $(document).ready(function() {
 
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-bs-toggle="tooltip"]').tooltip();
 
     var laravel = {
         initialize: function() {

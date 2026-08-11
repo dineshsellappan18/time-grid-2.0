@@ -8,7 +8,7 @@
 @section('content')
 <div id="calendar"></div>
 
-<div class="well">{{ $icalURL }}</div>
+<div class="p-3 bg-light rounded">{{ $icalURL }}</div>
 @endsection
 
 @push('footer_scripts')

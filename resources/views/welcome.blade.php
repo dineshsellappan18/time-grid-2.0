@@ -50,12 +50,12 @@
     <!-- Jumbotron Header -->
     <header class="jumbotron hero-spacer">
         <h1>
-            <img class="hidden-xs hidden-sm" src="{{ asset('img/timegrid-logo-white.png') }}" />
+            <img class="d-none d-sm-block d-sm-none d-md-block" src="{{ asset('img/timegrid-logo-white.png') }}" />
             {{ trans('welcome.jumbotron.title') }}
         </h1>
-        <p class="hidden-xs" id="inspire">{{ trans('welcome.jumbotron.description') }}</p>
+        <p class="d-none d-sm-block" id="inspire">{{ trans('welcome.jumbotron.description') }}</p>
         <div class="row">
-        	<div class="col-xs-12">
+        	<div class="col-12">
         		<span class="btn-group">
                 {!! Button::success(trans('welcome.jumbotron.btn.begin'))->asLinkTo( url('/register') ) !!}
                 {!! Button::normal(trans('welcome.jumbotron.btn.login'))->asLinkTo( url('/login') ) !!}
@@ -140,7 +140,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
                 <h4 class="modal-title text-center">Select a Language</h4>
             </div>
             <div class="modal-body">

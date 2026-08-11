@@ -6,9 +6,9 @@
     <p>&nbsp;</p> \
     <nav class='text-center'> \
     <div class='popover-navigation btn-group'> \
-        <button class='btn btn-default' data-role='prev'>« {{trans('tour.nav.prev')}}</button> \
-        <button class='btn btn-default' data-role='end'>{{trans('tour.nav.end')}}</button> \
-        <button class='btn btn-default' data-role='next'>{{trans('tour.nav.next')}} »</button> \
+        <button class='btn btn-outline-secondary' data-role='prev'>« {{trans('tour.nav.prev')}}</button> \
+        <button class='btn btn-outline-secondary' data-role='end'>{{trans('tour.nav.end')}}</button> \
+        <button class='btn btn-outline-secondary' data-role='next'>{{trans('tour.nav.next')}} »</button> \
     </div> \
     </nav> \
     <p>&nbsp;</p> \

@@ -22,7 +22,7 @@ textarea{
 </div>
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div class="form-group">
             {!! Button::primary($submitLabel)->large()->block()->submit() !!}
         </div>

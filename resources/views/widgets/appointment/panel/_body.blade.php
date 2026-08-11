@@ -8,11 +8,11 @@
     trans('appointments.status.served')
 --}}
 <div class='panel panel-{{ $appointment->statusToCssClass }}' id='{{ $appointment->code }}'>
-    <div class='panel-heading'>
-        <h3 class='panel-title'>{{ $appointment->status() }}</h3>
+    <div class='card-header'>
+        <h3 class='card-title'>{{ $appointment->status() }}</h3>
     </div>
 
-    <div class='panel-body'>
+    <div class='card-body'>
         <ul class="list-group appointmentinfo {{ $appointment->statusToCssClass }}">
 
             <li class="list-group-item">
@@ -83,7 +83,7 @@
 
     </div>
 
-    <div class='panel-footer'>
+    <div class='card-footer'>
         <span class='glyphicon glyphicon-barcode'></span>&nbsp;<code>{{ $appointment->code }}</code>
     </div>
 </div>

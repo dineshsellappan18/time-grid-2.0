@@ -8,16 +8,16 @@
 
         <div class="col-md-10 col-md-offset-1">
 
-            <div class="panel panel-default">
+            <div class="card">
 
-                <div class="panel-body">
+                <div class="card-body">
                     @if($user->hasBusiness())
 
                         @foreach ($businesses as $business)
                         <div class="row">
                         <div class="col-md-12">
                             <div class="media">
-                              <div class="media-left media-top hidden-xs hidden-sm">
+                              <div class="media-left media-top d-none d-sm-block d-sm-none d-md-block">
                                 <a href="{{ route('manager.business.show', $business) }}">{!! $business->facebookImg('normal') !!}</a>
                               </div>
                               <div class="media-body">
@@ -34,7 +34,7 @@
                     @endif
                 </div>
 
-                <div class="panel-footer">
+                <div class="card-footer">
                     {!! Button::primary(trans('app.nav.manager.business.register'))->block()->asLinkTo( route('manager.business.register') ) !!}
                 </div>
             </div>

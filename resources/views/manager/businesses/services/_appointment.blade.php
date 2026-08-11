@@ -1,7 +1,7 @@
 @foreach ($appointments as $appointment)
-<div class="panel panel-default">
+<div class="card">
   <!-- Default panel contents -->
-  <div class="panel-heading">{!! Icon::hand_up() !!}&nbsp;{{ trans('appointments.status.'.$appointment->statusLabel) }}</div>
+  <div class="card-header">{!! Icon::hand_up() !!}&nbsp;{{ trans('appointments.status.'.$appointment->statusLabel) }}</div>
 
   <!-- List group -->
   <ul class="list-group">
@@ -21,10 +21,10 @@
     </li>
   </ul>
 
-  <div class="panel-body">
+  <div class="card-body">
     <p>{{ $appointment->comments }}</p>
   </div>
 
-  <div class="panel-footer">{!! Icon::barcode() !!}&nbsp;{{ $appointment->code }}</div>
+  <div class="card-footer">{!! Icon::barcode() !!}&nbsp;{{ $appointment->code }}</div>
 </div>
 @endforeach

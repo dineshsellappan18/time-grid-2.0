@@ -38,22 +38,22 @@
 @section('content')
 <div class="container-fluid">
 
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2 toppad" >
+    <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2 toppad" >
 
-        <div class="panel panel-info">
+        <div class="card border-info">
 
-            <div class="panel-heading">
-                <h3 class="panel-title">{{ $contact->fullname }}</h3>
+            <div class="card-header">
+                <h3 class="card-title">{{ $contact->fullname }}</h3>
             </div>
 
-            <div class="panel-body">
+            <div class="card-body">
 
                 <div class="row">
                     <div class="col-md-3 col-lg-3 " align="center">
                         @if($contact->email)
                             <img alt="{{$contact->fullname}}"
                                  src="{{ Gravatar::get($contact->email) }}"
-                                 class="img-circle">
+                                 class="rounded-circle">
                         @endif
                         <p>&nbsp;</p>
                         <small>{{ trans('app.gender.'.$contact->gender) }} {{ $contact->age or '' }}</small>
@@ -132,7 +132,7 @@
                 </div>
             </div>
 
-        <div class="panel-footer">
+        <div class="card-footer">
             {!! $contact->quality == 100 ? ProgressBar::success($contact->quality)->animated()->striped()->visible() : ProgressBar::normal($contact->quality)->animated()->striped()->visible() !!}
 
             @if ($contact->user)
@@ -141,14 +141,14 @@
             {!! Button::warning()->withIcon(Icon::remove_circle()) !!}
             @endif
 
-            <span class="pull-right">
+            <span class="float-end">
             {!! Button::warning()
                 ->withIcon(Icon::edit())
                 ->asLinkTo( route('manager.addressbook.edit', [$business, $contact]) )
                 ->withAttributes([
                     'data-for' => 'edit',
-                    'data-toggle' => 'tooltip',
-                    'data-original-title' => trans('manager.contacts.btn.edit')])
+                    'data-bs-toggle' => 'tooltip',
+                    'title' => trans('manager.contacts.btn.edit')])
                 !!}
 
             {!! Button::danger()
@@ -158,9 +158,9 @@
                     'id' => 'delete-btn',
                     'type' => 'button',
                     'data-for' => 'delete',
-                    'data-toggle' => 'tooltip',
+                    'data-bs-toggle' => 'tooltip',
                     'data-method' => 'DELETE',
-                    'data-original-title' => trans('manager.contacts.btn.delete'),
+                    'title' => trans('manager.contacts.btn.delete'),
                     'data-confirm'=> trans('manager.contacts.btn.confirm_delete')])
                 !!}
             </span>
@@ -211,7 +211,7 @@ $(document).ready(function() {
         })
     });
 
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-bs-toggle="tooltip"]').tooltip();
 });
 
 (function() {

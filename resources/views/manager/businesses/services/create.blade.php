@@ -6,12 +6,12 @@
 
         {!! Alert::info(trans('manager.services.create.instructions')) !!}
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 {{ trans('manager.services.create.title') }}
             </div>
 
-            <div class="panel-body">
+            <div class="card-body">
                 {!! Form::model($service, ['route' => ['manager.business.service.store', $business], 'class' => 'form-horizontal']) !!}
                     @include('manager.businesses.services._form', ['submitLabel' => trans('manager.services.btn.store'), 'extended' => false])
                 {!! Form::close() !!}

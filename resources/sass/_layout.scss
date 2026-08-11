@@ -1,0 +1,129 @@
+// Layout styles - AdminLTE-inspired sidebar and header for Bootstrap 5
+
+@import "tokens";
+
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-header {
+  background-color: $tg-header-bg;
+  position: sticky;
+  top: 0;
+  z-index: $tg-zindex-header;
+
+  .logo {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    color: $tg-white;
+    text-decoration: none;
+    font-size: $tg-font-size-lg;
+
+    .logo-mini { display: none; }
+  }
+
+  .navbar {
+    margin-bottom: 0;
+    background-color: $tg-header-bg;
+    border: none;
+  }
+}
+
+.main-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 50px;
+  min-height: 100vh;
+  width: 230px;
+  z-index: $tg-zindex-sidebar;
+  background-color: $tg-sidebar-bg;
+  color: $tg-sidebar-color;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+
+  .sidebar {
+    padding: $tg-spacer-2;
+
+    a {
+      color: $tg-sidebar-color;
+      text-decoration: none;
+
+      &:hover {
+        color: $tg-white;
+      }
+    }
+  }
+}
+
+.content-wrapper {
+  margin-left: 230px;
+  min-height: calc(100vh - 50px);
+  padding: $tg-spacer-3;
+  background-color: #f4f6f9;
+  transition: margin-left 0.3s ease;
+}
+
+.content-header {
+  margin-bottom: $tg-spacer-3;
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: $tg-headings-font-weight;
+
+    small {
+      font-size: $tg-font-size-sm;
+      color: $tg-secondary;
+      margin-left: $tg-spacer-2;
+    }
+  }
+}
+
+.control-sidebar {
+  position: fixed;
+  right: -230px;
+  top: 0;
+  bottom: 0;
+  width: 230px;
+  z-index: $tg-zindex-sidebar;
+  background-color: $tg-white;
+  border-left: 1px solid $tg-border-color;
+  transition: right 0.3s ease;
+  padding-top: 50px;
+  overflow-y: auto;
+
+  &.control-sidebar-open {
+    right: 0;
+  }
+}
+
+.skin-blue {
+  .main-header {
+    background-color: $tg-header-bg;
+  }
+}
+
+// Responsive
+@media (max-width: 767.98px) {
+  .main-sidebar {
+    transform: translateX(-100%);
+
+    &.sidebar-open {
+      transform: translateX(0);
+    }
+  }
+
+  .content-wrapper {
+    margin-left: 0;
+  }
+
+  .main-header .logo .logo-mini {
+    display: inline;
+  }
+
+  .main-header .logo .logo-lg {
+    display: none;
+  }
+}
