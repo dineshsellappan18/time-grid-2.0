@@ -3,62 +3,58 @@
 namespace App\Listeners;
 
 use App\Models\User;
+use App\TG\AuditLogger;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\Log;
 
 class UserEventListener
 {
-    /**
-     * Handle user login events.
-     */
-    public function onUserLogin(Login $login)
-    {
-        $this->touchAudit($login->user);
-        $this->loadSessionPreferences($login->user);
-
-        logger()->info("User logged in: UserId:{$login->user->id}");
+    public function __construct(
+        private readonly AuditLogger $audit,
+    ) {
     }
 
-    /**
-     * Handle user logout events.
-     */
-    public function onUserLogout(Logout $logout)
+    public function onUserLogin(Login $login): void
     {
-        logger()->info('User logged out');
+        $user = $login->user;
+
+        $this->touchAudit($user);
+        $this->loadSessionPreferences($user);
+
+        Log::info('UserEventListener: login', [
+            'user_id' => $user->id,
+        ]);
     }
 
-    /**
-     * Register the listeners for the subscriber.
-     *
-     * @param Illuminate\Events\Dispatcher $events
-     */
-    public function subscribe($events)
+    public function onUserLogout(Logout $logout): void
     {
-        $events->listen(
-            'Illuminate\Auth\Events\Login',
-            'App\Listeners\UserEventListener@onUserLogin'
-        );
-
-        $events->listen(
-            'Illuminate\Auth\Events\Logout',
-            'App\Listeners\UserEventListener@onUserLogout'
-        );
+        Log::info('UserEventListener: logout', [
+            'user_id' => $logout->user?->id,
+        ]);
     }
 
-    protected function touchAudit(User $user)
+    public function subscribe(Dispatcher $events): void
     {
-        $user->last_ip = request()->ip();
+        $events->listen(Login::class, [self::class, 'onUserLogin']);
+        $events->listen(Logout::class, [self::class, 'onUserLogout']);
+    }
+
+    protected function touchAudit(User $user): void
+    {
+        $ip = request()->ip();
+        $user->last_ip = $ip;
         $user->last_login_at = Carbon::now();
         $user->save();
     }
 
-    protected function loadSessionPreferences(User $user)
+    protected function loadSessionPreferences(User $user): void
     {
-        logger()->info("Loading user preferences");
-        if ($timezone = $user->pref('timezone')) {
+        $timezone = $user->pref('timezone');
+        if ($timezone) {
             session()->set('timezone', $timezone);
-            logger()->info("Loaded user timezone from preferences: $timezone");
         }
     }
 }

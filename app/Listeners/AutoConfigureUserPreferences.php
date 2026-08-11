@@ -5,34 +5,30 @@ namespace App\Listeners;
 use App\Events\NewUserWasRegistered;
 use App\Models\User;
 use App\TG\DetectTimezone;
+use Illuminate\Support\Facades\Log;
 
 class AutoConfigureUserPreferences
 {
-    private $detectTimezone;
-
-    public function __construct(DetectTimezone $detectTimezone)
-    {
-        $this->detectTimezone = $detectTimezone;
+    public function __construct(
+        private readonly DetectTimezone $detectTimezone,
+    ) {
     }
 
-    /**
-     * Handle the event.
-     *
-     * @param NewUserWasRegistered $event
-     *
-     * @return void
-     */
-    public function handle(NewUserWasRegistered $event)
+    public function handle(NewUserWasRegistered $event): void
     {
-        logger()->info(__METHOD__);
+        Log::info('AutoConfigureUserPreferences: configuring', [
+            'user_id' => $event->user->id,
+        ]);
 
         $this->saveUserTimezone($event->user);
     }
 
-    protected function saveUserTimezone(User $user)
+    protected function saveUserTimezone(User $user): void
     {
         $timezone = $this->detectTimezone->get();
 
-        $user->pref('timezone', $timezone);
+        if ($timezone !== null) {
+            $user->pref('timezone', $timezone);
+        }
     }
 }
