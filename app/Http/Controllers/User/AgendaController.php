@@ -5,7 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Events\NewAppointmentWasBooked;
 use App\Events\NewSoftAppointmentWasBooked;
 use App\Http\Controllers\Controller;
-use Carbon;
+use Carbon\Carbon;
 use Event;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -84,7 +84,7 @@ class AgendaController extends Controller
         JavaScript::put([
             'language'  => $this->getActiveLanguage($business->locale),
             'startDate' => $startFromDate->toDateString(),
-            'endDate'   => $startFromDate->addDays($days)->toDateString(),
+            'endDate'   => $startFromDate->copy()->addDays($days)->toDateString(),
         ]);
 
         return view(

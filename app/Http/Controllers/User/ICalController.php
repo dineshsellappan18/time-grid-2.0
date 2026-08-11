@@ -60,8 +60,8 @@ class ICalController extends Controller
         foreach ($appointments as $appointment) {
             $vEvent = new Event();
 
-            $startAt = new \DateTime($appointment->start_at->timezone($business->timezone)->toDateTimeString(), new \DateTimeZone($business->timezone));
-            $endAt = new \DateTime($appointment->finish_at->timezone($business->timezone)->toDateTimeString(), new \DateTimeZone($business->timezone));
+            $startAt = new \DateTime($appointment->start_at->copy()->timezone($business->timezone)->toDateTimeString(), new \DateTimeZone($business->timezone));
+            $endAt = new \DateTime($appointment->finish_at->copy()->timezone($business->timezone)->toDateTimeString(), new \DateTimeZone($business->timezone));
 
             $vEvent->setDtStart($startAt);
             $vEvent->setDtEnd($endAt);

@@ -37,7 +37,7 @@
         "league/commonmark": "^2.2.1",
         "league/flysystem": "^3.8.0",
         "monolog/monolog": "^3.0",
-        "nesbot/carbon": "^2.67",
+        "nesbot/carbon": "^3.0",
         "nunomaduro/termwind": "^1.13",
         "psr/container": "^1.1.1|^2.0.1",
         "psr/log": "^1.0|^2.0|^3.0",
@@ -120,7 +120,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "11.x-dev"
+            "dev-master": "12.x-dev"
         }
     },
     "suggest": {
@@ -155,5 +155,5 @@
         "sort-packages": true
     },
     "minimum-stability": "dev",
-    "version": "11.31.0"
+    "version": "12.14.1"
 }

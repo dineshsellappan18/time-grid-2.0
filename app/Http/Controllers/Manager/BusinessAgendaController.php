@@ -69,8 +69,8 @@ class BusinessAgendaController extends Controller
             $jsAppointments[] = [
                 'title' => $appointment->contact->firstname.' / '.$appointment->service->name,
                 'color' => $appointment->service->color,
-                'start' => $appointment->start_at->timezone($business->timezone)->toIso8601String(),
-                'end'   => $appointment->finish_at->timezone($business->timezone)->toIso8601String(),
+                'start' => $appointment->start_at->copy()->timezone($business->timezone)->toIso8601String(),
+                'end'   => $appointment->finish_at->copy()->timezone($business->timezone)->toIso8601String(),
                 ];
         }
 

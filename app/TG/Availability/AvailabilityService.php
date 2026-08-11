@@ -72,7 +72,7 @@ class AvailabilityService
         foreach ($vacancies as $vacancy) {
             $beginTime = $vacancy->start_at->copy();
 
-            $maxNumberOfSlots = round($vacancy->finish_at->diffInMinutes($beginTime) / $step);
+            $maxNumberOfSlots = (int) round($vacancy->finish_at->diffInMinutes($beginTime) / $step);
 
             $this->addSlots($times, $vacancy, $beginTime, $service->duration, $step, $maxNumberOfSlots);
         }
@@ -86,7 +86,7 @@ class AvailabilityService
             $serviceEndTime = $beginTime->copy()->addMinutes($duration);
 
             if ($vacancy->hasRoomBetween($beginTime, $serviceEndTime)) {
-                $times[] = $beginTime->timezone($this->timezone)->format($this->timeformat);
+                $times[] = $beginTime->copy()->timezone($this->timezone)->format($this->timeformat);
             }
 
             $beginTime->addMinutes($step);
