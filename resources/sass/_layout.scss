@@ -2395,3 +2395,271 @@ body.tg-public {
     &__value { text-align: left; }
   }
 }
+
+// ── Form Wizard / Create Screen ───────────────────────────────────
+
+// Step Indicator
+.tg-step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+
+  &__step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+    min-width: 80px;
+    transition: opacity 0.2s ease;
+
+    &:hover { opacity: 0.8; }
+  }
+
+  &__number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid $tg-border-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: $tg-secondary;
+    background: #fff;
+    transition: all 0.25s ease;
+  }
+
+  &__label {
+    font-size: $tg-font-size-sm;
+    color: $tg-secondary;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+  }
+
+  &__connector {
+    flex: 1;
+    height: 2px;
+    background: $tg-border-color;
+    margin: 0 0.5rem;
+    margin-bottom: 1.2rem;
+    transition: background 0.25s ease;
+  }
+
+  &__step.is-active &__number {
+    border-color: $tg-primary;
+    background: $tg-primary;
+    color: #fff;
+  }
+
+  &__step.is-active &__label {
+    color: $tg-primary;
+    font-weight: 600;
+  }
+
+  &__step.is-completed &__number {
+    border-color: $tg-primary;
+    background: rgba($tg-primary, 0.1);
+    color: $tg-primary;
+  }
+
+  &__step.is-completed + &__connector {
+    background: $tg-primary;
+  }
+}
+
+// Form Card
+.tg-form-card {
+  background: #fff;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-radius;
+  box-shadow: $tg-shadow;
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+
+  &__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $tg-body-color;
+    margin: 0 0 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+
+    i { color: $tg-primary; font-size: 1.05rem; }
+  }
+
+  &__desc {
+    font-size: $tg-font-size-sm;
+    color: $tg-secondary;
+    margin: 0 0 1.25rem;
+  }
+
+  &__summary {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid $tg-border-color;
+  }
+}
+
+// Form Group
+.tg-form-group {
+  margin-bottom: 1.15rem;
+}
+
+.tg-form-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $tg-body-color;
+  margin-bottom: 0.3rem;
+}
+
+.tg-form-feedback {
+  display: none;
+  font-size: $tg-font-size-sm;
+  color: #dc3545;
+  margin-top: 0.25rem;
+}
+
+.tg-form-group .form-control,
+.tg-form-group .form-select {
+  border-radius: $tg-radius;
+  border-color: $tg-border-color;
+  font-size: 0.9rem;
+
+  &:focus {
+    border-color: $tg-primary;
+    box-shadow: 0 0 0 0.2rem rgba($tg-primary, 0.12);
+  }
+
+  &.is-invalid {
+    border-color: #dc3545;
+    &:focus { box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15); }
+  }
+
+  &.is-valid {
+    border-color: #198754;
+  }
+}
+
+// Wizard Navigation
+.tg-form-wizard__nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+// File Upload
+.tg-file-upload {
+  border: 2px dashed $tg-border-color;
+  border-radius: $tg-radius;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba($tg-primary, 0.4);
+    background-color: rgba($tg-primary, 0.02);
+  }
+
+  &.is-dragover {
+    border-color: $tg-primary;
+    background-color: rgba($tg-primary, 0.05);
+  }
+
+  &__icon {
+    font-size: 2rem;
+    color: $tg-secondary;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  &__text {
+    font-size: 0.875rem;
+    color: $tg-secondary;
+    display: block;
+    margin-bottom: 0.25rem;
+
+    strong { color: $tg-primary; }
+  }
+
+  &__preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    padding-top: 0.5rem;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    border: 1px solid $tg-border-color;
+    border-radius: $tg-radius;
+    background: #fff;
+    max-width: 120px;
+  }
+
+  &__thumb {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  &__file-icon {
+    font-size: 2rem;
+    color: $tg-secondary;
+  }
+
+  &__name {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: $tg-body-color;
+    word-break: break-all;
+    text-align: center;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__size {
+    font-size: 0.65rem;
+    color: $tg-secondary;
+  }
+}
+
+// Responsive: Form Wizard
+@media (max-width: 575.98px) {
+  .tg-step-indicator {
+    gap: 0;
+
+    &__label { font-size: 0.65rem; }
+    &__number { width: 30px; height: 30px; font-size: 0.75rem; }
+  }
+
+  .tg-form-card {
+    padding: 1.25rem 1rem;
+  }
+
+  .tg-form-wizard__nav {
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .btn { width: 100%; }
+  }
+}
