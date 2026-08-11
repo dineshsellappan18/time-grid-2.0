@@ -2,6 +2,7 @@
 
 namespace Illuminate\Cache;
 
+use Closure;
 use Carbon\Carbon;
 use Illuminate\Contracts\Cache\Repository as Cache;
 
@@ -15,6 +16,13 @@ class RateLimiter
     protected $cache;
 
     /**
+     * The configured named rate limiters.
+     *
+     * @var array
+     */
+    protected $limiters = [];
+
+    /**
      * Create a new rate limiter instance.
      *
      * @param  \Illuminate\Contracts\Cache\Repository  $cache
@@ -23,6 +31,31 @@ class RateLimiter
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
+    }
+
+    /**
+     * Register a named rate limiter callback.
+     *
+     * @param  string  $name
+     * @param  \Closure  $callback
+     * @return $this
+     */
+    public function for($name, Closure $callback)
+    {
+        $this->limiters[$name] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Get the given named rate limiter.
+     *
+     * @param  string  $name
+     * @return \Closure|null
+     */
+    public function limiter($name)
+    {
+        return isset($this->limiters[$name]) ? $this->limiters[$name] : null;
     }
 
     /**

@@ -33,6 +33,12 @@ class CacheServiceProvider extends ServiceProvider
             return new MemcachedConnector;
         });
 
+        $this->app->singleton(RateLimiter::class, function ($app) {
+            $store = $app['config']->get('cache.limiter') ?: $app['config']->get('cache.default');
+
+            return new RateLimiter($app->make('cache')->driver($store));
+        });
+
         $this->registerCommands();
     }
 
@@ -58,7 +64,7 @@ class CacheServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'cache', 'cache.store', 'memcached.connector', 'command.cache.clear',
+            'cache', 'cache.store', 'memcached.connector', 'command.cache.clear', RateLimiter::class,
         ];
     }
 }

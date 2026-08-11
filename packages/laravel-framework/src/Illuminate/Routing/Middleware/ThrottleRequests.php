@@ -5,6 +5,7 @@ namespace Illuminate\Routing\Middleware;
 use Closure;
 use Carbon\Carbon;
 use Illuminate\Cache\RateLimiter;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
 
 class ThrottleRequests
@@ -32,12 +33,16 @@ class ThrottleRequests
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  int  $maxAttempts
+     * @param  int|string  $maxAttempts
      * @param  float|int  $decayMinutes
      * @return mixed
      */
     public function handle($request, Closure $next, $maxAttempts = 60, $decayMinutes = 1)
     {
+        if (is_string($maxAttempts) && ! is_numeric($maxAttempts)) {
+            return $this->handleRequestUsingNamedLimiter($request, $next, $maxAttempts);
+        }
+
         $key = $this->resolveRequestSignature($request);
 
         if ($this->limiter->tooManyAttempts($key, $maxAttempts, $decayMinutes)) {
@@ -52,6 +57,46 @@ class ThrottleRequests
             $response, $maxAttempts,
             $this->calculateRemainingAttempts($key, $maxAttempts)
         );
+    }
+
+    /**
+     * Handle an incoming request using a named limiter.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  string  $name
+     * @return mixed
+     */
+    protected function handleRequestUsingNamedLimiter($request, Closure $next, $name)
+    {
+        $limiterCallback = $this->limiter->limiter($name);
+
+        if (is_null($limiterCallback)) {
+            throw new RuntimeException("Rate limiter [{$name}] is not defined.");
+        }
+
+        $limits = call_user_func($limiterCallback, $request);
+        $limits = is_array($limits) ? $limits : [$limits];
+
+        foreach ($limits as $limit) {
+            $key = sha1($name.'|'.$limit->key);
+
+            if ($this->limiter->tooManyAttempts($key, $limit->maxAttempts, $limit->decayMinutes)) {
+                if ($limit->responseCallback) {
+                    return call_user_func($limit->responseCallback, $request, [
+                        'Retry-After' => $this->limiter->availableIn($key),
+                        'X-RateLimit-Limit' => $limit->maxAttempts,
+                        'X-RateLimit-Remaining' => 0,
+                    ]);
+                }
+
+                return $this->buildResponse($key, $limit->maxAttempts);
+            }
+
+            $this->limiter->hit($key, $limit->decayMinutes);
+        }
+
+        return $next($request);
     }
 
     /**
