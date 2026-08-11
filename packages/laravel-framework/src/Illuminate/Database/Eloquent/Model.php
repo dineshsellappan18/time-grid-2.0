@@ -245,6 +245,13 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     protected static $mutatorCache = [];
 
     /**
+     * Indicates whether lazy loading should throw exceptions.
+     *
+     * @var bool
+     */
+    protected static $modelsShouldPreventLazyLoading = false;
+
+    /**
      * The many to many relationship methods.
      *
      * @var array
@@ -2705,6 +2712,14 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     protected function getRelationshipFromMethod($method)
     {
+        if (static::$modelsShouldPreventLazyLoading) {
+            throw new LogicException(sprintf(
+                'Attempted to lazy load [%s] on model [%s] but lazy loading is prevented.',
+                $method,
+                static::class
+            ));
+        }
+
         $relations = $this->$method();
 
         if (! $relations instanceof Relation) {
@@ -2715,6 +2730,27 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         $this->setRelation($method, $results = $relations->getResults());
 
         return $results;
+    }
+
+    /**
+     * Prevent lazy loading relationships for all Eloquent models.
+     *
+     * @param  bool  $value
+     * @return void
+     */
+    public static function preventLazyLoading($value = true)
+    {
+        static::$modelsShouldPreventLazyLoading = $value;
+    }
+
+    /**
+     * Determine if lazy loading is prevented.
+     *
+     * @return bool
+     */
+    public static function preventsLazyLoading()
+    {
+        return static::$modelsShouldPreventLazyLoading;
     }
 
     /**

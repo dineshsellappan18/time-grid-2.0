@@ -38,8 +38,8 @@ class UserEventListener
 
     public function subscribe(Dispatcher $events): void
     {
-        $events->listen(Login::class, [self::class, 'onUserLogin']);
-        $events->listen(Logout::class, [self::class, 'onUserLogout']);
+        $events->listen(Login::class, static::class.'@onUserLogin');
+        $events->listen(Logout::class, static::class.'@onUserLogout');
     }
 
     protected function touchAudit(User $user): void

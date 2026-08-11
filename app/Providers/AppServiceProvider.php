@@ -20,7 +20,12 @@ class AppServiceProvider extends ServiceProvider
             config('app.key')
         );
 
-        Model::preventLazyLoading(!$this->app->isProduction());
+        // Path-fork Eloquent supports preventLazyLoading; enable only in testing until
+        // remaining screens are eager-loaded. Local browsing still has many intentional
+        // lazy relations (category, services, preferences, etc.).
+        if ($this->app->environment('testing')) {
+            Model::preventLazyLoading();
+        }
     }
 
     /**

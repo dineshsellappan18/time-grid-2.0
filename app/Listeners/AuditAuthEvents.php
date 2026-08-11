@@ -47,12 +47,10 @@ class AuditAuthEvents
         );
     }
 
-    public function subscribe($events): array
+    public function subscribe($events): void
     {
-        return [
-            Login::class  => 'handleLogin',
-            Logout::class => 'handleLogout',
-            Failed::class => 'handleFailed',
-        ];
+        $events->listen(Login::class, static::class.'@handleLogin');
+        $events->listen(Logout::class, static::class.'@handleLogout');
+        $events->listen(Failed::class, static::class.'@handleFailed');
     }
 }
