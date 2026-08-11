@@ -163,7 +163,8 @@
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=1G",
         "lint:constraints": "bash bin/lint-constraints.sh",
         "lint:architecture": "bash bin/lint-architecture.sh",
-        "check:eol": "@php tools/eol-check.php"
+        "check:eol": "@php tools/eol-check.php",
+        "lint:no-serialize-logs": "@php tools/lint-no-serialize-in-logs.php"
     },
     "config": {
         "preferred-install": "dist",

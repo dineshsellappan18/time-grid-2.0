@@ -24,9 +24,10 @@ class AuthenticateUser
 
         $providerUser = $this->getUser($provider);
 
-        Log::info('OAuth callback received', [
-            'provider' => $provider,
-            'has_id'   => !empty($providerUser->getId()),
+        Log::info('oauth.callback', [
+            'provider'         => $provider,
+            'provider_id_hash' => hash('sha256', (string) $providerUser->getId()),
+            'email_domain'     => $this->extractDomain($providerUser->getEmail()),
         ]);
 
         $user = $this->users->findOrCreate($providerUser);
@@ -48,5 +49,16 @@ class AuthenticateUser
     private function getUser(string $provider)
     {
         return $this->socialite->driver($provider)->user();
+    }
+
+    private function extractDomain(?string $email): ?string
+    {
+        if ($email === null || $email === '') {
+            return null;
+        }
+
+        $parts = explode('@', $email);
+
+        return count($parts) === 2 ? $parts[1] : null;
     }
 }

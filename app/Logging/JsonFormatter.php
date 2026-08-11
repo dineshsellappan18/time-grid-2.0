@@ -10,6 +10,7 @@ class JsonFormatter
     public function __invoke(Logger $logger): void
     {
         $correlationProcessor = new CorrelationIdProcessor();
+        $redactionProcessor = new PiiRedactionProcessor();
 
         foreach ($logger->getHandlers() as $handler) {
             $formatter = new MonologJsonFormatter();
@@ -17,6 +18,7 @@ class JsonFormatter
 
             $handler->setFormatter($formatter);
             $handler->pushProcessor($correlationProcessor);
+            $handler->pushProcessor($redactionProcessor);
         }
     }
 }

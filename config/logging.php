@@ -56,6 +56,7 @@ return [
         'errorlog' => [
             'driver' => 'errorlog',
             'level'  => env('LOG_LEVEL', 'debug'),
+            'tap'    => [App\Logging\JsonFormatter::class],
         ],
 
         'null' => [
