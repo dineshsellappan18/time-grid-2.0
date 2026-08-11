@@ -42,6 +42,9 @@ Route::group(
 Auth::routes();
 Route::get('/logout', 'Auth\LoginController@logout');
 
+Route::post('login', 'Auth\LoginController@login')->middleware('throttle:login');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->middleware('throttle:password-reset');
+
 //////////
 // AJAX //
 //////////
@@ -172,7 +175,7 @@ Route::group(['prefix' => '{business}'], function ($business) {
     Route::get('ical/{token}', [
         'as'         => 'business.ical.download',
         'uses'       => 'User\ICalController@download',
-        'middleware' => ['ical.token'],
+        'middleware' => ['throttle:ical-feed', 'ical.token'],
     ]);
 
     ///////////////////////////

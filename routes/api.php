@@ -21,12 +21,12 @@ Route::get('/user', function (Request $request) {
 // AJAX CALLS //
 ////////////////
 
-// TODO: 'booking' should be moved out of api into the proper group.
-
 Route::get('vacancies/{businessId}/{serviceId}', [
-    'uses' => 'AvailabilityController@getDates',
+    'uses'       => 'AvailabilityController@getDates',
+    'middleware' => ['throttle:availability'],
 ]);
 
 Route::get('vacancies/{businessId}/{serviceId}/{date}', [
-    'uses' => 'AvailabilityController@getTimes',
+    'uses'       => 'AvailabilityController@getTimes',
+    'middleware' => ['throttle:availability'],
 ]);

@@ -99,6 +99,11 @@ class Handler extends ExceptionHandler
 
     private function renderJsonEnvelope($request, Throwable $e)
     {
+        if ($e instanceof \Illuminate\Http\Exceptions\ThrottleRequestsException) {
+            return $this->envelope(429, 'rate_limited', 'Too many requests. Please try again later.')
+                ->withHeaders(['Retry-After' => $e->getHeaders()['Retry-After'] ?? 60]);
+        }
+
         if ($e instanceof ValidationException) {
             return $this->envelope(400, 'validation_failed', 'The given data was invalid.', [
                 'fields' => $e->errors(),

@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Rate Limiter Store
+    |--------------------------------------------------------------------------
+    |
+    | The store used by the rate limiter. Must be Redis-backed so counters
+    | survive blue-green container swaps and are shared across instances.
+    |
+    */
+
+    'limiter' => env('RATE_LIMITER_STORE', 'redis'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Cache Stores
     |--------------------------------------------------------------------------
     |
