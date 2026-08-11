@@ -28,6 +28,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('business:report')->dailyAt('21:00');
         $schedule->command('business:vacancies')->weekly()->sundays()->at('00:00');
         $schedule->command('ical:sync')->twiceDaily(0, 12);
+
+        $schedule->command('audit:purge')->monthlyOn(1, '03:00');
+        $schedule->command('contacts:purge-retention')->weeklyOn(0, '04:00');
     }
 
     /**
