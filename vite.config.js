@@ -14,6 +14,7 @@ export default defineConfig({
                 'resources/js/search.js',
                 'resources/js/highlight.js',
                 'resources/js/auth-validation.js',
+                'resources/js/settings.js',
             ],
             refresh: true,
         }),

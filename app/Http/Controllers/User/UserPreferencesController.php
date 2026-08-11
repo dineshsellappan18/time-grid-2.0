@@ -65,10 +65,11 @@ class UserPreferencesController extends Controller
     {
         logger()->info(__METHOD__);
 
+        $user = auth()->user();
         $parameters = config()->get('preferences.App\Models\User');
-        $preferences = auth()->user()->preferences;
+        $preferences = $user->preferences;
 
-        return view('user.preferences.edit', compact('preferences', 'parameters'));
+        return view('user.preferences.edit', compact('user', 'preferences', 'parameters'));
     }
 
     public function postPreferences(Request $request)

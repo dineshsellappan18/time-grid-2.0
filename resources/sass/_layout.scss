@@ -1536,6 +1536,188 @@ body.tg-public {
   border-top: 1px solid $tg-border-color;
 }
 
+// ── Settings page ──────────────────────────────────────────────────
+
+.tg-settings-form {
+  padding-bottom: 5rem; // space for sticky save bar
+}
+
+.tg-settings-section {
+  background: #fff;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-radius;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  box-shadow: $tg-shadow;
+
+  &__header {
+    padding: 1.25rem 1.5rem 0.75rem;
+    border-bottom: 1px solid $tg-border-color;
+    background: rgba($tg-primary, 0.02);
+  }
+
+  &__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $tg-body-color;
+    margin: 0 0 0.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+
+    i { color: $tg-primary; font-size: 1.1rem; }
+  }
+
+  &__desc {
+    font-size: $tg-font-size-sm;
+    color: $tg-secondary;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  &__body {
+    padding: 0;
+  }
+}
+
+.tg-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.85rem 1.5rem;
+  border-bottom: 1px solid rgba($tg-border-color, 0.5);
+  transition: background-color 0.15s ease;
+
+  &:last-child { border-bottom: none; }
+
+  &:hover {
+    background-color: rgba($tg-primary, 0.015);
+  }
+
+  &.is-active {
+    background-color: rgba($tg-primary, 0.03);
+  }
+
+  &--wide {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: $tg-body-color;
+    margin-bottom: 0.1rem;
+    cursor: pointer;
+  }
+
+  &__help {
+    display: block;
+    font-size: $tg-font-size-sm;
+    color: $tg-secondary;
+    line-height: 1.4;
+  }
+
+  &__control {
+    flex: 0 0 auto;
+    min-width: 140px;
+    max-width: 220px;
+
+    .form-control {
+      font-size: 0.875rem;
+      border-radius: $tg-radius;
+      border-color: $tg-border-color;
+
+      &:focus {
+        border-color: $tg-primary;
+        box-shadow: 0 0 0 0.2rem rgba($tg-primary, 0.15);
+      }
+    }
+
+    &--full {
+      max-width: none;
+      width: 100%;
+    }
+  }
+}
+
+// Toggle switch enhancements
+.tg-toggle {
+  width: 2.75rem !important;
+  height: 1.35rem;
+  cursor: pointer;
+
+  &:checked {
+    background-color: $tg-primary;
+    border-color: $tg-primary;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba($tg-primary, 0.2);
+  }
+}
+
+// Sticky save bar
+.tg-settings-savebar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 2rem;
+  background: $tg-body-color;
+  color: #fff;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+
+  &.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  &__text {
+    font-size: 0.875rem;
+    font-weight: 500;
+
+    i { margin-right: 0.35rem; color: #ffc107; }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .btn-outline-secondary {
+      color: rgba(255, 255, 255, 0.8);
+      border-color: rgba(255, 255, 255, 0.3);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+    }
+
+    .btn-primary {
+      background: $tg-primary;
+      border-color: $tg-primary;
+    }
+  }
+}
+
 // Responsive adjustments for dashboard
 @media (max-width: 575.98px) {
   .tg-stat-card__icon {
@@ -1552,5 +1734,31 @@ body.tg-public {
   .tg-activity-item__meta {
     flex-direction: column;
     gap: 0.25rem;
+  }
+
+  .tg-settings-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .tg-settings-row__control {
+    max-width: none;
+    min-width: 0;
+  }
+
+  .tg-settings-section__header {
+    padding: 1rem 1rem 0.65rem;
+  }
+
+  .tg-settings-row {
+    padding: 0.75rem 1rem;
+  }
+
+  .tg-settings-savebar {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    text-align: center;
   }
 }
