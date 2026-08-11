@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Bootstrap\ApplicationKeyGuard;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
             $this->app->environment(),
             config('app.key')
         );
+
+        Model::preventLazyLoading(!$this->app->isProduction());
     }
 
     /**

@@ -63,10 +63,10 @@ class Dashboard
 
     protected function loadCounters(): void
     {
-        $this->counter['appointments_active_today'] = $this->business->bookings()->active()->ofDate($this->time->today())->get()->count();
-        $this->counter['appointments_canceled_today'] = $this->business->bookings()->canceled()->ofDate($this->time->today())->get()->count();
-        $this->counter['appointments_active_tomorrow'] = $this->business->bookings()->active()->ofDate($this->time->tomorrow())->get()->count();
-        $this->counter['appointments_total'] = $this->business->bookings()->get()->count();
+        $this->counter['appointments_active_today'] = $this->business->bookings()->active()->ofDate($this->time->today())->count();
+        $this->counter['appointments_canceled_today'] = $this->business->bookings()->canceled()->ofDate($this->time->today())->count();
+        $this->counter['appointments_active_tomorrow'] = $this->business->bookings()->active()->ofDate($this->time->tomorrow())->count();
+        $this->counter['appointments_total'] = $this->business->bookings()->count();
         $this->counter['contacts_registered'] = $this->business->contacts()->count();
         $this->counter['contacts_subscribed'] = $this->business->contacts()->whereNotNull('user_id')->count();
     }

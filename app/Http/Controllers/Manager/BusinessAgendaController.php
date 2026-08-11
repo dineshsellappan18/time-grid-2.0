@@ -34,9 +34,13 @@ class BusinessAgendaController extends Controller
 
         $this->authorize('manage', $business);
 
-        $appointments = $this->concierge->business($business)->getUnarchivedAppointments();
+        $appointments = $business->bookings()
+            ->with(['contact', 'service'])
+            ->unarchived()
+            ->orderBy('start_at')
+            ->get();
 
-        $viewKey = count($appointments) == 0
+        $viewKey = $appointments->isEmpty()
             ? 'manager.businesses.appointments.empty'
             : "manager.businesses.appointments.{$business->strategy}.index";
 
@@ -56,24 +60,25 @@ class BusinessAgendaController extends Controller
 
         $this->authorize('manage', $business);
 
-        $appointments = $this->concierge->business($business)->getActiveAppointments();
+        $appointments = $business->bookings()
+            ->with(['contact:id,firstname,lastname', 'service:id,name,color'])
+            ->active()
+            ->get();
 
         $jsAppointments = [];
 
         foreach ($appointments as $appointment) {
             $jsAppointments[] = [
-                'title' => $appointment->contact->firstname.' / '.$appointment->service->name,
-                'color' => $appointment->service->color,
+                'title' => ($appointment->contact->firstname ?? 'Unknown') . ' / ' . ($appointment->service->name ?? 'Unknown'),
+                'color' => $appointment->service->color ?? '#ccc',
                 'start' => $appointment->start_at->copy()->timezone($business->timezone)->toIso8601String(),
                 'end'   => $appointment->finish_at->copy()->timezone($business->timezone)->toIso8601String(),
-                ];
+            ];
         }
 
-        $slotDuration = count($appointments) > 5 ? '0:15' : '0:30';
+        $slotDuration = $appointments->count() > 5 ? '0:15' : '0:30';
 
         $icalURL = $this->generateICalURL($business);
-
-        unset($appointments);
 
         JavaScript::put([
             'minTime'      => $business->pref('start_at'),
