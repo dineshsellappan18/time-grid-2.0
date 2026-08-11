@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 
 class LanguageController extends Controller
 {
@@ -20,7 +21,7 @@ class LanguageController extends Controller
     protected function setSessionLanguage(string $posixLocale): void
     {
         $localeSubtags = locale_parse($posixLocale);
-        $language = array_get($localeSubtags, 'language');
+        $language = Arr::get($localeSubtags, 'language');
 
         session()->set('language', $language);
         session()->set('applocale', $posixLocale);

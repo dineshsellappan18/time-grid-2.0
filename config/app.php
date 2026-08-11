@@ -215,7 +215,7 @@ return [
         'Validator'    => Illuminate\Support\Facades\Validator::class,
         'View'         => Illuminate\Support\Facades\View::class,
 
-        'Input'     => Illuminate\Support\Facades\Input::class,
+        'Input'     => Illuminate\Support\Facades\Request::class, // Input facade deprecated in 5.8; aliased to Request
         'Form'      => Collective\Html\FormFacade::class,
         'Html'      => Collective\Html\HtmlFacade::class,
 

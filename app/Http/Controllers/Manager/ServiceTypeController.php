@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\ServiceType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class ServiceTypeController extends Controller
 {
@@ -55,8 +57,8 @@ class ServiceTypeController extends Controller
 
         $publishing = collect($matches)->map(
             function ($item) {
-                $data = array_only($item, ['name', 'description']);
-                $data['slug'] = str_slug($data['name']);
+                $data = Arr::only($item, ['name', 'description']);
+                $data['slug'] = Str::slug($data['name']);
 
                 return $data;
             });

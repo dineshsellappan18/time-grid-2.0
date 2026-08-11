@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Fenos\Notifynder\Facades\Notifynder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
 use Timegridio\Concierge\Models\Business;
@@ -208,7 +209,7 @@ class BusinessController extends Controller
     {
         $this->getLocation();
 
-        return array_get($this->location, 'isoCode', null);
+        return Arr::get($this->location, 'isoCode', null);
     }
 
     protected function getLocation(): array

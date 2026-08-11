@@ -3,6 +3,7 @@
 namespace App\Factories;
 
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 class RoleFactory
 {
@@ -12,7 +13,7 @@ class RoleFactory
 
         return [
             'name'        => $faker->word,
-            'slug'        => str_slug($name),
+            'slug'        => Str::slug($name),
             'description' => $faker->sentence,
         ];
     }

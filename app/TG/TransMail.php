@@ -2,6 +2,7 @@
 
 namespace App\TG;
 
+use Illuminate\Support\Arr;
 use Snowfire\Beautymail\Beautymail;
 
 class TransMail
@@ -101,7 +102,7 @@ class TransMail
 
         $this->mail->send($this->getViewKey(), $params, function ($message) use ($header) {
             $message
-                ->to(array_get($header, 'email'), array_get($header, 'name'))
+                ->to(Arr::get($header, 'email'), Arr::get($header, 'name'))
                 ->subject($this->getSubject());
         });
 

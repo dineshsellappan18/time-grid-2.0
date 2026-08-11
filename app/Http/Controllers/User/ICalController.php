@@ -6,6 +6,7 @@ use App\TG\Business\Token as BusinessToken;
 use App\Http\Controllers\Controller;
 use Eluceo\iCal\Component\Calendar;
 use Eluceo\iCal\Component\Event;
+use Illuminate\Support\Arr;
 use Timegridio\Concierge\Models\Business;
 use Validator;
 
@@ -99,6 +100,6 @@ class ICalController extends Controller
             'S' => 'CONFIRMED',
         ];
 
-        return array_get($mapping, $status, 'TENTATIVE');
+        return Arr::get($mapping, $status, 'TENTATIVE');
     }
 }

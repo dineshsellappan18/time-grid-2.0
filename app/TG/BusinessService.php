@@ -5,6 +5,7 @@ namespace App\TG;
 use App\Exceptions\BusinessAlreadyRegistered;
 use App\Models\User;
 use App\TG\Business\Setup\SetupStaff;
+use Illuminate\Support\Str;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Category;
 
@@ -14,7 +15,7 @@ class BusinessService
 
     public function register(User $user, array $data, int $category): Business
     {
-        $slug = str_slug($data['name']);
+        $slug = Str::slug($data['name']);
 
         if ($business = self::getExisting($user, $slug)) {
             return $business;

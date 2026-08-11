@@ -3,6 +3,7 @@
 namespace App\Factories;
 
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 class CategoryFactory
 {
@@ -10,7 +11,7 @@ class CategoryFactory
     {
         return [
             'name'        => $faker->sentence(3),
-            'slug'        => str_slug($faker->name),
+            'slug'        => Str::slug($faker->name),
             'description' => $faker->paragraph,
             'strategy'    => 'dateslot',
         ];
