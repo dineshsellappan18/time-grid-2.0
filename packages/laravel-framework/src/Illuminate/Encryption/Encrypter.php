@@ -62,15 +62,22 @@ class Encrypter implements EncrypterContract
      * Encrypt the given value.
      *
      * @param  mixed  $value
+     * @param  bool  $serialize
      * @return string
      *
      * @throws \Illuminate\Contracts\Encryption\EncryptException
      */
-    public function encrypt($value)
+    public function encrypt($value, $serialize = true)
     {
         $iv = random_bytes(16);
 
-        $value = \openssl_encrypt(serialize($value), $this->cipher, $this->key, 0, $iv);
+        $value = \openssl_encrypt(
+            $serialize ? serialize($value) : $value,
+            $this->cipher,
+            $this->key,
+            0,
+            $iv
+        );
 
         if ($value === false) {
             throw new EncryptException('Could not encrypt the data.');
@@ -91,14 +98,26 @@ class Encrypter implements EncrypterContract
     }
 
     /**
+     * Encrypt a string without serialization.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function encryptString($value)
+    {
+        return $this->encrypt($value, false);
+    }
+
+    /**
      * Decrypt the given value.
      *
      * @param  mixed  $payload
-     * @return string
+     * @param  bool  $unserialize
+     * @return mixed
      *
      * @throws \Illuminate\Contracts\Encryption\DecryptException
      */
-    public function decrypt($payload)
+    public function decrypt($payload, $unserialize = true)
     {
         $payload = $this->getJsonPayload($payload);
 
@@ -110,7 +129,18 @@ class Encrypter implements EncrypterContract
             throw new DecryptException('Could not decrypt the data.');
         }
 
-        return unserialize($decrypted);
+        return $unserialize ? unserialize($decrypted) : $decrypted;
+    }
+
+    /**
+     * Decrypt the given string without unserialization.
+     *
+     * @param  string  $payload
+     * @return string
+     */
+    public function decryptString($payload)
+    {
+        return $this->decrypt($payload, false);
     }
 
     /**
