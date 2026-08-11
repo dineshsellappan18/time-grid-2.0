@@ -84,7 +84,7 @@
         "guzzlehttp/guzzle": "~6.0",
         "intervention/image": "^2.2",
         "laracasts/flash": "~2.0",
-        "laravel/framework": "5.5.50",
+        "laravel/framework": "5.6.40",
         "laravel/socialite": "~2.0",
         "laravelcollective/html": "~5.2",
         "pid/speakingurl": "^0.11.0",
