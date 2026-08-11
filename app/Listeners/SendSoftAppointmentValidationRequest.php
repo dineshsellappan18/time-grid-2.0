@@ -7,21 +7,12 @@ use App\TG\TransMail;
 
 class SendSoftAppointmentValidationRequest
 {
-    private $transmail;
-
-    public function __construct(TransMail $transmail)
-    {
-        $this->transmail = $transmail;
+    public function __construct(
+        private readonly TransMail $transmail,
+    ) {
     }
 
-    /**
-     * Handle the event.
-     *
-     * @param AppointmentWasConfirmed $event
-     *
-     * @return void
-     */
-    public function handle(NewSoftAppointmentWasBooked $event)
+    public function handle(NewSoftAppointmentWasBooked $event): void
     {
         logger()->info(__METHOD__);
 
@@ -36,10 +27,6 @@ class SendSoftAppointmentValidationRequest
             return;
         }
 
-        ////////////////////////////////////////////////////
-        // Send Soft Appointment Validation Request Email //
-        ////////////////////////////////////////////////////
-
         $params = [
             'appointment'  => $event->appointment,
             'link'         => $this->generateLink($businessSlug, $code, $email),
@@ -50,7 +37,7 @@ class SendSoftAppointmentValidationRequest
             'email' => $email,
         ];
 
-        return $this->transmail
+        $this->transmail
                     ->locale($locale)
                     ->timezone($timezone)
                     ->template('guest.appointment-validation.validation')
@@ -58,7 +45,7 @@ class SendSoftAppointmentValidationRequest
                     ->send($header, $params);
     }
 
-    protected function generateLink($business, $code, $email)
+    protected function generateLink(string $business, string $code, string $email): string
     {
         return link_to_route('user.booking.validate', null, compact('business', 'code', 'email'));
     }

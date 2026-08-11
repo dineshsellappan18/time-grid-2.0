@@ -7,21 +7,12 @@ use App\TG\TransMail;
 
 class SendMailUserWelcome
 {
-    private $transmail;
-
-    public function __construct(TransMail $transmail)
-    {
-        $this->transmail = $transmail;
+    public function __construct(
+        private readonly TransMail $transmail,
+    ) {
     }
 
-    /**
-     * Handle the event.
-     *
-     * @param NewUserWasRegistered $event
-     *
-     * @return void
-     */
-    public function handle(NewUserWasRegistered $event)
+    public function handle(NewUserWasRegistered $event): void
     {
         logger()->info(__METHOD__);
 

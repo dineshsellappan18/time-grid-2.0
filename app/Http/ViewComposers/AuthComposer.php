@@ -3,16 +3,12 @@
 namespace App\Http\ViewComposers;
 
 use Creativeorange\Gravatar\Facades\Gravatar;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class AuthComposer
 {
-    /**
-     * Bind data to the view.
-     *
-     * @return void
-     */
-    public function compose()
+    public function compose(): void
     {
         view()->share('isGuest', auth()->guest());
         view()->share('signedIn', auth()->check());
@@ -28,10 +24,8 @@ class AuthComposer
         }
     }
 
-    protected function getActiveAppointments()
+    protected function getActiveAppointments(): Collection
     {
-        return Cache::get('user-{auth()->id()}-active-appointments', function () {
-            return auth()->user()->appointments()->active()->get();
-        });
+        return Cache::get('user-{auth()->id()}-active-appointments', fn () => auth()->user()->appointments()->active()->get());
     }
 }
