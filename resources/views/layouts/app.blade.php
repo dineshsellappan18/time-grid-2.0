@@ -12,7 +12,7 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
-    @vite(['resources/less/app.less', 'resources/less/styles.less', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/app.min.css') }}">
     
     <link rel="manifest" href="/manifest.json">
 
@@ -182,7 +182,7 @@
 <!-- ./wrapper -->
 
 <!-- Scripts -->
-@vite(['resources/js/app.js'])
+<script src="{{ asset('js/app.min.js') }}"></script>
 
 @stack('footer_scripts')
 

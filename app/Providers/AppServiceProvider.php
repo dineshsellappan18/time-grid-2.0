@@ -26,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('testing')) {
             Model::preventLazyLoading();
         }
+
+        \Illuminate\Support\Facades\Blade::directive('vite', function ($expression) {
+            return '<?php echo \\App\\Support\\Vite::tags'.$expression.'; ?>';
+        });
     }
 
     /**

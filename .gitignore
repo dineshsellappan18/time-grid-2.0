@@ -20,8 +20,10 @@
 /bower_components
 /public/build
 /public/hot
-/public/css
-/public/js
+/public/css/*
+!/public/css/app.min.css
+/public/js/*
+!/public/js/app.min.js
 .env
 .env.testing
 /public/storage/debugbar

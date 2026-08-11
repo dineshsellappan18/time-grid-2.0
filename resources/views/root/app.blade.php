@@ -7,7 +7,7 @@
     <title>Root</title>
 
     <!-- Latest compiled and minified CSS -->
-    @vite(['resources/less/app.less', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/app.min.css') }}">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -69,6 +69,6 @@
     @include('_footer')
 
     <!-- Scripts -->
-    @vite(['resources/js/app.js'])
+    <script src="{{ asset('js/app.min.js') }}"></script>
 </body>
 </html>
