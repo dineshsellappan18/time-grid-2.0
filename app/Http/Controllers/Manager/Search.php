@@ -3,27 +3,28 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\TG\SearchEngine;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Timegridio\Concierge\Models\Business;
 
 class Search extends Controller
 {
-    /**
-     * Search for elements within a Business.
-     *
-     * @param Timegridio\Concierge\Models\Business $business
-     *
-     * @return Illuminate\View\View
-     */
     public function postSearch(Business $business, Request $request)
     {
         $this->authorize('manage', $business);
 
         $criteria = $request->input('criteria');
 
-        $search = new SearchEngine($criteria);
-        $search->setBusinessScope([$business->id])->run();
+        Log::info('search.execute', [
+            'actor' => auth()->id(),
+            'resource' => 'search',
+            'operation' => 'query',
+            'context' => ['business_id' => $business->id, 'criteria_length' => strlen($criteria)],
+        ]);
+
+        $search = new SearchEngine($criteria, [$business->id]);
+        $search->run();
 
         $results = $search->results();
 

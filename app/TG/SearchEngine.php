@@ -5,7 +5,6 @@ namespace App\TG;
 use Timegridio\Concierge\Models\Appointment;
 use Timegridio\Concierge\Models\Business;
 use Timegridio\Concierge\Models\Service;
-use Illuminate\Support\Facades\Auth;
 
 class SearchEngine
 {
@@ -15,12 +14,9 @@ class SearchEngine
 
     protected string $criteria;
 
-    public function __construct(string $criteria)
+    public function __construct(string $criteria, array $businessIds = [])
     {
-        $this->scope['businessesIds'] = auth()->user()->businesses->transform(
-            fn ($item) => $item->id
-        );
-
+        $this->scope['businessesIds'] = $businessIds;
         $this->criteria = $criteria;
     }
 
@@ -52,13 +48,13 @@ class SearchEngine
     private function getServices(string $expression): void
     {
         $this->results['services'] = Service::whereIn('business_id', $this->scope['businessesIds'])
-            ->where('name', 'like', $expression.'%')->get();
+            ->where('name', 'like', $expression . '%')->get();
     }
 
     private function getAppointments(string $expression): void
     {
         $this->results['appointments'] = Appointment::whereIn('business_id', $this->scope['businessesIds'])
-            ->where('hash', 'like', $expression.'%')->get();
+            ->where('hash', 'like', $expression . '%')->get();
     }
 
     private function getContacts(string $expression): void
@@ -66,10 +62,10 @@ class SearchEngine
         $businesses = Business::whereIn('id', $this->scope['businessesIds'])->get();
         foreach ($businesses as $business) {
             $collection = $business->contacts()->where(function ($query) use ($expression) {
-                $query->where('lastname', 'like', $expression.'%')
-                ->orWhere('firstname', 'like', $expression.'%')
+                $query->where('lastname', 'like', $expression . '%')
+                ->orWhere('firstname', 'like', $expression . '%')
                 ->orWhere('nin', $expression)
-                ->orWhere('mobile', 'like', '%'.$expression);
+                ->orWhere('mobile', 'like', '%' . $expression);
             })->get();
 
             $this->results['contacts'] = $collection;
