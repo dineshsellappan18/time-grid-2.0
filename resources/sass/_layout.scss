@@ -1074,3 +1074,336 @@ body.tg-public {
   background: $tg-white;
   margin-top: auto;
 }
+
+// ---------------------------------------------------------------------------
+// Dashboard: Stat Cards, Activity Feed, Quick Actions, Charts, Empty States
+// ---------------------------------------------------------------------------
+.tg-stat-card {
+  display: flex;
+  align-items: stretch;
+  background: $tg-white;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius-lg;
+  box-shadow: $tg-shadow-sm;
+  overflow: hidden;
+  height: 100%;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  text-decoration: none;
+  color: inherit;
+
+  &--link:hover {
+    box-shadow: $tg-shadow;
+    transform: translateY(-2px);
+    text-decoration: none;
+    color: inherit;
+  }
+}
+
+.tg-stat-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 72px;
+  width: 72px;
+  font-size: 1.6rem;
+  color: $tg-white;
+}
+
+.tg-stat-card__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.85rem 1rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.tg-stat-card__value {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: $tg-primary;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tg-stat-card__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: $tg-secondary;
+  margin-top: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Dashboard Panel
+.tg-dash-panel {
+  background: $tg-white;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius-lg;
+  box-shadow: $tg-shadow-sm;
+  overflow: hidden;
+}
+
+.tg-dash-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1.15rem;
+  border-bottom: 1px solid $tg-border-color;
+}
+
+.tg-dash-panel__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: $tg-primary;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  > .fa { color: $tg-secondary; font-size: 0.95rem; }
+}
+
+.tg-dash-panel__body {
+  padding: 1rem 1.15rem;
+}
+
+// Activity Feed
+.tg-activity-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tg-activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba($tg-border-color, 0.6);
+
+  &:last-child { border-bottom: none; }
+  &:first-child { padding-top: 0; }
+}
+
+.tg-activity-item__indicator {
+  flex: 0 0 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 0.35rem;
+  background: $tg-secondary;
+
+  &--confirmed { background: $tg-success; }
+  &--active { background: $tg-info; }
+  &--canceled { background: $tg-danger; }
+}
+
+.tg-activity-item__content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.tg-activity-item__title {
+  font-weight: 500;
+  color: $tg-body-color;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tg-activity-item__badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.tg-activity-item__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.3rem;
+  font-size: $tg-font-size-sm;
+  color: $tg-secondary;
+
+  > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+}
+
+// Quick Actions
+.tg-quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tg-quick-action {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: $tg-border-radius;
+  color: $tg-body-color;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.12s ease, color 0.12s ease;
+
+  > .fa {
+    width: 1.1rem;
+    text-align: center;
+    color: $tg-secondary;
+    transition: color 0.12s ease;
+  }
+
+  &:hover {
+    background: $tg-light;
+    color: $tg-primary;
+    > .fa { color: $tg-info; }
+  }
+}
+
+// Empty State
+.tg-empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+
+  &--compact { padding: 1.25rem 0.75rem; }
+}
+
+.tg-empty-state__icon {
+  font-size: 2.5rem;
+  color: $tg-border-color;
+  margin-bottom: 0.85rem;
+
+  .tg-empty-state--compact & { font-size: 1.75rem; margin-bottom: 0.5rem; }
+}
+
+.tg-empty-state__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $tg-primary;
+}
+
+.tg-empty-state__text {
+  margin: 0 0 1.15rem;
+  color: $tg-secondary;
+  font-size: $tg-font-size-sm;
+  line-height: 1.5;
+
+  .tg-empty-state--compact & { margin-bottom: 0; }
+}
+
+// Chart Placeholder
+.tg-chart-placeholder {
+  padding: 0.5rem 0;
+}
+
+.tg-chart-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 0.75rem;
+  height: 140px;
+}
+
+.tg-chart-bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 1 1 0;
+}
+
+.tg-chart-bar {
+  width: 100%;
+  max-width: 40px;
+  border-radius: $tg-border-radius-sm $tg-border-radius-sm 0 0;
+  min-height: 4px;
+  transition: height 0.4s ease;
+}
+
+.tg-chart-bar__label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: $tg-secondary;
+  text-align: center;
+}
+
+.tg-chart-bar__value {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: $tg-primary;
+}
+
+// Business Info rows
+.tg-biz-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tg-biz-info__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba($tg-border-color, 0.5);
+
+  &:last-child { border-bottom: none; }
+  &:first-child { padding-top: 0; }
+}
+
+.tg-biz-info__label {
+  font-size: $tg-font-size-sm;
+  color: $tg-secondary;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+
+  > .fa { width: 1rem; text-align: center; }
+}
+
+.tg-biz-info__value {
+  font-weight: 500;
+  color: $tg-body-color;
+  text-align: right;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Responsive adjustments for dashboard
+@media (max-width: 575.98px) {
+  .tg-stat-card__icon {
+    flex: 0 0 56px;
+    width: 56px;
+    font-size: 1.35rem;
+  }
+
+  .tg-stat-card__value { font-size: 1.2rem; }
+
+  .tg-dash-panel__header { padding: 0.75rem 0.85rem; }
+  .tg-dash-panel__body { padding: 0.85rem; }
+
+  .tg-activity-item__meta {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
