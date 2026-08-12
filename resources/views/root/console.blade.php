@@ -251,9 +251,9 @@
                     <tbody>
                         @forelse($auditTrail['entries'] as $entry)
                         <tr>
-                            <td class="text-nowrap"><small>{{ $entry->created_at }}</small></td>
+                            <td class="text-nowrap"><small>{{ $entry->occurred_at }}</small></td>
                             <td>{{ $entry->actor_id ?? '—' }}</td>
-                            <td>{{ $entry->entity_type }}</td>
+                            <td>{{ $entry->resource_type }}</td>
                             <td>{{ $entry->action }}</td>
                             <td>
                                 @if($entry->outcome === 'denied')

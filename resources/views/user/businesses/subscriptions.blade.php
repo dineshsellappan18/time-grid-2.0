@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-10 offset-md-1">
             <div class="card">
                 <div class="card-header">{{ trans('user.businesses.subscriptions.title') }}</div>
 

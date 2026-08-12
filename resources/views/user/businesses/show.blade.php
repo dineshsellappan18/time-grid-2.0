@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-6 offset-md-3">
             <div class="card">
 
                 <div class="card-header">
@@ -24,7 +24,7 @@
                             <div class="row">
                             <div class="col-md-12">
                                 <div class="media">
-                                  <div class="media-left media-top d-none d-sm-block d-sm-none d-md-block">
+                                  <div class="flex-shrink-0 me-3 d-none d-md-block">
                                     <a href="#">{!! $business->facebookImg('normal') !!}</a>
                                   </div>
                                   <div class="media-body">

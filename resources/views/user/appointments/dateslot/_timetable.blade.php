@@ -1,6 +1,6 @@
 <div id="panel" class="card">
     <!-- Default panel contents -->
-    <div class="card-header">{{ trans('user.appointments.form.timetable.title') }}</div>
+    <div class="card-header">{{ trans('user.appointments.form.timetable.title', ['business' => $business->name]) }}</div>
     <div class="card-body">
         {!! Alert::info(trans('user.appointments.form.timetable.instructions')) !!}
 
@@ -77,28 +77,45 @@
 @push('footer_scripts')
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('extra').removeClass('hidden').hide();
-    $('#timetable .btn.service').click(function(e){
-        var service = this.dataset.service;
-        console.log('Press ' + service);
-        document.querySelectorAll('.service-prerequisites').hide();
-        $('#service-prerequisites-'+service).removeClass('hidden').show();
-        document.querySelectorAll('.service-description').hide();
-        $('#service-description-'+service).removeClass('hidden').show();
-        document.querySelectorAll('.service').removeClass('btn-success');
-        document.getElementById('date').val( this.dataset.date );
-        document.getElementById('service').val( this.dataset.service );
-        this.toggleClass('btn-success');
-        $('tr:not(.date_'+this.dataset.date+')').hide();
-        document.getElementById('extra').show();
+    var extraEl = document.getElementById('extra');
+    if (extraEl) {
+        extraEl.classList.remove('hidden');
+        extraEl.style.display = 'none';
+    }
+
+    document.querySelectorAll('#timetable .btn.service').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            var service = this.dataset.service;
+            var date = this.dataset.date;
+
+            document.querySelectorAll('.service-prerequisites').forEach(function(el) { el.style.display = 'none'; });
+            var prereqEl = document.getElementById('service-prerequisites-' + service);
+            if (prereqEl) { prereqEl.classList.remove('hidden'); prereqEl.style.display = ''; }
+
+            document.querySelectorAll('.service-description').forEach(function(el) { el.style.display = 'none'; });
+            var descEl = document.getElementById('service-description-' + service);
+            if (descEl) { descEl.classList.remove('hidden'); descEl.style.display = ''; }
+
+            document.querySelectorAll('.service').forEach(function(el) { el.classList.remove('btn-success'); });
+
+            document.getElementById('date').value = date;
+            document.getElementById('service').value = service;
+
+            this.classList.toggle('btn-success');
+
+            document.querySelectorAll('#timetable .daterow').forEach(function(row) {
+                row.style.display = row.classList.contains('date_' + date) ? '' : 'none';
+            });
+
+            if (extraEl) { extraEl.style.display = ''; }
+        });
     });
-    $('#timetable .btn.btn-date').click(function(e){
-        document.querySelectorAll('.daterow').show();
-        document.getElementById('extra').hide();
-    });
-    document.getElementById('date').click(function(e){
-        document.getElementById('panel').show();
-        return false;
+
+    document.querySelectorAll('#timetable .btn.btn-date').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            document.querySelectorAll('.daterow').forEach(function(row) { row.style.display = ''; });
+            if (extraEl) { extraEl.style.display = 'none'; }
+        });
     });
 });
 </script>

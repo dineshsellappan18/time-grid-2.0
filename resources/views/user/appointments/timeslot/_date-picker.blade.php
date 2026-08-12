@@ -14,7 +14,7 @@
 <section>
     <div class="container-fluid">
         <div class="row">
-            <div class="form-group col-md-4 col-md-offset-4">
+            <div class="form-group col-md-4 offset-md-4">
                 <div id="datepicker"
                        type="text"
                        language="en"

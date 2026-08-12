@@ -28,7 +28,7 @@
         {!! Form::label( trans('preferences.App\Models\User.'.$key.'.label') ) !!}
         <div class="input-group">
         @if($icon = array_get($value, 'icon'))
-            <span class="input-group-addon">{!! Icon::create($icon) !!}</span>
+            <span class="input-group-text">{!! Icon::create($icon) !!}</span>
         @endif
         {!! Form::number($key, $user->pref($key),
             array('class'=>'form-control',

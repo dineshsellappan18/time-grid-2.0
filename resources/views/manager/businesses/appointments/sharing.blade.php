@@ -38,7 +38,7 @@
                     @else
                         <p class="text-muted mb-3">No token has been issued for this business yet.</p>
                         <form method="POST" action="{{ route('manager.business.agenda.sharing.rotate', [$business]) }}">
-                            @csrf
+                            {{ csrf_field() }}
                             <button type="submit" class="btn btn-primary" data-action="issue-token">
                                 <i class="fa fa-key"></i> Issue Token
                             </button>
@@ -223,7 +223,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form method="POST" action="{{ route('manager.business.agenda.sharing.rotate', [$business]) }}">
-                    @csrf
+                    {{ csrf_field() }}
                     <button type="submit" class="btn btn-warning" data-action="confirm-rotate">
                         <i class="fa fa-refresh"></i> Rotate Now
                     </button>

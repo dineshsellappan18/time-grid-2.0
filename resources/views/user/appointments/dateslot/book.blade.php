@@ -6,7 +6,7 @@
 {!! Form::hidden('contact_id', $contact->id, ['required', 'id'=>'contact']) !!}
 
 <div class="container">
-    <div class="col-md-8 col-md-offset-2">
+    <div class="col-md-8 offset-md-2">
 
         <div class="row">
             {!! Alert::info(trans('user.appointments.alert.book_in_biz_on_behalf_of', ['biz' => $business->name, 'contact' => $contact->fullname()])) !!}

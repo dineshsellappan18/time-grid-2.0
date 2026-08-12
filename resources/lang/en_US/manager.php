@@ -144,6 +144,13 @@ return  [
       'instructions' => 'Here you can customize the business settings to your needs.',
       'title'        => 'Business preferences',
     ],
+    'sharing' => [
+      'title'    => ':business — Calendar Sharing',
+      'subtitle' => 'Manage iCal feed access',
+      'url'      => [
+        'title' => 'Subscription URL',
+      ],
+    ],
     'vacancies' => [
       'btn' => [
         'update' => 'Update availability',
@@ -349,13 +356,19 @@ return  [
     ],
   ],
   'vacancies' => [
+    'title' => 'Availability',
+    'btn' => [
+      'create' => 'Publish Availability',
+    ],
     'edit' => [
       'instructions' => 'Enter the appointments capacity for each service on each day day. This is, how may appointments can you handle per service per day?',
       'title'        => 'Availability',
     ],
     'msg' => [
       'edit' => [
-        'no_services' => 'No services registered. Please register services for your business.',
+        'no_services'       => 'No services registered. Please register services for your business.',
+        'no_vacancies_yet'  => 'No availability published yet',
+        'publish_first'     => 'Publish your availability so clients can start booking appointments.',
       ],
       'store' => [
         'nothing_changed' => 'You must indicate your availability at least for one date',

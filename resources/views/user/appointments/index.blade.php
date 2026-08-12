@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     
-    <div class="col-md-4 col-md-offset-4">
+    <div class="col-md-4 offset-md-4">
     {!! Form::open(['id' => 'postAppointmentStatus', 'method' => 'post', 'route' => ['api.booking.action']]) !!}
     @if ($appointments->count())
         @foreach ($appointments as $appointment)

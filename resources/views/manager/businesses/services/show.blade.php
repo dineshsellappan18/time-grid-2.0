@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 offset-md-3 offset-lg-3 toppad" >
 
             <div class="card border-info">
                 <div class="card-header">
@@ -17,9 +17,9 @@
                     </li>
                     @endif
                     <li class="list-group-item">
-                        <span class='glyphicon glyphicon-tag'></span>&nbsp;{{ $service->slug }}&nbsp;
+                        <span class='fa fa-tag'></span>&nbsp;{{ $service->slug }}&nbsp;
                         &nbsp;&nbsp;
-                        <span class='glyphicon glyphicon-hourglass'></span>&nbsp;{{ $service->duration }}&prime;
+                        <span class='fa fa-hourglass-half'></span>&nbsp;{{ $service->duration }}&prime;
                     </li>
                 </ul>
 

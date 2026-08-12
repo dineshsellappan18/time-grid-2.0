@@ -6,7 +6,7 @@
 @section('content')
 <div class="container-fluid">
 
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-10 offset-md-1">
 
             <div class="card">
 
@@ -17,7 +17,7 @@
                         <div class="row">
                         <div class="col-md-12">
                             <div class="media">
-                              <div class="media-left media-top d-none d-sm-block d-sm-none d-md-block">
+                              <div class="flex-shrink-0 me-3 d-none d-md-block">
                                 <a href="{{ route('manager.business.show', $business) }}">{!! $business->facebookImg('normal') !!}</a>
                               </div>
                               <div class="media-body">

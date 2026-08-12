@@ -4,7 +4,7 @@
 @section('subtitle', trans('manager.businesses.msg.register', ['plan' => trans($plan)]))
 
 @section('content')
-<div class="col-sm-12 col-sm-offset-0 col-md-8 col-md-offset-2">
+<div class="col-sm-12 col-md-8 offset-md-2">
 
     <div class="card">
 

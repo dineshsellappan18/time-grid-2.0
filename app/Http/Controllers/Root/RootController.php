@@ -201,9 +201,8 @@ class RootController extends Controller
     private function getAuditTrail(Request $request): array
     {
         $query = DB::table('audit_logs')
-            ->select(['created_at', 'actor_id', 'entity_type', 'action', 'correlation_id'])
-            ->selectRaw("JSON_UNQUOTE(JSON_EXTRACT(context, '$.outcome')) as outcome")
-            ->orderBy('created_at', 'desc');
+            ->select(['occurred_at', 'actor_id', 'resource_type', 'action', 'correlation_id', 'outcome'])
+            ->orderBy('occurred_at', 'desc');
 
         if ($request->filled('filter_actor')) {
             $query->where('actor_id', $request->input('filter_actor'));
@@ -212,10 +211,10 @@ class RootController extends Controller
             $query->where('action', 'like', '%' . $request->input('filter_action') . '%');
         }
         if ($request->filled('filter_resource')) {
-            $query->where('entity_type', $request->input('filter_resource'));
+            $query->where('resource_type', $request->input('filter_resource'));
         }
         if ($request->filled('filter_outcome')) {
-            $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(context, '$.outcome')) = ?", [$request->input('filter_outcome')]);
+            $query->where('outcome', $request->input('filter_outcome'));
         }
 
         $paginated = $query->paginate(25);

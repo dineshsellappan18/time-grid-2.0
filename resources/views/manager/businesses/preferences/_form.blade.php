@@ -52,7 +52,7 @@ trans('preferences.App\Models\Business.start_at.label')
         {!! Form::label( trans('preferences.App\Models\Business.'.$key.'.label') ) !!}
         <div class="input-group">
         @if($icon = array_get($value, 'icon'))
-            <span class="input-group-addon">{!! Icon::create($icon) !!}</span>
+            <span class="input-group-text">{!! Icon::create($icon) !!}</span>
         @endif
         {!! Form::number($key, $business->pref($key),
             array('class'=>'form-control',

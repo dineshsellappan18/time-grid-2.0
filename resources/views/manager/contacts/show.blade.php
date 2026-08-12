@@ -38,7 +38,7 @@
 @section('content')
 <div class="container-fluid">
 
-    <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2 toppad" >
+    <div class="col-12 col-sm-12 col-md-8 col-lg-8 offset-md-2 offset-lg-2 toppad" >
 
         <div class="card border-info">
 
@@ -191,7 +191,7 @@
                     <i class="fa fa-pencil"></i> Rectify
                 </a>
                 <form method="POST" action="{{ route('manager.addressbook.erase', [$business, $contact]) }}" class="d-inline" data-action="erase">
-                    @csrf
+                    {{ csrf_field() }}
                     <button type="submit" class="btn btn-outline-danger"
                             data-bs-toggle="tooltip"
                             title="Erase restricted PII (right to erasure)"
@@ -239,11 +239,11 @@ document.addEventListener('DOMContentLoaded', function() {
             //Completed slidetoggle
             if(idFor.is(':visible'))
             {
-                currentButton.html('<i class="glyphicon glyphicon-chevron-up text-muted"></i>');
+                currentButton.html('<i class="fa fa-chevron-up text-muted"></i>');
             }
             else
             {
-                currentButton.html('<i class="glyphicon glyphicon-chevron-down text-muted"></i>');
+                currentButton.html('<i class="fa fa-chevron-down text-muted"></i>');
             }
         })
     });

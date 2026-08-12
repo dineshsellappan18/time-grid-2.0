@@ -110,7 +110,6 @@
                     @endif
                 </section>
 
-                @include('_footer')
             </div>
         </div>
 

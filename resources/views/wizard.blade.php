@@ -20,7 +20,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-offset-2">
+        <div class="offset-md-2">
             <div class="col-md-5">
             {!! Panel::normal()->withHeader(trans('wizard.business.header'))->withBody(
                 Thumbnail::image(asset('img/wizard/panel-business.png'))->caption(trans('wizard.business.caption')).

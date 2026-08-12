@@ -68,9 +68,12 @@ class BusinessServiceController extends Controller
 
         $this->authorize('manageServices', $business);
 
+        $data = $request->except('_token');
+        $data['description'] = $data['description'] ?? '';
+
         $service = $this->catalog->create(
             $business,
-            $request->except('_token'),
+            $data,
             $request->get('type_id') ? (int) $request->get('type_id') : null,
         );
 

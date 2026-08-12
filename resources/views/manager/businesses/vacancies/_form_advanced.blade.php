@@ -42,13 +42,13 @@
     {!! Form::label( trans('appointments.text.from') ) !!}<br>
     <div class="input-group bootstrap-timepicker timepicker">
         {!! Form::input('', null, $startAt, ['id' => 'start_at', 'class' => 'form-control input-small', 'type' => 'text', 'data-template' => 'dropdown', 'data-minute-step' => '10']) !!}
-        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+        <span class="input-group-text"><i class="fa fa-clock-o"></i></span>
     </div>
 
     {!! Form::label( trans('appointments.text.to') ) !!}<br>
     <div class="input-group bootstrap-timepicker timepicker">
         {!! Form::input('', null, $finishAt, ['id' => 'finish_at', 'class' => 'form-control input-small', 'type' => 'text', 'data-template' => 'dropdown', 'data-minute-step' => '10']) !!}
-        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+        <span class="input-group-text"><i class="fa fa-clock-o"></i></span>
     </div>
 
     </div>

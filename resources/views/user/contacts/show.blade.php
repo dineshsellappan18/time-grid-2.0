@@ -39,7 +39,7 @@
     {!! Form::open(['id' => 'postAppointmentStatus', 'method' => 'post', 'route' => ['api.booking.action']]) !!}
 
     <div class="row">
-        <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2 toppad">
+        <div class="col-12 col-sm-12 col-md-8 col-lg-8 offset-md-2 offset-lg-2 toppad">
 
             <div class="card border-info">
                 <div class="card-header">

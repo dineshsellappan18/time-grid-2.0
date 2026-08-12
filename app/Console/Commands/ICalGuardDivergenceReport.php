@@ -37,7 +37,11 @@ class ICalGuardDivergenceReport extends Command
             ->selectRaw('DATE(occurred_at) as day, COUNT(*) as count')
             ->where('action', 'ical.access')
             ->where('outcome', 'denied')
-            ->whereRaw("JSON_EXTRACT(changes, '$.reason') = 'divergence'")
+            ->whereRaw(
+                config('database.default') === 'pgsql'
+                    ? "changes->>'reason' = 'divergence'"
+                    : "JSON_EXTRACT(changes, '$.reason') = 'divergence'"
+            )
             ->where('occurred_at', '>=', now()->subDays($days))
             ->groupByRaw('DATE(occurred_at)')
             ->orderBy('day')
@@ -100,11 +104,19 @@ class ICalGuardDivergenceReport extends Command
         $this->info('=== Denial Breakdown ===');
 
         $results = DB::table('audit_logs')
-            ->selectRaw("JSON_EXTRACT(changes, '$.reason') as reason, COUNT(*) as count")
+            ->selectRaw(
+                config('database.default') === 'pgsql'
+                    ? "changes->>'reason' as reason, COUNT(*) as count"
+                    : "JSON_EXTRACT(changes, '$.reason') as reason, COUNT(*) as count"
+            )
             ->where('action', 'ical.access')
             ->where('outcome', 'denied')
             ->where('occurred_at', '>=', now()->subDays($days))
-            ->groupByRaw("JSON_EXTRACT(changes, '$.reason')")
+            ->groupByRaw(
+                config('database.default') === 'pgsql'
+                    ? "changes->>'reason'"
+                    : "JSON_EXTRACT(changes, '$.reason')"
+            )
             ->get();
 
         if ($results->isEmpty()) {

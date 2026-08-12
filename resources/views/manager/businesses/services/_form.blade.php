@@ -18,7 +18,7 @@
     {!! Form::label( trans('manager.service.form.duration.label'), null, ['class' => 'control-label col-sm-4 col-md-4'] ) !!}
     <div class="col-sm-4 col-md-4">
         <div class="input-group">
-            <span class="input-group-addon">{!! Icon::hourglass() !!}</span>
+            <span class="input-group-text">{!! Icon::hourglass() !!}</span>
             {!! Form::number('duration', null, [
                 'required',
                 'step' => 5,
@@ -75,7 +75,7 @@
                 'class'=>'form-control',
                 'placeholder'=> trans('manager.service.form.color.label')
                 ]) !!}
-            <span class="input-group-addon"><i></i></span>
+            <span class="input-group-text"><i></i></span>
         </div>
         <div class="help-block with-errors"></div>
     </div>

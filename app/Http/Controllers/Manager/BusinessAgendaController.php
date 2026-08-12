@@ -190,8 +190,8 @@ class BusinessAgendaController extends Controller
     private function getDivergenceCount(Business $business): int
     {
         return DB::table('audit_logs')
-            ->where('entity_type', 'ical_feed')
-            ->where('entity_id', (string) $business->id)
+            ->where('resource_type', 'ical_feed')
+            ->where('resource_id', $business->id)
             ->where('action', 'guard_divergence')
             ->count();
     }
@@ -199,17 +199,20 @@ class BusinessAgendaController extends Controller
     private function getDenialLog(Business $business, int $limit = 50): array
     {
         return DB::table('audit_logs')
-            ->where('entity_type', 'ical_feed')
-            ->where('entity_id', (string) $business->id)
+            ->where('resource_type', 'ical_feed')
+            ->where('resource_id', $business->id)
             ->where('action', 'access_denied')
-            ->select(['created_at', 'action', 'correlation_id'])
-            ->selectRaw("JSON_UNQUOTE(JSON_EXTRACT(context, '$.reason')) as reason")
-            ->selectRaw("JSON_UNQUOTE(JSON_EXTRACT(context, '$.outcome')) as outcome")
-            ->orderBy('created_at', 'desc')
+            ->select(['occurred_at', 'action', 'correlation_id', 'outcome'])
+            ->selectRaw(
+                config('database.default') === 'pgsql'
+                    ? "changes->>'reason' as reason"
+                    : "JSON_UNQUOTE(JSON_EXTRACT(changes, '$.reason')) as reason"
+            )
+            ->orderBy('occurred_at', 'desc')
             ->limit($limit)
             ->get()
             ->map(fn ($row) => [
-                'timestamp'      => $row->created_at,
+                'timestamp'      => $row->occurred_at,
                 'outcome'        => $row->outcome ?? 'denied',
                 'reason'         => $row->reason ?? 'unknown',
                 'correlation_id' => $row->correlation_id,
@@ -220,13 +223,15 @@ class BusinessAgendaController extends Controller
     private function writeAuditRow(Business $business, string $action): void
     {
         DB::table('audit_logs')->insert([
+            'actor_type'     => 'user',
             'actor_id'       => auth()->id(),
-            'entity_type'    => 'ical_feed',
-            'entity_id'      => (string) $business->id,
+            'resource_type'  => 'ical_feed',
+            'resource_id'    => $business->id,
             'action'         => $action,
+            'outcome'        => 'success',
             'correlation_id' => request()->header('X-Correlation-ID', \Illuminate\Support\Str::uuid()->toString()),
-            'context'        => json_encode(['ip_hash' => hash('sha256', config('app.key') . request()->ip())]),
-            'created_at'     => now(),
+            'ip_hash'        => hash('sha256', config('app.key') . request()->ip()),
+            'occurred_at'    => now(),
         ]);
     }
 

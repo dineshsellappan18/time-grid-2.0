@@ -28,6 +28,7 @@ return  [
     'alert' => [
       'book_in_biz_on_behalf_of' => 'Book appointment for :contact at :biz',
       'empty_list'               => 'You have no ongoing reservations.',
+      'no_upcoming'              => 'No upcoming appointments.',
       'no_vacancies'             => 'Sorry, the business cannot take any reservations now.',
     ],
     'btn' => [

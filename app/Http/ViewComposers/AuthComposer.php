@@ -26,6 +26,6 @@ class AuthComposer
 
     protected function getActiveAppointments(): Collection
     {
-        return Cache::get('user-{auth()->id()}-active-appointments', fn () => auth()->user()->appointments()->active()->get());
+        return Cache::get("user-" . auth()->id() . "-active-appointments", fn () => auth()->user()->appointments()->active()->get());
     }
 }

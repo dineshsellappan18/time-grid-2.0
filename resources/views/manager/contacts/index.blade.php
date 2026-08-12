@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <h3 class="card-title">{{ trans('manager.contacts.title') }}</h3>
             <div class="float-end">
                 <button class="btn btn-outline-secondary btn-xs btn-filter" data-action="toggle-filter">
-                    <span class="glyphicon glyphicon-filter"></span>&nbsp;{{ trans('manager.contacts.list.btn.filter') }}
+                    <span class="fa fa-filter"></span>&nbsp;{{ trans('manager.contacts.list.btn.filter') }}
                 </button>
             </div>
         </div>

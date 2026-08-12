@@ -18,7 +18,7 @@ class Image extends RenderedObject
     /**
      * Constant for responsive image
      */
-    const IMAGE_RESPONSIVE = 'img-responsive';
+    const IMAGE_RESPONSIVE = 'img-fluid';
 
     /**
      * Constant for rounded images

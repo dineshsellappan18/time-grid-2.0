@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Webpatser\Countries\Countries;
 
 class CountriesSeeder extends Seeder
 {
@@ -16,8 +18,7 @@ class CountriesSeeder extends Seeder
         //Empty the countries table
         DB::table(\Config::get('countries.table_name'))->delete();
 
-        //Get all of the countries
-        $countries = Countries::getList();
+        $countries = (new Countries())->getList();
         foreach ($countries as $countryId => $country) {
             DB::table(\Config::get('countries.table_name'))->insert([
                 'id'                => $countryId,

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Bootstrap\ApplicationKeyGuard;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,6 +16,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         (new ApplicationKeyGuard())->assertSecureKey(
             $this->app->environment(),
             config('app.key')

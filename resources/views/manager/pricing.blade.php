@@ -121,7 +121,7 @@
 <div class="container-fluid">
 
     <div class="row flat">
-        <div class="col-lg-offset-3 col-md-offset-3 col-offset-1">
+        <div class="offset-lg-3 offset-md-3 offset-1">
             <div class="col-lg-4 col-md-4 col-6">
                 <ul class="plan plan1 featured" id="plan1">
                     <li class="plan-name noZoom">

@@ -21,22 +21,33 @@ class BusinessPresenter extends BasePresenter
      */
     public function facebookImg($type = 'square')
     {
+        $name = e($this->wrappedObject->name);
+        $fallbackUrl = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($name))) . "?s=100&d=identicon";
+
+        if (!$this->wrappedObject->social_facebook) {
+            return "<img class=\"img-thumbnail\" src=\"{$fallbackUrl}\" height=\"100\" width=\"100\" alt=\"{$name}\"/>";
+        }
+
         $url = parse_url($this->wrappedObject->social_facebook);
 
-        if(!$this->wrappedObject->social_facebook || !array_key_exists('path', $url)){
-            return "<img class=\"img-thumbnail\" src=\"//placehold.it/100x100\" height=\"100\" width=\"100\" alt=\"{$this->wrappedObject->name}\"/>";
+        if (!array_key_exists('path', $url)) {
+            return "<img class=\"img-thumbnail\" src=\"{$fallbackUrl}\" height=\"100\" width=\"100\" alt=\"{$name}\"/>";
         }
 
         $userId = trim($url['path'], '/');
 
         if ($url['path'] == '/profile.php') {
-            parse_str($url['query'], $parts);
-            $userId = $parts['id'];
+            parse_str($url['query'] ?? '', $parts);
+            $userId = $parts['id'] ?? '';
         }
 
-        $url = "http://graph.facebook.com/{$userId}/picture?type=$type";
+        if (empty($userId)) {
+            return "<img class=\"img-thumbnail\" src=\"{$fallbackUrl}\" height=\"100\" width=\"100\" alt=\"{$name}\"/>";
+        }
 
-        return "<img class=\"img-thumbnail media-object\" src=\"$url\" height=\"100\" width=\"100\" alt=\"{$this->wrappedObject->name}\"/>";
+        $graphUrl = "https://graph.facebook.com/{$userId}/picture?type={$type}";
+
+        return "<img class=\"img-thumbnail media-object\" src=\"{$graphUrl}\" height=\"100\" width=\"100\" alt=\"{$name}\" onerror=\"this.onerror=null;this.src='{$fallbackUrl}';\"/>";
     }
 
     /**
@@ -59,7 +70,7 @@ class BusinessPresenter extends BasePresenter
 
         $src = 'http://maps.googleapis.com/maps/api/staticmap?'.http_build_query($data, '', '&amp;');
 
-        return "<img class=\"img-responsive img-thumbnail center-block\" width=\"180\" height=\"100\" src=\"$src\"/>";
+        return "<img class=\"img-fluid img-thumbnail d-block mx-auto\" width=\"180\" height=\"100\" src=\"$src\"/>";
     }
 
     /**
@@ -69,9 +80,16 @@ class BusinessPresenter extends BasePresenter
      */
     public function industryIcon()
     {
-        $src = ($this->wrappedObject->pref('cover_photo_url')) ?:
-            asset('/img/industries/'.$this->wrappedObject->category->slug.'.png');
+        if ($this->wrappedObject->pref('cover_photo_url')) {
+            $src = $this->wrappedObject->pref('cover_photo_url');
+        } else {
+            $slug = $this->wrappedObject->category->slug ?? 'default';
+            $path = public_path("img/industries/{$slug}.png");
+            $src = file_exists($path)
+                ? asset("/img/industries/{$slug}.png")
+                : asset('/img/industries/default.png');
+        }
 
-        return "<img class=\"img-responsive center-block\" src=\"{$src}\"/>";
+        return "<img class=\"img-fluid d-block mx-auto\" src=\"{$src}\" alt=\"" . e($this->wrappedObject->category->name ?? '') . "\"/>";
     }
 }

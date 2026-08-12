@@ -3,7 +3,9 @@
 return  [
   'App\\Models\\User' => [
     'timezone' => [
-      'label' => 'Timezone',
+      'label'  => 'Timezone',
+      'format' => 'e.g. America/New_York',
+      'help'   => 'Your preferred timezone for displaying dates and times',
     ],
   ],
   'App\\Models\\Business' => [

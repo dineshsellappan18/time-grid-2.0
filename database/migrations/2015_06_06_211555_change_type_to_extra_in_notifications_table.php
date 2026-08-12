@@ -12,12 +12,12 @@ class ChangeTypeToExtraInNotificationsTable extends Migration
     public function up()
     {
         Schema::table('notifications', function ($table) {
-            $driver = Config::get('database.driver');
+            $driver = Schema::getConnection()->getDriverName();
 
             if ($driver === 'mysql' || $driver === 'sqlite') {
                 DB::statement('ALTER TABLE notifications MODIFY COLUMN extra json');
             } elseif ($driver === 'pgsql') {
-                DB::statement('ALTER TABLE notifications ALTER COLUMN extra TYPE json USING code::string');
+                DB::statement('ALTER TABLE notifications ALTER COLUMN extra TYPE json USING extra::json');
             }
         });
     }
@@ -31,12 +31,12 @@ class ChangeTypeToExtraInNotificationsTable extends Migration
     {
         Schema::table('notifications', function ($table) {
 
-            $driver = Config::get('database.driver');
+            $driver = Schema::getConnection()->getDriverName();
 
             if ($driver === 'mysql' || $driver === 'sqlite') {
-                DB::statement('ALTER TABLE notifications MODIFY COLUMN extra STRING(255)');
+                DB::statement('ALTER TABLE notifications MODIFY COLUMN extra VARCHAR(255)');
             } elseif ($driver === 'pgsql') {
-                DB::statement('ALTER TABLE notifications ALTER COLUMN extra TYPE string USING code::json');
+                DB::statement('ALTER TABLE notifications ALTER COLUMN extra TYPE VARCHAR(255)');
             }
         });
     }

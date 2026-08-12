@@ -3,7 +3,7 @@
 @section('css')
 @parent
 <style>
-.glyphicon {
+.fa {
     margin-bottom: 4px;
     margin-right: 10px;
     color: #999;

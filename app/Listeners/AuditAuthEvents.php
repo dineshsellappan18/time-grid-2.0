@@ -41,7 +41,7 @@ class AuditAuthEvents
             resourceType: 'user',
             resourceId: null,
             outcome: 'denied',
-            changes: ['guard' => $event->guard],
+            changes: ['guard' => $event->guard ?? 'web'],
             actorType: 'anonymous',
             actorId: null,
         );

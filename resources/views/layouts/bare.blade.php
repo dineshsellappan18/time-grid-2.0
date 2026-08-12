@@ -60,7 +60,6 @@
             </div>
         </main>
 
-        @include('_footer')
     </div>
 
 @vite(['resources/js/app.js'])

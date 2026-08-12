@@ -8,7 +8,7 @@
         <h4 class="list-group-item-heading"> {{ str_limit($business->name, 50) }} </h4>
         <p class="list-group-item-text">
             <p>
-                <i class="glyphicon glyphicon-home"></i>&nbsp;
+                <i class="fa fa-home"></i>&nbsp;
                 {!! trans('app.business.category.'.strtolower($business->category->slug)) !!}
             </p>
         </p>

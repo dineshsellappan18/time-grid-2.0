@@ -54,8 +54,6 @@
 
     @yield('content')
 
-    @include('_footer')
-
     @vite(['resources/js/app.js'])
 </body>
 </html>

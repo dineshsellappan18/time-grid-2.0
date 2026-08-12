@@ -6,7 +6,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 offset-md-3 offset-lg-3 toppad" >
 
             <div class="card border-info">
                 <div class="card-header">
@@ -61,11 +61,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         //Completed slidetoggle
                         if(idFor.is(':visible'))
                         {
-                                currentButton.html('<i class="glyphicon glyphicon-chevron-up text-muted"></i>');
+                                currentButton.html('<i class="fa fa-chevron-up text-muted"></i>');
                         }
                         else
                         {
-                                currentButton.html('<i class="glyphicon glyphicon-chevron-down text-muted"></i>');
+                                currentButton.html('<i class="fa fa-chevron-down text-muted"></i>');
                         }
                 })
         });

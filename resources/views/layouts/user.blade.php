@@ -24,21 +24,21 @@
 
     <div class="tg-public-shell">
         <header class="tg-public-topbar">
-            <div class="container tg-public-topbar__inner">
-                <a href="{{ route('home') }}" class="tg-public-brand">time<b>grid</b></a>
+            <nav class="navbar navbar-expand-lg container tg-public-topbar__inner">
+                <a href="{{ route('home') }}" class="navbar-brand tg-public-brand">time<b>grid</b></a>
 
-                <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#tg-public-nav">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#tg-public-nav" aria-controls="tg-public-nav" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
 
-                <div class="collapse navbar-collapse tg-public-nav" id="tg-public-nav">
-                    <ul class="nav align-items-center gap-1 mb-0">
+                <div class="collapse navbar-collapse" id="tg-public-nav">
+                    <ul class="navbar-nav align-items-center gap-1 mb-0">
                         @include('_navi18n')
                         @if(auth()->check())
                             @include('user._navmenu')
                         @endif
                     </ul>
-                    <ul class="nav align-items-center gap-1 mb-0 ms-lg-auto">
+                    <ul class="navbar-nav align-items-center gap-1 mb-0 ms-lg-auto">
                         @if(auth()->check())
                             @include('user._notifications-menu')
                             @include('_user-account-menu')
@@ -49,7 +49,7 @@
                         @endif
                     </ul>
                 </div>
-            </div>
+            </nav>
         </header>
 
         <main class="tg-public-main">
@@ -72,10 +72,8 @@
             </div>
         </main>
 
-        @include('_footer')
     </div>
 
-@vite(['resources/js/app.js'])
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {

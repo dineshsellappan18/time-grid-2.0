@@ -7,7 +7,7 @@
     trans('appointments.status.reserved')
     trans('appointments.status.served')
 --}}
-<div class='panel panel-{{ $appointment->statusToCssClass }}' id='{{ $appointment->code }}'>
+<div class='card border-{{ $appointment->statusToCssClass }}' id='{{ $appointment->code }}'>
     <div class='card-header'>
         <h3 class='card-title'>{{ $appointment->status() }}</h3>
     </div>
@@ -16,35 +16,35 @@
         <ul class="list-group appointmentinfo {{ $appointment->statusToCssClass }}">
 
             <li class="list-group-item">
-                <span class='glyphicon glyphicon-user'></span>&nbsp;
+                <span class='fa fa-user'></span>&nbsp;
                 {{ $appointment->contact->firstname }} {{ $appointment->contact->lastname }}
             </li>
 
             <li class="list-group-item">
-                <span class='glyphicon glyphicon-tag'></span>&nbsp;{{ $appointment->service->name }}
+                <span class='fa fa-tag'></span>&nbsp;{{ $appointment->service->name }}
             </li>
 
             <li class="list-group-item">
-                <span class='glyphicon glyphicon-home'></span>&nbsp;
+                <span class='fa fa-home'></span>&nbsp;
                 {{ $appointment->business->name }}
             </li>
 
             @if($appointment->location)
             <li class="list-group-item">
-                <span class='glyphicon glyphicon-map-marker'></span>&nbsp;
+                <span class='fa fa-map-marker'></span>&nbsp;
                 {{ $appointment->location }}
             </li>
             @endif
 
             @if($appointment->phone)
             <li class="list-group-item">
-                <span class='glyphicon glyphicon-phone'></span>&nbsp;
+                <span class='fa fa-phone'></span>&nbsp;
                 {{ $appointment->phone }}
             </li>
             @endif
 
             <li class="list-group-item">
-                <span class='glyphicon glyphicon-calendar'></span>&nbsp;
+                <span class='fa fa-calendar'></span>&nbsp;
                 {{ $appointment->date }}&nbsp;&nbsp;
                 <span class="text-muted">
                     <small>{{ $appointment->start_at->diffForHumans() }}</small>
@@ -52,11 +52,11 @@
             </li>
 
             <li class="list-group-item"><span title="{{ $appointment->timezone() }}">
-                <span class='glyphicon glyphicon-time'></span>&nbsp;
+                <span class='fa fa-clock-o'></span>&nbsp;
                     {{ trans_choice('appointments.text.arrive_at', count($arriveAt = $appointment->arriveAt), $arriveAt) }}&nbsp;&nbsp;
                     @if($appointment->duration)
                             <span class="text-muted">
-                                <span class='glyphicon glyphicon-hourglass'></span>&nbsp;
+                                <span class='fa fa-hourglass-half'></span>&nbsp;
                                 {{ trans_duration($appointment->duration()) }}&nbsp;
                             </span>
                         </span>
@@ -66,7 +66,7 @@
 
             @if($appointment->comments)
             <li class="list-group-item">
-                <span class='glyphicon glyphicon-pencil'></span>&nbsp;{{ $appointment->comments }}
+                <span class='fa fa-pencil'></span>&nbsp;{{ $appointment->comments }}
             </li>
             @endif
         </ul>
@@ -84,7 +84,7 @@
     </div>
 
     <div class='card-footer'>
-        <span class='glyphicon glyphicon-barcode'></span>&nbsp;<code>{{ $appointment->code }}</code>
+        <span class='fa fa-barcode'></span>&nbsp;<code>{{ $appointment->code }}</code>
     </div>
 </div>
 {{-- Appointment Panel Partial --}}

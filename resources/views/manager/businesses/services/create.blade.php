@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-sm-12 col-sm-offset-0 col-md-6 col-md-offset-3">
+    <div class="col-sm-12 col-md-6 offset-md-3">
 
         {!! Alert::info(trans('manager.services.create.instructions')) !!}
 

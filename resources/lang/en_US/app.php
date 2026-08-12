@@ -19,6 +19,7 @@ return  [
       'consulting'   => 'Consulting',
       'hairdresser'  => 'Hairdresser',
       'beauty'       => 'Beauty & Healthcare',
+      'restaurant'   => 'Dining & Restaurant',
     ],
   ],
   'dateformat' => [

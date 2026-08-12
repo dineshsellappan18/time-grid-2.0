@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-header">
-        <span class="glyphicon glyphicon-list-alt"></span>{{trans('app.notifications.title')}}
+        <span class="fa fa-list-alt"></span>{{trans('app.notifications.title')}}
     </div>
     <div class="card-body">
         <div class="row">

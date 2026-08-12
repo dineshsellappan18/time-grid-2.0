@@ -23,5 +23,6 @@ class CategoriesSeeder extends Seeder
         Category::updateOrCreate(['slug' => 'consulting'], ['strategy' => 'timeslot', 'name' => 'Consulting',  'description' => 'Consulting']);
         Category::updateOrCreate(['slug' => 'hairdresser'], ['strategy' => 'timeslot', 'name' => 'Hairdresser',  'description' => 'Hairdresser']);
         Category::updateOrCreate(['slug' => 'beauty'], ['strategy' => 'timeslot', 'name' => 'Beauty & Healthcare',  'description' => 'Beauty & Healthcare']);
+        Category::updateOrCreate(['slug' => 'restaurant'], ['strategy' => 'timeslot', 'name' => 'Restaurant',  'description' => 'Dining & Restaurant']);
     }
 }

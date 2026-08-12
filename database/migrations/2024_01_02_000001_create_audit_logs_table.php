@@ -4,12 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateAuditLogsTable extends Migration
 {
     public function up(): void
     {
         Schema::create('audit_logs', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('actor_type', 50);
             $table->unsignedBigInteger('actor_id')->nullable();
             $table->string('action', 100);
@@ -32,4 +32,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('audit_logs');
     }
-};
+}
