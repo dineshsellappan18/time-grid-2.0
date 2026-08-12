@@ -3225,3 +3225,190 @@ body.tg-public {
     .btn { width: 100%; }
   }
 }
+
+// ---------------------------------------------------------------------------
+// Scheduling & Calendar Screen
+// ---------------------------------------------------------------------------
+.tg-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.tg-cal-header__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  i { color: $tg-primary; margin-right: 0.3rem; }
+}
+.tg-cal-header__right {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tg-cal-view-toggle {
+  display: inline-flex;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius;
+  overflow: hidden;
+}
+.tg-cal-view-toggle__btn {
+  padding: 0.4rem 1rem;
+  border: none;
+  background: #fff;
+  font-size: $tg-font-size-sm;
+  font-weight: 500;
+  color: $tg-secondary;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  &:not(:last-child) { border-right: 1px solid $tg-border-color; }
+  &:hover { background: rgba($tg-primary, 0.05); color: $tg-primary; }
+  &.is-active {
+    background: $tg-primary;
+    color: #fff;
+  }
+  i { margin-right: 0.25rem; }
+}
+
+.tg-cal-container {
+  position: relative;
+  background: #fff;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius;
+  padding: 1rem;
+  min-height: 500px;
+}
+.tg-cal-body {
+  min-height: 480px;
+}
+
+.tg-cal-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 2rem;
+  pointer-events: none;
+}
+.tg-cal-empty__icon {
+  font-size: 3rem;
+  color: $tg-secondary;
+  opacity: 0.4;
+  margin-bottom: 0.75rem;
+}
+.tg-cal-empty__title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $tg-body-color;
+  margin-bottom: 0.25rem;
+}
+.tg-cal-empty__text {
+  font-size: $tg-font-size-sm;
+  color: $tg-secondary;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.tg-cal-sharing {
+  background: rgba($tg-primary, 0.04);
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius;
+  padding: 0.6rem 1rem;
+}
+
+// Event detail modal
+.tg-event-detail {
+  position: relative;
+}
+.tg-event-detail__color-bar {
+  height: 4px;
+  border-radius: 2px;
+  margin-bottom: 1rem;
+  background: $tg-primary;
+}
+.tg-event-detail__field {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba($tg-border-color, 0.5);
+  &:last-child { border-bottom: none; }
+}
+.tg-event-detail__label {
+  font-weight: 500;
+  color: $tg-secondary;
+  font-size: $tg-font-size-sm;
+  i { margin-right: 0.3rem; width: 14px; text-align: center; }
+}
+.tg-event-detail__value {
+  font-weight: 500;
+  color: $tg-body-color;
+  text-align: right;
+}
+
+// FullCalendar overrides for design consistency
+.fc {
+  --fc-border-color: #{$tg-border-color};
+  --fc-button-bg-color: #{$tg-primary};
+  --fc-button-border-color: #{$tg-primary};
+  --fc-button-hover-bg-color: #{darken($tg-primary, 8%)};
+  --fc-button-hover-border-color: #{darken($tg-primary, 8%)};
+  --fc-button-active-bg-color: #{darken($tg-primary, 12%)};
+  --fc-button-active-border-color: #{darken($tg-primary, 12%)};
+  --fc-today-bg-color: rgba(#{red($tg-primary)}, #{green($tg-primary)}, #{blue($tg-primary)}, 0.06);
+  --fc-now-indicator-color: #{$tg-danger};
+  --fc-event-border-color: transparent;
+  font-family: inherit;
+}
+.fc .fc-toolbar-title {
+  font-size: 1.1rem !important;
+  font-weight: 600;
+}
+.fc .fc-button {
+  font-size: 0.8rem !important;
+  border-radius: $tg-border-radius !important;
+  padding: 0.3rem 0.6rem !important;
+}
+.fc .fc-event {
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.fc .fc-timegrid-slot {
+  height: 2.2em;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .tg-cal-header {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  .tg-cal-header__right {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .tg-cal-view-toggle {
+    width: 100%;
+    justify-content: center;
+  }
+  .tg-cal-view-toggle__btn {
+    flex: 1;
+    text-align: center;
+  }
+  .tg-cal-container {
+    padding: 0.5rem;
+  }
+  .fc .fc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .fc .fc-toolbar-title {
+    font-size: 0.95rem !important;
+  }
+}

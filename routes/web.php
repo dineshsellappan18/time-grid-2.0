@@ -297,6 +297,10 @@ Route::group(['prefix' => '{business}'], function ($business) {
             'as'   => 'manager.business.agenda.sharing.rotate',
             'uses' => 'BusinessAgendaController@postRotateToken',
         ]);
+        Route::post('calendar/reschedule/{appointment}', [
+            'as'   => 'manager.business.agenda.reschedule',
+            'uses' => 'BusinessAgendaController@postReschedule',
+        ]);
 
         // BUSINESS MANAGEMENT
         Route::get('dashboard', [

@@ -82,24 +82,42 @@ class BusinessAgendaController extends Controller
         $this->authorize('manage', $business);
 
         $appointments = $business->bookings()
-            ->with(['contact:id,firstname,lastname', 'service:id,name,color'])
+            ->with(['contact', 'service', 'humanresource'])
             ->active()
             ->get();
 
         $jsAppointments = [];
 
         foreach ($appointments as $appointment) {
+            $contactName = trim(($appointment->contact->firstname ?? '') . ' ' . ($appointment->contact->lastname ?? '')) ?: 'Unknown';
+            $serviceName = $appointment->service->name ?? 'Unknown';
+            $assignee = $appointment->humanresource->name ?? null;
+
             $jsAppointments[] = [
-                'title' => ($appointment->contact->firstname ?? 'Unknown') . ' / ' . ($appointment->service->name ?? 'Unknown'),
-                'color' => $appointment->service->color ?? '#ccc',
-                'start' => $appointment->start_at->copy()->timezone($business->timezone)->toIso8601String(),
-                'end'   => $appointment->finish_at->copy()->timezone($business->timezone)->toIso8601String(),
+                'id'        => $appointment->id,
+                'title'     => $contactName . ' / ' . $serviceName,
+                'color'     => $appointment->service->color ?? '#6366f1',
+                'start'     => $appointment->start_at->copy()->timezone($business->timezone)->toIso8601String(),
+                'end'       => $appointment->finish_at->copy()->timezone($business->timezone)->toIso8601String(),
+                'extendedProps' => [
+                    'appointmentId' => $appointment->id,
+                    'contact'       => $contactName,
+                    'service'       => $serviceName,
+                    'assignee'      => $assignee,
+                    'status'        => $appointment->statusLabel,
+                    'comments'      => $appointment->comments,
+                    'detailUrl'     => route('manager.business.agenda.show', [$business, $appointment]),
+                ],
             ];
         }
 
         $slotDuration = $appointments->count() > 5 ? '0:15' : '0:30';
 
         $icalURL = $this->generateICalURL($business);
+
+        $services = $business->services()->get(['id', 'name', 'color', 'duration']);
+        $contacts = $business->contacts()->get(['contacts.id', 'firstname', 'lastname']);
+        $humanresources = $business->humanresources()->get(['id', 'name', 'capacity']);
 
         JavaScript::put([
             'minTime'      => $business->pref('start_at'),
@@ -109,7 +127,37 @@ class BusinessAgendaController extends Controller
             'slotDuration' => $slotDuration,
         ]);
 
-        return view('manager.businesses.appointments.calendar', compact('business', 'icalURL'));
+        return view('manager.businesses.appointments.calendar', compact(
+            'business', 'icalURL', 'services', 'contacts', 'humanresources'
+        ));
+    }
+
+    public function postReschedule(Request $request, Business $business, Appointment $appointment)
+    {
+        $this->authorize('manage', $business);
+
+        $request->validate([
+            'start' => 'required|date',
+            'end'   => 'required|date|after:start',
+        ]);
+
+        Log::info('agenda.reschedule', [
+            'actor'     => auth()->id(),
+            'resource'  => 'appointment',
+            'operation' => 'reschedule_drag_drop',
+            'context'   => [
+                'business_id'    => $business->id,
+                'appointment_id' => $appointment->id,
+                'new_start'      => $request->input('start'),
+                'new_end'        => $request->input('end'),
+            ],
+        ]);
+
+        $appointment->start_at  = \Carbon\Carbon::parse($request->input('start'));
+        $appointment->finish_at = \Carbon\Carbon::parse($request->input('end'));
+        $appointment->save();
+
+        return response()->json(['success' => true, 'message' => 'Appointment rescheduled.']);
     }
 
     public function getSharing(Business $business)

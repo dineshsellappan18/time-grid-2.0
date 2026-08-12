@@ -15,6 +15,7 @@
   "dependencies": {
     "@fullcalendar/core": "^6.1.11",
     "@fullcalendar/daygrid": "^6.1.11",
+    "@fullcalendar/interaction": "^6.1.21",
     "@fullcalendar/timegrid": "^6.1.11",
     "bootstrap": "^5.3.3",
     "clipboard": "^2.0.11",
