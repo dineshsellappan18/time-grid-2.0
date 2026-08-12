@@ -25,5 +25,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(RolesTableSeeder::class);
         $this->command->info('Seeded the Param Roles!');
+
+        $this->call(TestingDatabaseSeeder::class);
+        $this->command->info('Seeded the Testing Data (businesses, customers)!');
     }
 }
