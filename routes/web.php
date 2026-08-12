@@ -281,6 +281,10 @@ Route::group(['prefix' => '{business}'], function ($business) {
             'as'   => 'manager.business.agenda.index',
             'uses' => 'BusinessAgendaController@getIndex',
         ]);
+        Route::get('agenda/{appointment}', [
+            'as'   => 'manager.business.agenda.show',
+            'uses' => 'BusinessAgendaController@getShow',
+        ]);
         Route::get('calendar', [
             'as'   => 'manager.business.agenda.calendar',
             'uses' => 'BusinessAgendaController@getCalendar',

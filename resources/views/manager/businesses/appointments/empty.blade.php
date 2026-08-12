@@ -1,69 +1,55 @@
 @extends('layouts.app')
 
-@section('css')
-@parent
-<style type="text/css">
-.btn-clean {
-  display: inline;
-  padding: 12px 16px;
-  background: #fafafa;
-  border: 1px solid #bfbfbf;
-  border-radius: 2px;
-  text-decoration: none;
-  color: #8f8f8f;
-  font-size: 2em;
-  -webkit-transition: all .25s ease-in-out;
-  -moz-transition: all .25s ease-in-out;
-  -ms-transition: all .25s ease-in-out;
-  -o-transition: all .25s ease-in-out;
-  transition: all .25s ease-in-out;
-  width: 70%;
-}
-
-.btn-clean i {
-  position: relative;
-  top: 1px;
-  margin-left: -34px;
-  font-size: 1.15em;
-}
-
-.btn-clean:hover,
-.btn-clean:focus,
-.btn-clean:active,
-.clean.button-group.open .button {
-  border-color: #8f8f8f;
-  color: #808080;
-  text-decoration: none;
-}
-
-.btn-clean input {
-  border: 0;
-  width: 100%;
-}
-</style>
-@endsection
+@section('title', trans('manager.agenda.title'))
+@section('subtitle', trans('manager.agenda.subtitle'))
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid px-0">
+    <div class="tg-empty-state tg-empty-state--page">
+        <i class="fa fa-calendar-o tg-empty-state__icon"></i>
+        <h2 class="tg-empty-state__title">{{ trans('emptystate.manager.appointments.title') }}</h2>
+        <p class="tg-empty-state__text">{{ trans('emptystate.manager.appointments.hint') }}</p>
 
-  <div class="text-center">
-    <h1>{{ trans('emptystate.manager.appointments.title') }}</h1>
-    <p class="lead">{{ trans('emptystate.manager.appointments.hint') }}</p>
+        <div class="tg-empty-state__share-link mb-4">
+            <div class="input-group" style="max-width: 32rem; margin: 0 auto;">
+                <span class="input-group-text"><i class="fa fa-link"></i></span>
+                <input type="text" class="form-control" id="businessShareLink"
+                       value="{{ url('/'.$business->slug) }}" readonly>
+                <button type="button" class="btn btn-outline-primary" id="copyLinkBtn" title="Copy link">
+                    <i class="fa fa-clipboard"></i> Copy
+                </button>
+            </div>
+            <small class="text-muted mt-1 d-block">Share this link with your customers to start receiving bookings.</small>
+        </div>
 
-    <button class="btn-clean btn btn-lg" data-clipboard-target="#link">
-        <input id="link" value="{{ url('/'.$business->slug) }}" readonly/>
-        <i class="ion-link"></i>
-    </button>
-  </div>
-
+        <div class="d-flex gap-2 justify-content-center">
+            <a href="{{ route('manager.business.vacancy.create', $business) }}" class="btn btn-primary">
+                <i class="fa fa-calendar-plus-o"></i> Set Availability
+            </a>
+            <a href="{{ route('manager.business.show', $business) }}" class="btn btn-outline-secondary">
+                <i class="fa fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
 </div>
 @endsection
 
 @push('footer_scripts')
-<script src="{{ asset('js/clipboard/clipboard.min.js') }}"></script>
-<script type="text/javascript">
-document.addEventListener('DOMContentLoaded', function() {    
-    new Clipboard('.btn');
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var copyBtn = document.getElementById('copyLinkBtn');
+    var linkInput = document.getElementById('businessShareLink');
+    if (copyBtn && linkInput) {
+        copyBtn.addEventListener('click', function() {
+            linkInput.select();
+            navigator.clipboard.writeText(linkInput.value).then(function() {
+                copyBtn.innerHTML = '<i class="fa fa-check"></i> Copied!';
+                setTimeout(function() {
+                    copyBtn.innerHTML = '<i class="fa fa-clipboard"></i> Copy';
+                }, 2000);
+            });
+        });
+    }
 });
 </script>
 @endpush

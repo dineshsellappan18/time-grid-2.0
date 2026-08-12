@@ -2530,6 +2530,223 @@ body.tg-public {
   }
 }
 
+// Detail Section (generic card for detail pages)
+.tg-detail-section {
+  background: #fff;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius;
+  box-shadow: $tg-shadow-sm;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid $tg-border-color;
+    background: rgba($tg-primary, 0.02);
+  }
+
+  &__title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: $tg-body-color;
+    margin: 0;
+    i { margin-right: 0.35rem; color: $tg-secondary; }
+  }
+
+  &__body {
+    padding: 1rem 1.25rem;
+  }
+}
+
+// Code badge
+.tg-code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.85em;
+  padding: 0.15em 0.4em;
+  background: rgba($tg-primary, 0.06);
+  border-radius: $tg-border-radius-sm;
+  color: $tg-primary;
+  &--lg { font-size: 1.1rem; padding: 0.2em 0.5em; }
+}
+
+// Detail header tags
+.tg-detail-header__tag {
+  font-size: $tg-font-size-sm;
+  color: $tg-secondary;
+  i { margin-right: 0.2rem; }
+}
+.tg-detail-header__badge {
+  font-size: 0.8rem;
+}
+
+// Task Breakdown
+.tg-task-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding-left: 1.25rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0.55rem;
+    top: 0.75rem;
+    bottom: 0.75rem;
+    width: 2px;
+    background: $tg-border-color;
+  }
+}
+.tg-task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  position: relative;
+
+  &__check {
+    flex: 0 0 auto;
+    font-size: 1.1rem;
+    margin-left: -1.25rem;
+    z-index: 1;
+    background: #fff;
+    padding: 0 0.15rem;
+  }
+
+  &__content { flex: 1; }
+
+  &__title {
+    display: block;
+    font-weight: 500;
+    color: $tg-body-color;
+    line-height: 1.3;
+  }
+
+  &__meta {
+    font-size: $tg-font-size-sm;
+    color: $tg-secondary;
+  }
+
+  &--done .tg-task-item__title {
+    color: $tg-secondary;
+  }
+  &--canceled .tg-task-item__title {
+    color: $tg-danger;
+    text-decoration: line-through;
+  }
+}
+
+// History Log
+.tg-history-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding-left: 1.25rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0.3rem;
+    top: 0.75rem;
+    bottom: 0.75rem;
+    width: 2px;
+    background: $tg-border-color;
+  }
+}
+.tg-history-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  position: relative;
+
+  &__dot {
+    flex: 0 0 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 5px;
+    margin-left: -1.25rem;
+    z-index: 1;
+    border: 2px solid #fff;
+    &--info { background: $tg-info; }
+    &--success { background: $tg-success; }
+    &--primary { background: $tg-primary; }
+    &--danger { background: $tg-danger; }
+    &--warning { background: $tg-warning; }
+  }
+
+  &__content { flex: 1; }
+
+  &__title {
+    display: block;
+    font-weight: 500;
+    color: $tg-body-color;
+    line-height: 1.3;
+  }
+
+  &__meta {
+    font-size: $tg-font-size-sm;
+    color: $tg-secondary;
+  }
+}
+
+// Contact Card
+.tg-contact-card {
+  text-align: center;
+
+  &__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: rgba($tg-primary, 0.1);
+    color: $tg-primary;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: $tg-body-color;
+  }
+
+  &__email,
+  &__phone {
+    font-size: $tg-font-size-sm;
+    color: $tg-secondary;
+    i { margin-right: 0.2rem; }
+  }
+}
+
+// Empty state page variant
+.tg-empty-state--page {
+  padding: 3rem 1.5rem;
+  background: #fff;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius;
+  box-shadow: $tg-shadow-sm;
+}
+
+// Clickable table rows
+.tg-table__row--clickable {
+  cursor: pointer;
+  &:hover { background: rgba($tg-primary, 0.02); }
+}
+
 // Related Items Sidebar
 .tg-detail-sidebar {
   background: #fff;

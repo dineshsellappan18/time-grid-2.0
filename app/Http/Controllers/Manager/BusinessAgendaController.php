@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JavaScript;
 use Timegridio\Concierge\Concierge;
+use Timegridio\Concierge\Models\Appointment;
 use Timegridio\Concierge\Models\Business;
 
 class BusinessAgendaController extends Controller
@@ -49,6 +50,24 @@ class BusinessAgendaController extends Controller
         $user = auth()->user();
 
         return view($viewKey, compact('business', 'appointments', 'user'));
+    }
+
+    public function getShow(Business $business, Appointment $appointment)
+    {
+        Log::info('agenda.show', [
+            'actor'     => auth()->id(),
+            'resource'  => 'appointment',
+            'operation' => 'view_detail',
+            'context'   => ['business_id' => $business->id, 'appointment_id' => $appointment->id],
+        ]);
+
+        $this->authorize('manage', $business);
+
+        $appointment->load(['contact', 'service', 'humanresource']);
+
+        $user = auth()->user();
+
+        return view('manager.businesses.appointments.show', compact('business', 'appointment', 'user'));
     }
 
     public function getCalendar(Business $business)
