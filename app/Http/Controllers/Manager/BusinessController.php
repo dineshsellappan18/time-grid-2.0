@@ -160,9 +160,10 @@ class BusinessController extends Controller
         $teamMembers = $business->humanresources()->get();
 
         $teamWithLoad = $teamMembers->map(function ($member) use ($todayAppointments) {
-            $assignedCount = $todayAppointments->count();
-            $member->today_assignments = $assignedCount;
-            $member->is_available = $member->capacity > 0;
+            $member->today_assignments = $todayAppointments
+                ->where('humanresource_id', $member->id)
+                ->count();
+            $member->is_available = $member->capacity > $member->today_assignments;
             return $member;
         });
 

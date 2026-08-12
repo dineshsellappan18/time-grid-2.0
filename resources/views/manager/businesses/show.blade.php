@@ -32,7 +32,7 @@
     {{-- KPI Stat Cards --}}
     <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3 mb-4">
         @foreach ($boxes as $box)
-        <div class="col">
+                <div class="col">
             <a href="{{ $box['link'] }}" class="tg-stat-card tg-stat-card--link" title="{{ trans($box['title']) }}">
                 <div class="tg-stat-card__icon bg-{{ $box['color'] }}">
                     <i class="fa fa-{{ $box['icon'] }}"></i>
@@ -43,7 +43,7 @@
                 </div>
             </a>
         </div>
-        @endforeach
+    @endforeach
     </div>
 
     <div class="row g-4">
@@ -263,6 +263,7 @@
                                 <span class="tg-team-member__name">{{ $member->name }}</span>
                                 <span class="tg-team-member__role">
                                     {{ $member->is_available ? 'Available' : 'Unavailable' }}
+                                    · {{ $member->today_assignments }} {{ $member->today_assignments === 1 ? 'assignment' : 'assignments' }} today
                                     · Capacity: {{ $member->capacity }}
                                 </span>
                             </div>
@@ -306,8 +307,12 @@
                             <i class="fa fa-calendar"></i>
                             <span>Calendar View</span>
                         </a>
-                        <a href="{{ route('manager.business.service.index', $business) }}" class="tg-quick-action">
+                        <a href="{{ route('manager.business.agenda.index', $business) }}" class="tg-quick-action tg-quick-action--escalate" title="View urgent appointments requiring attention">
                             <i class="fa fa-arrow-circle-up"></i>
+                            <span>Escalate</span>
+                        </a>
+                        <a href="{{ route('manager.business.service.index', $business) }}" class="tg-quick-action">
+                            <i class="fa fa-tags"></i>
                             <span>Manage Services</span>
                         </a>
                         <a href="{{ route('manager.business.preferences', $business) }}" class="tg-quick-action">

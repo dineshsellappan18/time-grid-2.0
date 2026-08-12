@@ -1271,6 +1271,16 @@ body.tg-public {
     color: $tg-primary;
     > .fa { color: $tg-info; }
   }
+
+  &--escalate {
+    color: $tg-danger;
+    > .fa { color: $tg-danger; }
+    &:hover {
+      background: rgba($tg-danger, 0.06);
+      color: darken($tg-danger, 8%);
+      > .fa { color: darken($tg-danger, 8%); }
+    }
+  }
 }
 
 // Empty State
