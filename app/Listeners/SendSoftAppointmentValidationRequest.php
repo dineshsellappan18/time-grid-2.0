@@ -19,11 +19,10 @@ class SendSoftAppointmentValidationRequest implements ShouldQueue
 
     public array $backoff = [10, 60, 300];
 
-    public string $queue = 'notifications';
-
     public function __construct(
         private readonly TransMail $transmail,
     ) {
+        $this->onQueue('notifications');
     }
 
     public function handle(NewSoftAppointmentWasBooked $event): void

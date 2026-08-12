@@ -448,9 +448,15 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
                 return $file;
             }
 
-            return is_array($file)
-                        ? $this->convertUploadedFiles($file)
-                        : UploadedFile::createFromBase($file);
+            if (is_array($file)) {
+                return $this->convertUploadedFiles($file);
+            }
+
+            if (! $file instanceof \Symfony\Component\HttpFoundation\File\UploadedFile) {
+                return null;
+            }
+
+            return UploadedFile::createFromBase($file);
         }, $files);
     }
 

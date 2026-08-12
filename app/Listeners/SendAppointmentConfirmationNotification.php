@@ -20,13 +20,12 @@ class SendAppointmentConfirmationNotification implements ShouldQueue
 
     public array $backoff = [10, 60, 300];
 
-    public string $queue = 'notifications';
-
     private $transmail;
 
     public function __construct(TransMail $transmail)
     {
         $this->transmail = $transmail;
+        $this->onQueue('notifications');
     }
 
     public function handle(AppointmentWasConfirmed $event): void
