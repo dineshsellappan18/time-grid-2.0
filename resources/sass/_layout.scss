@@ -3567,3 +3567,166 @@ body.tg-public {
     grid-template-columns: 1fr;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Settings & User Profile (Tabbed Layout)
+// ---------------------------------------------------------------------------
+.tg-settings-tabs {
+  background: #fff;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius;
+  overflow: hidden;
+}
+.tg-settings-tabs__nav {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-bottom: 2px solid $tg-border-color;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tg-settings-tabs__btn {
+  padding: 0.75rem 1.25rem;
+  border: none;
+  background: transparent;
+  font-size: $tg-font-size-sm;
+  font-weight: 500;
+  color: $tg-secondary;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+  i { margin-right: 0.3rem; }
+  &:hover { color: $tg-primary; }
+  &.is-active {
+    color: $tg-primary;
+    border-bottom-color: $tg-primary;
+    font-weight: 600;
+  }
+}
+.tg-settings-tabs__panel {
+  display: none;
+  padding: 1.5rem;
+  &.is-active { display: block; }
+}
+
+.tg-settings-section__actions {
+  padding-top: 1rem;
+  border-top: 1px solid rgba($tg-border-color, 0.5);
+  margin-top: 0.5rem;
+}
+
+// Danger zone
+.tg-settings-section--danger {
+  border: 1px solid rgba($tg-danger, 0.2);
+  border-radius: $tg-border-radius;
+  .tg-settings-section__header {
+    background: rgba($tg-danger, 0.04);
+  }
+}
+
+// Avatar upload
+.tg-avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.tg-avatar-upload__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $tg-primary 0%, darken($tg-primary, 12%) 100%);
+  overflow: hidden;
+}
+.tg-avatar-upload__initials {
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+// Theme toggle
+.tg-theme-toggle {
+  display: inline-flex;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius;
+  overflow: hidden;
+}
+.tg-theme-toggle__btn {
+  padding: 0.4rem 1rem;
+  border: none;
+  background: #fff;
+  font-size: $tg-font-size-sm;
+  font-weight: 500;
+  color: $tg-secondary;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  &:not(:last-child) { border-right: 1px solid $tg-border-color; }
+  &:hover { background: rgba($tg-primary, 0.05); color: $tg-primary; }
+  &.is-active { background: $tg-primary; color: #fff; }
+  i { margin-right: 0.25rem; }
+}
+
+// Theme preview
+.tg-theme-preview {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  grid-template-rows: 20px 1fr;
+  width: 200px;
+  height: 120px;
+  border: 1px solid $tg-border-color;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f8fafc;
+  transition: background 0.2s;
+}
+.tg-theme-preview__header {
+  grid-column: 1 / -1;
+  background: $tg-primary;
+}
+.tg-theme-preview__sidebar {
+  background: #e2e8f0;
+  transition: background 0.2s;
+}
+.tg-theme-preview__content {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tg-theme-preview__line {
+  height: 6px;
+  border-radius: 3px;
+  background: #cbd5e1;
+  transition: background 0.2s;
+  &--short { width: 60%; }
+}
+.tg-theme-preview--dark {
+  background: #1e293b;
+  .tg-theme-preview__sidebar { background: #334155; }
+  .tg-theme-preview__line { background: #475569; }
+}
+
+@media (max-width: 767px) {
+  .tg-settings-tabs__nav {
+    gap: 0;
+  }
+  .tg-settings-tabs__btn {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.78rem;
+  }
+  .tg-settings-tabs__panel {
+    padding: 1rem;
+  }
+  .tg-theme-toggle {
+    width: 100%;
+  }
+  .tg-theme-toggle__btn {
+    flex: 1;
+    text-align: center;
+  }
+}

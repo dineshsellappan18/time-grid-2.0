@@ -132,6 +132,10 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth']], function () {
         'as'   => 'user.preferences',
         'uses' => 'User\UserPreferencesController@postPreferences',
         ]);
+    Route::delete('account', [
+        'as'   => 'user.account.destroy',
+        'uses' => 'User\UserPreferencesController@destroyAccount',
+    ]);
 
     Route::get('agenda', [
         'as'   => 'user.agenda',

@@ -69,7 +69,15 @@ class UserPreferencesController extends Controller
         $parameters = config()->get('preferences.App\Models\User');
         $preferences = $user->preferences;
 
-        return view('user.preferences.edit', compact('user', 'preferences', 'parameters'));
+        $notificationPrefs = [
+            ['key' => 'notify_appointment_reserved', 'label' => 'Appointment Reserved', 'help' => 'Receive a notification when a new appointment is booked.', 'value' => $user->pref('notify_appointment_reserved', true)],
+            ['key' => 'notify_appointment_confirmed', 'label' => 'Appointment Confirmed', 'help' => 'Receive a notification when an appointment is confirmed.', 'value' => $user->pref('notify_appointment_confirmed', true)],
+            ['key' => 'notify_appointment_canceled', 'label' => 'Appointment Canceled', 'help' => 'Receive a notification when an appointment is canceled.', 'value' => $user->pref('notify_appointment_canceled', true)],
+            ['key' => 'notify_appointment_reminder', 'label' => 'Appointment Reminders', 'help' => 'Receive reminders before upcoming appointments.', 'value' => $user->pref('notify_appointment_reminder', true)],
+            ['key' => 'notify_marketing_emails', 'label' => 'Marketing Emails', 'help' => 'Receive product updates and promotional offers.', 'value' => $user->pref('notify_marketing_emails', false)],
+        ];
+
+        return view('user.preferences.edit', compact('user', 'preferences', 'parameters', 'notificationPrefs'));
     }
 
     public function postPreferences(Request $request)
@@ -81,6 +89,35 @@ class UserPreferencesController extends Controller
         flash()->success(trans('user.msg.preferences.success'));
 
         return redirect()->back();
+    }
+
+    public function destroyAccount(Request $request): RedirectResponse
+    {
+        Log::info('user.account.delete', [
+            'actor'     => auth()->id(),
+            'resource'  => 'account',
+            'operation' => 'delete',
+        ]);
+
+        $request->validate([
+            'confirm_email' => ['required', 'email', function ($attribute, $value, $fail) {
+                if ($value !== auth()->user()->email) {
+                    $fail('The email address does not match your account.');
+                }
+            }],
+        ]);
+
+        $user = auth()->user();
+
+        auth()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        $user->delete();
+
+        flash()->success(trans('user.msg.account.deleted', ['default' => 'Your account has been permanently deleted.']));
+
+        return redirect('/');
     }
 
     protected function setUserPreferences($preferences)
