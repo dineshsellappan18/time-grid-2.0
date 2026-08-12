@@ -4,45 +4,55 @@ use Illuminate\Database\Migrations\Migration;
 
 class CharifyCountriesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
-        Schema::table(\Config::get('countries.table_name'), function () {
-            DB::statement('ALTER TABLE '.DB::getTablePrefix().\Config::get('countries.table_name').
-                " MODIFY country_code CHAR(3) NOT NULL DEFAULT ''");
-            DB::statement('ALTER TABLE '.DB::getTablePrefix().\Config::get('countries.table_name').
-                " MODIFY iso_3166_2 CHAR(2) NOT NULL DEFAULT ''");
-            DB::statement('ALTER TABLE '.DB::getTablePrefix().\Config::get('countries.table_name').
-                " MODIFY iso_3166_3 CHAR(3) NOT NULL DEFAULT ''");
-            DB::statement('ALTER TABLE '.DB::getTablePrefix().\Config::get('countries.table_name').
-                " MODIFY region_code CHAR(3) NOT NULL DEFAULT ''");
-            DB::statement('ALTER TABLE '.DB::getTablePrefix().\Config::get('countries.table_name').
-                " MODIFY sub_region_code CHAR(3) NOT NULL DEFAULT ''");
+        $table = \Config::get('countries.table_name');
+        $prefix = DB::getTablePrefix();
+        $driver = Schema::getConnection()->getDriverName();
+
+        Schema::table($table, function () use ($table, $prefix, $driver) {
+            $columns = [
+                'country_code'    => 'CHAR(3)',
+                'iso_3166_2'      => 'CHAR(2)',
+                'iso_3166_3'      => 'CHAR(3)',
+                'region_code'     => 'CHAR(3)',
+                'sub_region_code' => 'CHAR(3)',
+            ];
+
+            foreach ($columns as $col => $type) {
+                if ($driver === 'pgsql') {
+                    DB::statement("ALTER TABLE {$prefix}{$table} ALTER COLUMN {$col} TYPE {$type}");
+                    DB::statement("ALTER TABLE {$prefix}{$table} ALTER COLUMN {$col} SET NOT NULL");
+                    DB::statement("ALTER TABLE {$prefix}{$table} ALTER COLUMN {$col} SET DEFAULT ''");
+                } else {
+                    DB::statement("ALTER TABLE {$prefix}{$table} MODIFY {$col} {$type} NOT NULL DEFAULT ''");
+                }
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
-        Schema::table(\Config::get('countries.table_name'), function () {
-            DB::statement('ALTER TABLE '.DB::getTablePrefix().\Config::get('countries.table_name').
-                " MODIFY country_code VARCHAR(3) NOT NULL DEFAULT ''");
-            DB::statement('ALTER TABLE '.DB::getTablePrefix().\Config::get('countries.table_name').
-                " MODIFY iso_3166_2 VARCHAR(2) NOT NULL DEFAULT ''");
-            DB::statement('ALTER TABLE '.DB::getTablePrefix().\Config::get('countries.table_name').
-                " MODIFY iso_3166_3 VARCHAR(3) NOT NULL DEFAULT ''");
-            DB::statement('ALTER TABLE '.DB::getTablePrefix().\Config::get('countries.table_name').
-                " MODIFY region_code VARCHAR(3) NOT NULL DEFAULT ''");
-            DB::statement('ALTER TABLE '.DB::getTablePrefix().\Config::get('countries.table_name').
-                " MODIFY sub_region_code VARCHAR(3) NOT NULL DEFAULT ''");
+        $table = \Config::get('countries.table_name');
+        $prefix = DB::getTablePrefix();
+        $driver = Schema::getConnection()->getDriverName();
+
+        Schema::table($table, function () use ($table, $prefix, $driver) {
+            $columns = [
+                'country_code'    => 'VARCHAR(3)',
+                'iso_3166_2'      => 'VARCHAR(2)',
+                'iso_3166_3'      => 'VARCHAR(3)',
+                'region_code'     => 'VARCHAR(3)',
+                'sub_region_code' => 'VARCHAR(3)',
+            ];
+
+            foreach ($columns as $col => $type) {
+                if ($driver === 'pgsql') {
+                    DB::statement("ALTER TABLE {$prefix}{$table} ALTER COLUMN {$col} TYPE {$type}");
+                } else {
+                    DB::statement("ALTER TABLE {$prefix}{$table} MODIFY {$col} {$type} NOT NULL DEFAULT ''");
+                }
+            }
         });
     }
 }
