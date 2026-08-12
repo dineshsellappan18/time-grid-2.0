@@ -9,8 +9,10 @@ class NewSoftAppointmentWasBooked extends Event
 {
     use SerializesModels;
 
-    public function __construct(
-        public readonly Appointment $appointment,
-    ) {
+    public $appointment;
+
+    public function __construct(Appointment $appointment)
+    {
+        $this->appointment = $appointment;
     }
 }

@@ -39,9 +39,9 @@ class AuditAuthEvents
         $this->audit->append(
             action: 'auth.login',
             resourceType: 'user',
-            resourceId: null,
+            resourceId: $event->user->id ?? null,
             outcome: 'denied',
-            changes: ['guard' => $event->guard],
+            changes: [],
             actorType: 'anonymous',
             actorId: null,
         );

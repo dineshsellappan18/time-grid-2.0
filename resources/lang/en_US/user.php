@@ -130,6 +130,7 @@ return  [
     ],
   ],
   'dashboard' => [
+    'title' => 'Dashboard',
     'card' => [
       'agenda' => [
         'button'      => 'See Agenda',
@@ -147,14 +148,61 @@ return  [
         'title'       => 'Subscriptions',
       ],
     ],
+    'stats' => [
+      'upcoming_appointments' => 'Upcoming Appointments',
+      'confirmed'             => 'Confirmed',
+      'next_appointment'      => 'Next Appointment',
+      'subscriptions'         => 'Subscriptions',
+    ],
+    'quick_actions' => [
+      'title'          => 'Quick Actions',
+      'find_business'  => 'Find a Business',
+      'my_agenda'      => 'My Agenda',
+      'subscriptions'  => 'Subscriptions',
+      'preferences'    => 'Preferences',
+    ],
+    'activity' => [
+      'title'       => 'Recent Activity',
+      'appointment' => 'Appointment',
+      'view_all'    => 'View All',
+    ],
+    'chart' => [
+      'title' => 'Appointments Overview',
+    ],
+    'empty' => [
+      'no_appointments_title' => 'No Appointments Yet',
+      'no_appointments_text'  => 'You don\'t have any upcoming appointments.',
+      'browse_directory'      => 'Browse Directory',
+      'no_chart_data'         => 'Not enough data to display chart.',
+    ],
   ],
   'msg' => [
     'preferences' => [
       'success' => 'Your preferences have been saved.',
+    ],
+    'account' => [
+      'deleted' => 'Your account has been permanently deleted.',
     ],
   ],
   'preferences' => [
     'title' => 'My preferences',
   ],
   'go_to_business_dashboard' => 'Go to :business\'s dashboard',
+  'profile' => [
+    'title'            => 'My Profile',
+    'info_title'       => 'Personal Information',
+    'edit_title'       => 'Edit Profile',
+    'preferences_link' => 'App Preferences',
+    'btn_edit'         => 'Edit',
+    'btn_save'         => 'Save Changes',
+    'btn_cancel'       => 'Cancel',
+    'field' => [
+      'name'             => 'Full Name',
+      'email'            => 'Email Address',
+      'username'         => 'Username',
+      'password'         => 'Password',
+      'new_password'     => 'New Password',
+      'confirm_password' => 'Confirm Password',
+    ],
+  ],
 ];

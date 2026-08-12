@@ -9,8 +9,10 @@ class NewUserWasRegistered extends Event
 {
     use SerializesModels;
 
-    public function __construct(
-        public readonly User $user,
-    ) {
+    public $user;
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
     }
 }

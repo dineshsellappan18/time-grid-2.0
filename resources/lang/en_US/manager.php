@@ -140,9 +140,22 @@ return  [
       'help'  => 'All what happened recently',
       'title' => 'Notifications',
     ],
+    'agenda' => [
+      'title' => 'Agenda',
+    ],
     'preferences' => [
       'instructions' => 'Here you can customize the business settings to your needs.',
       'title'        => 'Business preferences',
+      'sections' => [
+        'hours'              => 'Business Hours',
+        'hours_desc'         => 'Set your operating hours and availability windows.',
+        'display'            => 'Display Settings',
+        'display_desc'       => 'Customize how your business appears to customers.',
+        'notifications'      => 'Notification Settings',
+        'notifications_desc' => 'Control how and when you receive notifications.',
+        'advanced'           => 'Advanced Settings',
+        'advanced_desc'      => 'Advanced configuration options for your business.',
+      ],
     ],
     'vacancies' => [
       'btn' => [
@@ -213,6 +226,12 @@ return  [
       'nin'            => 'ID',
       'notes'          => 'Notes',
       'postal_address' => 'Postal Address',
+      'unlinked'       => 'No linked user account',
+    ],
+    'tab' => [
+      'info'         => 'Info',
+      'appointments' => 'Appointments',
+      'privacy'      => 'Privacy',
     ],
     'list' => [
       'btn' => [
@@ -298,6 +317,7 @@ return  [
   'service' => [
     'btn' => [
       'delete' => 'Delete',
+      'edit'   => 'Edit',
       'update' => 'Update',
     ],
     'form' => [
@@ -341,12 +361,22 @@ return  [
     'index' => [
       'instructions' => 'Add as many services as you provide to configure availability for each of them.',
       'title'        => 'Services',
+      'empty'        => 'No services added yet.',
+      'search'       => 'Search services...',
+      'th' => [
+        'name'     => 'Name',
+        'duration' => 'Duration',
+        'type'     => 'Type',
+      ],
     ],
     'msg' => [
       'destroy' => [
         'success' => 'Service deleted!',
       ],
     ],
+  ],
+  'reports' => [
+    'title' => 'Reports & Analytics',
   ],
   'vacancies' => [
     'edit' => [

@@ -152,8 +152,8 @@ class BusinessController extends Controller
 
         $weekAppointments = $business->bookings()
             ->with(['contact', 'service'])
-            ->where('start_at', '>=', Carbon::today($business->timezone)->startOfWeek()->utc())
-            ->where('start_at', '<=', Carbon::today($business->timezone)->endOfWeek()->utc())
+            ->where('start_at', '>=', Carbon::today($business->timezone)->startOfWeek()->timezone('UTC'))
+            ->where('start_at', '<=', Carbon::today($business->timezone)->endOfWeek()->timezone('UTC'))
             ->orderBy('start_at')
             ->get();
 

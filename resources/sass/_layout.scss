@@ -354,12 +354,15 @@ body.tg-app {
   flex: 1 1 auto;
 }
 
-.main-footer {
+.main-footer,
+.tg-footer {
   background: transparent;
   padding: 0.85rem 1.5rem 1.25rem;
   color: $tg-secondary;
   border-top: none;
   margin: 0;
+  text-align: center;
+  font-size: 0.8125rem;
 }
 
 // ---------------------------------------------------------------------------
@@ -1035,10 +1038,13 @@ body.tg-public {
 }
 
 .tg-public-nav {
-  display: flex;
   align-items: center;
   flex: 1 1 auto;
   gap: 0.75rem;
+
+  @media (min-width: 992px) {
+    display: flex !important;
+  }
 
   .nav-link {
     color: $tg-secondary;

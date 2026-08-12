@@ -48,6 +48,7 @@ return  [
     'help'    => 'Help',
     'login'   => 'Login',
     'logout'  => 'Logout',
+    'profile' => 'My Profile',
     'manager' => [
       'business' => [
         'menu'     => 'My Businesses',
