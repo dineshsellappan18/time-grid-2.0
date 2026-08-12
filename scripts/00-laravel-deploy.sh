@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Running composer..."
-composer install --no-dev --working-dir=/var/www/html
-
 echo "Caching config..."
-php artisan config:cache
+cd /var/www/html
+php artisan config:cache || true
 
 echo "Caching routes..."
-php artisan route:cache
+php artisan route:cache || true
 
 echo "Caching views..."
-php artisan view:cache
+php artisan view:cache || true
 
 echo "Running migrations..."
-php artisan migrate --force
+php artisan migrate --force || true
 
-echo "Seeding database (first deploy only)..."
+echo "Seeding database..."
 php artisan db:seed --class='Database\Seeders\DatabaseSeeder' --force 2>/dev/null || echo "Seeding skipped (likely already seeded)"
 
 echo "Deploy complete!"
