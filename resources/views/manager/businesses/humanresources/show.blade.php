@@ -15,14 +15,25 @@
                 <div class="tg-detail-header__info">
                     <h1 class="tg-detail-header__title">{{ $humanresource->name }}</h1>
                     <div class="tg-detail-header__meta">
+                        @if($humanresource->capacity >= 10)
+                        <span class="tg-role-badge tg-role-badge--lead"><i class="fa fa-star"></i> Lead</span>
+                        @elseif($humanresource->capacity >= 5)
+                        <span class="tg-role-badge tg-role-badge--senior"><i class="fa fa-certificate"></i> Senior</span>
+                        @elseif($humanresource->capacity >= 1)
+                        <span class="tg-role-badge tg-role-badge--staff"><i class="fa fa-user"></i> Staff</span>
+                        @else
+                        <span class="tg-role-badge tg-role-badge--inactive"><i class="fa fa-pause-circle"></i> Inactive</span>
+                        @endif
+                        <span class="tg-permission-badge">
+                            <i class="fa fa-shield"></i> Capacity: {{ $humanresource->capacity }}
+                        </span>
+                        <span class="tg-detail-header__meta-item">
+                            <i class="fa fa-circle {{ $humanresource->capacity > 0 ? 'text-success' : 'text-muted' }}"></i>
+                            {{ $humanresource->capacity > 0 ? 'Available' : 'Unavailable' }}
+                        </span>
                         <span class="tg-detail-header__meta-item">
                             <i class="fa fa-tag"></i> {{ $humanresource->slug }}
                         </span>
-                        @if($humanresource->capacity)
-                        <span class="tg-detail-header__meta-item">
-                            <i class="fa fa-users"></i> Capacity: {{ $humanresource->capacity }}
-                        </span>
-                        @endif
                     </div>
                 </div>
                 <div class="tg-detail-header__actions">

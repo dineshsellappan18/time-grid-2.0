@@ -1549,6 +1549,124 @@ body.tg-public {
 .tg-priority-card--low .tg-priority-card__badge { background: rgba($tg-success, 0.1); color: $tg-success; }
 
 // ---------------------------------------------------------------------------
+// Member Card Grid (Team Management)
+// ---------------------------------------------------------------------------
+.tg-member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+.tg-member-card {
+  background: #fff;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius;
+  padding: 1rem 1.25rem;
+  transition: box-shadow 0.15s, transform 0.15s;
+  &:hover { box-shadow: $tg-shadow; transform: translateY(-1px); }
+}
+.tg-member-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+.tg-member-card__avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+.tg-member-card__initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $tg-primary 0%, darken($tg-primary, 12%) 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.tg-member-card__status-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  &--available { background: $tg-success; }
+  &--unavailable { background: $tg-secondary; }
+}
+.tg-member-card__info { flex: 1; min-width: 0; }
+.tg-member-card__name {
+  display: block;
+  font-weight: 600;
+  color: $tg-body-color;
+  text-decoration: none;
+  line-height: 1.3;
+  &:hover { color: $tg-primary; }
+}
+.tg-member-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+}
+.tg-member-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: $tg-font-size-sm;
+  color: $tg-secondary;
+  margin-bottom: 0.6rem;
+}
+.tg-member-card__meta-item {
+  i { margin-right: 0.2rem; font-size: 0.55rem; vertical-align: middle; }
+}
+.tg-member-card__actions {
+  display: flex;
+  gap: 0.4rem;
+  border-top: 1px solid rgba($tg-border-color, 0.5);
+  padding-top: 0.6rem;
+}
+
+// Role & Permission Badges
+.tg-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  i { font-size: 0.65rem; }
+  &--lead { background: rgba($tg-warning, 0.12); color: darken($tg-warning, 12%); }
+  &--senior { background: rgba($tg-info, 0.12); color: $tg-info; }
+  &--staff { background: rgba($tg-success, 0.12); color: $tg-success; }
+  &--inactive { background: rgba($tg-secondary, 0.12); color: $tg-secondary; }
+}
+.tg-permission-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border-radius: 999px;
+  background: rgba($tg-primary, 0.08);
+  color: $tg-primary;
+  i { font-size: 0.65rem; }
+}
+
+@media (max-width: 575px) {
+  .tg-member-grid { grid-template-columns: 1fr; padding: 0.75rem; }
+  .tg-member-card { padding: 0.75rem 1rem; }
+}
+
+// ---------------------------------------------------------------------------
 // Team Status
 // ---------------------------------------------------------------------------
 .tg-team-status {
