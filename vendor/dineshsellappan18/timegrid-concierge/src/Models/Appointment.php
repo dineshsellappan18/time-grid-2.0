@@ -541,7 +541,7 @@ class Appointment extends EloquentModel implements HasPresenter
     {
         $date->timezone('UTC');
 
-        return $query->whereRaw('date(`start_at`) = ?', [$date->toDateString()]);
+        return $query->whereDate('start_at', '=', $date->toDateString());
     }
 
     /**
