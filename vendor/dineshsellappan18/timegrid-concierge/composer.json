@@ -1,0 +1,68 @@
+{
+    "name": "dineshsellappan18/timegrid-concierge",
+    "type": "library",
+    "description": "Organisation fork of timegridio/concierge for Timegrid 2.0 modernization (semver-tagged; no branch constraints).",
+    "keywords": [
+        "laravel",
+        "timegrid",
+        "concierge",
+        "booking",
+        "reservation"
+    ],
+    "homepage": "https://github.com/dineshsellappan18/time-grid-2.0",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ariel Vallese",
+            "email": "alariva@gmail.com",
+            "homepage": "http://timegrid.io",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.1|^8.0|^8.1|^8.2|^8.3|^8.4",
+        "illuminate/support": "5.*|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+        "doctrine/dbal": "^2.5"
+    },
+    "require-dev": {
+        "laravel/framework": "5.2.*",
+        "phpunit/phpunit": "~4.0",
+        "phpspec/phpspec": "~2.1",
+        "laracasts/testdummy": "~2.3",
+        "orchestra/testbench": "~3.2.0"
+    },
+    "autoload": {
+        "classmap": [],
+        "psr-4": {
+            "Timegridio\\Concierge\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCaseDB.php"
+        ],
+        "psr-4": {
+            "Timegridio\\Tests\\Models\\": "tests/models"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --stop-on-failure --stop-on-error"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.7-dev"
+        },
+        "timegrid-fork": {
+            "upstream": "timegridio/concierge",
+            "upstream_ref": "dev-master#90e65c",
+            "fork_tag": "1.0.0",
+            "spike_date": "2026-08-10",
+            "php_floor_note": "Transitional >=7.1 until WO-015 raises app to ^8.3; target remains 8.3/8.4."
+        }
+    },
+    "minimum-stability": "stable",
+    "version": "1.0.0",
+    "replace": {
+        "timegridio/concierge": "self.version"
+    }
+}

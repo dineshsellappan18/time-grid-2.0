@@ -1,5 +1,4 @@
 /vendor_local
-/vendor
 # Local path packages stay ignored; organisation forks are tracked (WO-002 / WO-008).
 /packages/*
 !/packages/timegrid-concierge/
