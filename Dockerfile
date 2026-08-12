@@ -5,8 +5,9 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN apk add --no-cache \
         nginx supervisor curl git unzip \
         postgresql-dev libpng-dev libxml2-dev oniguruma-dev \
+        icu-dev icu-libs \
         nodejs npm \
-    && docker-php-ext-install pdo_mysql pdo_pgsql mbstring gd xml bcmath
+    && docker-php-ext-install pdo_mysql pdo_pgsql mbstring gd xml bcmath intl
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
