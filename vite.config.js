@@ -18,6 +18,7 @@ export default defineConfig({
                 'resources/js/datatable.js',
                 'resources/js/detail-view.js',
                 'resources/js/form-wizard.js',
+                'resources/js/reports.js',
             ],
             refresh: true,
         }),

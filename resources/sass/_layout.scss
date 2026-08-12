@@ -3412,3 +3412,158 @@ body.tg-public {
     font-size: 0.95rem !important;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Reporting & Analytics Screen
+// ---------------------------------------------------------------------------
+.tg-report-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.tg-report-header__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  i { color: $tg-primary; margin-right: 0.3rem; }
+}
+.tg-report-header__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.tg-date-range .input-group {
+  min-width: 340px;
+}
+
+// KPI Cards
+.tg-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.tg-kpi-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #fff;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius;
+  padding: 1.1rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.15s, transform 0.15s;
+  &:hover { box-shadow: $tg-shadow; transform: translateY(-1px); }
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+  }
+  &--primary::before { background: $tg-primary; }
+  &--success::before { background: $tg-success; }
+  &--info::before { background: $tg-info; }
+  &--danger::before { background: $tg-danger; }
+  &--warning::before { background: $tg-warning; }
+}
+.tg-kpi-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 1rem;
+  .tg-kpi-card--primary & { background: rgba($tg-primary, 0.1); color: $tg-primary; }
+  .tg-kpi-card--success & { background: rgba($tg-success, 0.1); color: $tg-success; }
+  .tg-kpi-card--info & { background: rgba($tg-info, 0.1); color: $tg-info; }
+  .tg-kpi-card--danger & { background: rgba($tg-danger, 0.1); color: $tg-danger; }
+  .tg-kpi-card--warning & { background: rgba($tg-warning, 0.1); color: $tg-warning; }
+}
+.tg-kpi-card__body { flex: 1; min-width: 0; }
+.tg-kpi-card__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: $tg-body-color;
+}
+.tg-kpi-card__label {
+  font-size: $tg-font-size-sm;
+  color: $tg-secondary;
+  font-weight: 500;
+}
+.tg-kpi-card__trend {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+  i { font-size: 0.65rem; }
+  &--success { background: rgba($tg-success, 0.1); color: $tg-success; }
+  &--danger { background: rgba($tg-danger, 0.1); color: $tg-danger; }
+  &--muted { background: rgba($tg-secondary, 0.08); color: $tg-secondary; }
+}
+
+// Report Panels
+.tg-report-panel {
+  background: #fff;
+  border: 1px solid $tg-border-color;
+  border-radius: $tg-border-radius;
+  overflow: hidden;
+}
+.tg-report-panel__header {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid $tg-border-color;
+}
+.tg-report-panel__title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+  i { color: $tg-secondary; margin-right: 0.3rem; }
+}
+.tg-report-panel__body {
+  padding: 1.25rem;
+}
+
+// Chart containers
+.tg-chart-container {
+  position: relative;
+  height: 280px;
+}
+.tg-chart-container--square {
+  height: 260px;
+}
+
+@media (max-width: 767px) {
+  .tg-report-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .tg-report-header__controls {
+    flex-direction: column;
+  }
+  .tg-date-range .input-group {
+    min-width: unset;
+  }
+  .tg-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tg-chart-container {
+    height: 220px;
+  }
+}
+@media (max-width: 400px) {
+  .tg-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -320,6 +320,16 @@ Route::group(['prefix' => '{business}'], function ($business) {
             'uses' => 'BusinessController@destroy',
         ]);
 
+        // REPORTS & ANALYTICS
+        Route::get('reports', [
+            'as'   => 'manager.business.reports.index',
+            'uses' => 'BusinessReportsController@index',
+        ]);
+        Route::get('reports/export', [
+            'as'   => 'manager.business.reports.export',
+            'uses' => 'BusinessReportsController@exportCsv',
+        ]);
+
         // BUSINESS NOTIFICATIONS
         Route::get('notifications', [
             'as'   => 'manager.business.notifications.show',
