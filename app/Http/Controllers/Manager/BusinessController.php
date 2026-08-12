@@ -144,7 +144,32 @@ class BusinessController extends Controller
 
         $time = $this->time->toTimeString();
 
-        return view('manager.businesses.show', compact('business', 'notifications', 'boxes', 'time'));
+        $todayAppointments = $business->bookings()
+            ->with(['contact', 'service'])
+            ->unarchived()
+            ->orderBy('start_at')
+            ->get();
+
+        $weekAppointments = $business->bookings()
+            ->with(['contact', 'service'])
+            ->where('start_at', '>=', Carbon::today($business->timezone)->startOfWeek()->utc())
+            ->where('start_at', '<=', Carbon::today($business->timezone)->endOfWeek()->utc())
+            ->orderBy('start_at')
+            ->get();
+
+        $teamMembers = $business->humanresources()->get();
+
+        $teamWithLoad = $teamMembers->map(function ($member) use ($todayAppointments) {
+            $assignedCount = $todayAppointments->count();
+            $member->today_assignments = $assignedCount;
+            $member->is_available = $member->capacity > 0;
+            return $member;
+        });
+
+        return view('manager.businesses.show', compact(
+            'business', 'notifications', 'boxes', 'time',
+            'todayAppointments', 'weekAppointments', 'teamWithLoad'
+        ));
     }
 
     public function edit(Business $business): View
